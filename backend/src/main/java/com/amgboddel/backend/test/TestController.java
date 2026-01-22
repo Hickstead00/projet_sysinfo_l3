@@ -1,5 +1,7 @@
 package com.amgboddel.backend.test;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +30,21 @@ public class TestController {
 
     // GET - Récupérer tous les messages
     @GetMapping("/messages")
+    @Operation(
+            summary = "Récupérer tout les messages",
+            description = "Retourne la liste de tous les messages stockés en BD"
+    )
+    @ApiResponse(responseCode = "200", description = "Ok")
     public ResponseEntity<List<TestMessage>> getAllMessages() {
         return ResponseEntity.ok(repository.findAll());
     }
 
     // POST - Créer un message
     @PostMapping("/messages")
+    @Operation(
+            summary = "Créer un message",
+            description = "Créer un message et le sauvegarder en BD"
+    )
     public ResponseEntity<TestMessage> createMessage(@RequestBody Map<String, String> payload) {
         String content = payload.get("content");
         TestMessage message = new TestMessage(content);
