@@ -11,4 +11,4 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 
 # Lance avec spring-boot-devtools pour le hot-reload
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]
+CMD ["mvn", "clean", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=true"]
