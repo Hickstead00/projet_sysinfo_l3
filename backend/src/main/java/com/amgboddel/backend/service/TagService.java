@@ -6,6 +6,7 @@ import com.amgboddel.backend.entity.Tag;
 import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.TagRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class TagService {
         return toResponse(tag);
     }
 
+    @Transactional
     public TagResponse create(TagRequest request){
         if (tagRepository.existsByNomTag(request.getNomTag())){
             throw new DuplicateResourceException("Un tag avec le nom : " + request.getNomTag() + " existe déjà");
@@ -42,6 +44,7 @@ public class TagService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TagResponse update(Long id, TagRequest request){
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tag introuvable avec l'id : " + id));
@@ -59,6 +62,7 @@ public class TagService {
         return toResponse(saved);
     }
 
+    @Transactional
     public void delete(Long id){
         if (!tagRepository.existsById(id)){
             throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
