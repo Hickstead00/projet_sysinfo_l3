@@ -1,0 +1,84 @@
+<h1>Gestion des Tags</h1>
+
+@if (messageSucces) {
+
+<p class="message-succes"> {{ messageSucces }}</p>
+
+}
+
+
+<div class="tout-tag">
+
+    <h2>Get tout les tags</h2>
+
+    @if (messageErreurDelete) {
+
+    <p class="message-erreur"> {{ messageErreurDelete }}</p>
+
+    }
+
+    @if (messageErreurModif) {
+
+    <p class="message-erreur"> {{ messageErreurModif }}</p>
+
+    }
+
+    <div *ngFor="let tag of listTags">
+
+        {{tag.id}} {{tag.nomTag}} {{tag.couleur}}
+        <button (click)="deleteTagById(tag.id)">Supprimer</button>
+
+        <input type="text" #nomInput [value]="tag.nomTag">
+        <input type="color" #couleurInput [value]="tag.couleur">
+        <button (click)="modifierTagById(tag.id, nomInput.value, couleurInput.value)">Modifier</button>
+
+
+
+    </div>
+
+</div>
+
+<div class="chercher-tag">
+
+    <h2>Get tag par id</h2>
+
+    <label for="idTag">Chercher par ID :</label>
+
+    <input type="number" #idInput id="idTag">
+
+    <button (click)="tagById(+idInput.value)">Rechercher</button>
+
+    @if (messageErreurRecherche) {
+
+    <p class="message-erreur"> {{ messageErreurRecherche }}</p>
+
+    }
+
+</div>
+
+@if (tagSelectionne){
+
+<p> {{ tagSelectionne.nomTag }} {{ tagSelectionne.couleur }} {{ tagSelectionne.id }} </p>
+
+}
+
+
+
+<div class="creer-tag">
+
+    <h2>Post pour création de tag</h2>
+
+    <input type="text" #nomInput placeholder="Nom du tag">
+
+    <input type="color" #couleurInput value="#000000">
+
+    <button (click)="createTag(nomInput.value, couleurInput.value)">Créer</button>
+
+    @if (messageErreurCreation) {
+
+    <p class="message-erreur"> {{ messageErreurCreation }}</p>
+
+    }
+
+
+</div>

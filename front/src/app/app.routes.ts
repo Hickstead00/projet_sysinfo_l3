@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { TestComponent} from './test/test.component';
+import { GestionTags } from './component/gestion-tags/gestion-tags';
 
 export const routes: Routes = [
-  { path: 'test', component: TestComponent},
-  { path: '', redirectTo: '/test', pathMatch: 'full'}
+    {path: 'gestionTags', component : GestionTags}
 ];
