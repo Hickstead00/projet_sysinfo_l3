@@ -43,7 +43,7 @@ export class GestionTags implements OnInit {
 
     this.tagService.getAllTags().subscribe({
 
-      next:(data) => { 
+      next:(data) => { // réponse du back avec succes (data) corps de ce que le back renvoie
         
         this.listTags = data;
         this.cdr.detectChanges();

@@ -28,9 +28,13 @@
         {{tag.id}} {{tag.nomTag}} {{tag.couleur}}
         <button (click)="deleteTagById(tag.id)">Supprimer</button>
 
-        <input type="text" #nomInput [value]="tag.nomTag">
+        <input type="text" #nomInput [value]="tag.nomTag"> <!-- champ de text intialisé avec nom du tag courant -->
+
         <input type="color" #couleurInput [value]="tag.couleur">
+        <!-- champ de text intialisé avec couleur du tag courant -->
+
         <button (click)="modifierTagById(tag.id, nomInput.value, couleurInput.value)">Modifier</button>
+        <!-- quand on clique on appelle modifierTagById avec l'id du tag et les valeurs actuelles des inputs -->
 
 
 
@@ -42,11 +46,12 @@
 
     <h2>Get tag par id</h2>
 
-    <label for="idTag">Chercher par ID :</label>
+    <label>Chercher par ID :</label>
 
-    <input type="number" #idInput id="idTag">
+    <input type="number" #idInput id="idTag"> <!-- #idInput permet de récupérer sa valeur au moment du clique -->
 
     <button (click)="tagById(+idInput.value)">Rechercher</button>
+    <!-- au clique on récupère la valeur tapée / convertit en number avec + puis on appel la fonction tagbyid()-->
 
     @if (messageErreurRecherche) {
 
