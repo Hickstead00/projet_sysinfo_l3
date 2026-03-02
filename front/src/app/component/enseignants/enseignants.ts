@@ -14,6 +14,8 @@ export class Enseignants implements OnInit {
 
   listEnseignant: Enseignant[] = [];
 
+  messageErreur?: string;
+
 
 
   constructor(
@@ -35,9 +37,25 @@ export class Enseignants implements OnInit {
     this.enenseignant_service.getAllEnseignant().subscribe({
 
       next:(data) => { 
-        
+
+        console.log("succes")
         this.listEnseignant = data;
         this.cdr.detectChanges();
+
+       },
+
+       error: (e)=>
+
+       {
+
+        console.log("erreur inconnue backend")
+
+        if(e.status === 500 ){
+
+        this.messageErreur = "Une erreur est survenue dans le backend dont je n'ai pas été informé (gassien)";
+        this.cdr.detectChanges();
+
+        }
 
        }
     });
