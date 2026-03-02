@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
-public class UeResponse {
+public class UEResponse {
 
     private Long id;
     private String nomUe;
@@ -26,7 +26,7 @@ public class UeResponse {
     private List<TagResponse> tags;
     private List<ProfesseurResponse> enseignants;
     private List<ProfesseurResponse> referents;
-    private List<UeResponse> prerequis;
+    private List<UEResponse> prerequis;
 
     // dummy values pour faciler le dev front
     private int nbEnseignants;

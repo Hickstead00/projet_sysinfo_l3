@@ -23,6 +23,8 @@ public class ProfesseurService {
     private final ProfesseurRepository professeurRepository;
     private final TagRepository tagRepository;
 
+
+    @Transactional
     public List<ProfesseurResponse> getAll(){
         return professeurRepository.findAll()
                 .stream()
@@ -30,12 +32,14 @@ public class ProfesseurService {
                 .toList();
     }
 
+    @Transactional
     public ProfesseurResponse getById(Long id){
         Professeur professeur = professeurRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Professeur non trouvable"));
         return toResponse(professeur);
     }
 
+    @Transactional
     public List<ProfesseurResponse> search(String s){
         return professeurRepository
                 .findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(s, s)

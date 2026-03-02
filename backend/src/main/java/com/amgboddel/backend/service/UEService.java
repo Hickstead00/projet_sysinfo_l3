@@ -18,26 +18,29 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UeService {
+public class UEService {
 
     private final UERepository ueRepository;
     private final TagRepository tagRepository;
     private final ProfesseurRepository professeurRepository;
 
-    public List<UeResponse> getAll(){
+    @Transactional
+    public List<UEResponse> getAll(){
         return ueRepository.findAll()
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
-    public UeResponse getById(Long id){
+    @Transactional
+    public UEResponse getById(Long id){
         UE ue = ueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvable"));
         return toResponse(ue);
     }
 
-    public List<UeResponse> search(String s){
+    @Transactional
+    public List<UEResponse> search(String s){
         return ueRepository
                 .findByNomUeContainingIgnoreCase(s)
                 .stream()
@@ -45,7 +48,8 @@ public class UeService {
                 .toList();
     }
 
-    private void requestToEntity(UeRequest request, UE ue){
+
+    private void requestToEntity(UERequest request, UE ue){
         ue.setNomUe(request.getNomUe());
         ue.setEcts(request.getEcts());
         ue.setCm(request.getCm());
@@ -61,14 +65,14 @@ public class UeService {
     }
 
     @Transactional
-    public UeResponse create(UeRequest request){
+    public UEResponse create(UERequest request){
         UE ue = new UE();
         requestToEntity(request, ue);
         return toResponse(ueRepository.save(ue));
     }
 
     @Transactional
-    public UeResponse update(Long id, UeRequest request){
+    public UEResponse update(Long id, UERequest request){
         UE ue = ueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvable"));
         requestToEntity(request, ue);
@@ -149,7 +153,7 @@ public class UeService {
         return new HashSet<>(ues);
     }
 
-    private UeResponse toResponse(UE ue){
+    private UEResponse toResponse(UE ue){
 
         List<TagResponse> tagResponses = ue.getTags() == null
                 ? Collections.emptyList()
@@ -191,7 +195,7 @@ public class UeService {
                         .build())
                 .toList();
 
-        List<UeResponse> prerequis = ue.getPrerequis() == null
+        List<UEResponse> prerequis = ue.getPrerequis() == null
                 ? Collections.emptyList()
                 : ue.getPrerequis().stream()
                 .map(this::toResponse)
@@ -199,7 +203,7 @@ public class UeService {
 
         int volumeTotal = ue.getCm() + ue.getTd() + ue.getTp();
 
-        return UeResponse.builder()
+        return UEResponse.builder()
                 .id(ue.getId())
                 .nomUe(ue.getNomUe())
                 .ects(ue.getEcts())

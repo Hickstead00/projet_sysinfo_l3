@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UeRequest {
+public class UERequest {
 
     @NotBlank(message = "Le nom de l'UE est obligatoire")
     @Size(max = 150, message = "Le nom de l'UE ne peut pas dépasser 150 caractères")
