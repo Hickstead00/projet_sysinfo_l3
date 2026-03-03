@@ -8,14 +8,16 @@
 
 <div *ngFor="let ens of listEnseignant">
 
-    
-    {{ens.id}} {{ens.nom}} {{ens.prenom}} {{ens.email}} 
-    
+
+    {{ens.id}} {{ens.nom}} {{ens.prenom}} {{ens.email}}
+
     <strong>Tags : </strong>
-    
+
     <span *ngFor="let tag of ens.tags">{{ tag.nomTag }}</span>
 
     {{ens.nbUe}} {{ens.nbReferent}} {{ens.totalCm}} {{ens.totalTp}} {{ens.totalTd}}
+
+    <button (click)="deleteEnseignantById(ens.id)">Supprimer</button>
 
 
 </div>
@@ -38,26 +40,25 @@
 
         <label>Tags (maintenir Ctrl pour plusieurs) :</label>
 
-            <select formControlName="tagIds" multiple>
-                
-                <option *ngFor="let t of tagDispo" [ngValue]="t.id"> 
+        <select formControlName="tagIds" multiple>
+
+            <option *ngFor="let t of tagDispo" [ngValue]="t.id">
 
                 {{ t.nomTag }}
 
-                </option>
+            </option>
 
-            </select>
+        </select>
 
-    @if (messageErreurCreation) {
+        @if (messageErreurCreation) {
 
         <p> {{ messageErreurCreation }} </p>
-    }
+        }
 
-    <button type="submit" [disabled]="enseignantForm.invalid">
-      Enregistrer l'enseignant
-    </button>
+        <button type="submit" [disabled]="enseignantForm.invalid">
+            Enregistrer l'enseignant
+        </button>
 
     </form>
 
 </div>
-

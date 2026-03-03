@@ -1,8 +1,8 @@
-import { Tag } from "./tag";
+import { Tag } from './tag';
 
 export interface CreateEnseignant {
-    nom: string;
-    prenom: string;
-    email: string;
-    tags: Tag[];
+  nom: string;
+  prenom: string;
+  email: string;
+  tags: Tag[];
 }

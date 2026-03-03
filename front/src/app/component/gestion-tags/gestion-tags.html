@@ -73,17 +73,21 @@
 
     <h2>Post pour création de tag</h2>
 
-    <input type="text" #nomInput placeholder="Nom du tag">
+    <form [formGroup]="tagForm" (ngSubmit)="createTag()">
 
-    <input type="color" #couleurInput value="#000000">
+        <input type="text" formControlName="nomTag" placeholder="nom du tag">
 
-    <button (click)="createTag(nomInput.value, couleurInput.value)">Créer</button>
+        <input type="color" formControlName="couleur">
 
-    @if (messageErreurCreation) {
+        @if (messageErreurCreation) {
 
-    <p class="message-erreur"> {{ messageErreurCreation }}</p>
+        <p class="message-erreur"> {{ messageErreurCreation }}</p>
 
-    }
+        }
+
+        <button type="submit" [disabled]="tagForm.invalid">Créer</button>
+
+    </form>
 
 
 </div>

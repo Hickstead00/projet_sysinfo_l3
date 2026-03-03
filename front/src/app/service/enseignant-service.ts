@@ -4,34 +4,21 @@ import { Observable } from 'rxjs';
 import { Enseignant } from '../model/enseignant';
 import { CreateEnseignant } from '../model/create-enseignant';
 
-@Injectable({ providedIn: 'root',})
+@Injectable({ providedIn: 'root' })
 export class EnseignantService {
+  private apiEnseignant = 'http://localhost:8080/api/professeurs';
 
-  private apiEnseignant = "http://localhost:8080/api/professeurs";
+  constructor(private http: HttpClient) {}
 
-  constructor(private http:HttpClient){}
-
-
-  getAllEnseignant(): Observable<Enseignant[]>{
-    
+  getAllEnseignant(): Observable<Enseignant[]> {
     return this.http.get<Enseignant[]>(this.apiEnseignant);
+  }
 
-  };
+  createEnseignant(enseignant: CreateEnseignant): Observable<Enseignant> {
+    return this.http.post<Enseignant>(this.apiEnseignant, enseignant);
+  }
 
-  createEnseignant(enseignant: CreateEnseignant): Observable<Enseignant>{
-
-    return this.http.post<Enseignant>(this.apiEnseignant,enseignant);
-  
-  };
-
-
-  
-
-
-
-
-
-
+  deleteEnseignant(id: number): Observable<Enseignant> {
+    return this.http.delete<Enseignant>(this.apiEnseignant + '/' + id);
+  }
 }
-  
-

@@ -1,67 +1,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .navbar {
-    display:flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: 75px;
-    background-color: white;
-    width: 100%;
-    padding: 0 40px;
-    box-sizing: border-box;
-    border-bottom: 1px solid #f0f0f0;
-    font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 75px;
+  background-color: white;
+  width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #f0f0f0;
+  font-family: 'Inter', sans-serif;
 }
 
 .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .logo-icon {
-    height: 55px;
-    width: auto;
+  height: 55px;
+  width: auto;
 }
 
 .logo-text {
-    font-family: 'Inter', sans-serif; 
-    font-weight: 600;                
-    color: #002d5b;                  
-    font-size: 1.3rem;               
-    letter-spacing: -0.8px;         
-    line-height: 1;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: #002d5b;
+  font-size: 1.3rem;
+  letter-spacing: -0.8px;
+  line-height: 1;
 }
 
 ul {
-    list-style: none;
-    display: flex;
-    gap: 15px; 
-    padding: 0;
-    margin: 0 0 0 50px;
-    height: 100%;
-    align-items: center;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0 0 0 50px;
+  height: 100%;
+  align-items: center;
 }
 
-
 li a {
-    font-family: 'Inter', sans-serif;
-    text-decoration: none;
-    color: #64748b;         
-    font-size: 0.85rem;    
-    font-weight: 500;       
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 li a:hover {
-    color: #1e293b;
-    background-color: #f8fafc;
+  color: #1e293b;
+  background-color: #f8fafc;
 }
 
 li a.active {
-    background-color: #f1f5f9; 
-    color: #1e3a8a;            
-    font-weight: 600;         
+  background-color: #f1f5f9;
+  color: #1e3a8a;
+  font-weight: 600;
 }
