@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Enseignant } from '../model/enseignant';
+import { CreateEnseignant } from '../model/create-enseignant';
 
 @Injectable({ providedIn: 'root',})
 export class EnseignantService {
@@ -12,11 +13,19 @@ export class EnseignantService {
 
 
   getAllEnseignant(): Observable<Enseignant[]>{
+    
+    return this.http.get<Enseignant[]>(this.apiEnseignant);
+
+  };
+
+  createEnseignant(enseignant: CreateEnseignant): Observable<Enseignant>{
+
+    return this.http.post<Enseignant>(this.apiEnseignant,enseignant);
+  
+  };
 
 
-          return this.http.get<Enseignant[]>(this.apiEnseignant);
-
-      }
+  
 
 
 
