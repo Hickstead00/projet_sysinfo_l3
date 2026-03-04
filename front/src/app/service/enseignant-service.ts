@@ -21,4 +21,17 @@ export class EnseignantService {
   deleteEnseignant(id: number): Observable<Enseignant> {
     return this.http.delete<Enseignant>(this.apiEnseignant + '/' + id);
   }
+
+  editEnseignant(id: number, enseignant: CreateEnseignant ): Observable<Enseignant> {
+
+    return this.http.put<Enseignant>(this.apiEnseignant + '/' + id, enseignant);
+
+  }
+
+  rechercherEnseignant(nom_prenom: string): Observable<Enseignant[]> {
+
+    return this.http.get<Enseignant[]>(this.apiEnseignant + '/search?s=' + nom_prenom);
+
+  }
+
 }

@@ -26,14 +26,10 @@
     <div *ngFor="let tag of listTags">
 
         {{tag.id}} {{tag.nomTag}} {{tag.couleur}}
+
         <button (click)="deleteTagById(tag.id)">Supprimer</button>
 
-        <input type="text" #nomInput [value]="tag.nomTag"> <!-- champ de text intialisé avec nom du tag courant -->
-
-        <input type="color" #couleurInput [value]="tag.couleur">
-        <!-- champ de text intialisé avec couleur du tag courant -->
-
-        <button (click)="modifierTagById(tag.id, nomInput.value, couleurInput.value)">Modifier</button>
+        <button (click)="tagAModifier(tag)">Modifier</button>
         <!-- quand on clique on appelle modifierTagById avec l'id du tag et les valeurs actuelles des inputs -->
 
 
@@ -73,7 +69,7 @@
 
     <h2>Post pour création de tag</h2>
 
-    <form [formGroup]="tagForm" (ngSubmit)="createTag()">
+    <form [formGroup]="tagForm" (ngSubmit)=" idTagModif ? modifierTagById() : createTag()">
 
         <input type="text" formControlName="nomTag" placeholder="nom du tag">
 
@@ -84,8 +80,15 @@
         <p class="message-erreur"> {{ messageErreurCreation }}</p>
 
         }
+        
+        @if (messageErreurModif) {
 
-        <button type="submit" [disabled]="tagForm.invalid">Créer</button>
+        <p class="message-erreur">{{ messageErreurModif }}</p>
+
+        }
+
+
+        <button type="submit" [disabled]="tagForm.invalid">{{ idTagModif ? 'Modifier' : 'Créer' }}</button>
 
     </form>
 

@@ -19,6 +19,8 @@
 
     <button (click)="deleteEnseignantById(ens.id)">Supprimer</button>
 
+    <button (click)="enseignantAModifier(ens)">Modifier</button>
+
 
 </div>
 
@@ -26,7 +28,7 @@
 
     <h3> Post pour création enseignant</h3>
 
-    <form [formGroup]="enseignantForm" (ngSubmit)="createEnseignant()">
+    <form [formGroup]="enseignantForm" (ngSubmit)="idEnseignantAModif ? modifEnseignantById() : createEnseignant() ">
 
 
         <label>Prénom :</label>
@@ -50,15 +52,37 @@
 
         </select>
 
+
+        <button type="submit" [disabled]="enseignantForm.invalid">
+            {{ idEnseignantAModif ? 'Modifier' : 'Créer'}}
+        </button>
+
         @if (messageErreurCreation) {
 
         <p> {{ messageErreurCreation }} </p>
+        
         }
-
-        <button type="submit" [disabled]="enseignantForm.invalid">
-            Enregistrer l'enseignant
-        </button>
 
     </form>
 
 </div>
+
+
+<div>
+  <h3>Get professeur par nom prénom</h3>
+
+  <label>Chercher par nom prénom :</label>
+  <input type="text" #inputNomPrenom>
+
+  <button (click)="rechercherEnseignantByNom(inputNomPrenom.value)">
+    Rechercher
+  </button>
+</div>
+
+@if (rechercheEffectuee) {
+  @for (enseignant of enseignantSelectionne; track enseignant.id) {
+    <p>{{ enseignant.nom }} {{ enseignant.prenom }} {{ enseignant.id }}</p>
+  } @empty {
+    <p>Aucun professeur correspondant</p>
+  }
+}

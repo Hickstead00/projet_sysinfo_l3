@@ -20,6 +20,7 @@ import { TagService } from '../../service/tag-service';
   styleUrl: './enseignants.scss',
 })
 export class Enseignants implements OnInit {
+
   listEnseignant: Enseignant[] = [];
 
   messageErreurListProf?: string;
@@ -28,12 +29,20 @@ export class Enseignants implements OnInit {
 
   messageErreurDelete?: string;
 
+  messageErreurModif?: string;
+
   enseignantForm!: FormGroup; // !  non nul/undefined
 
   tagDispo: Tag[] = [];
 
+  idEnseignantAModif?:  number;
+
+  enseignantSelectionne: Enseignant[] = [];
+
+  rechercheEffectuee: boolean = false;
+
   constructor(
-    private enenseignantService: EnseignantService,
+    private enseignantService: EnseignantService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private tagService: TagService,
@@ -63,8 +72,24 @@ export class Enseignants implements OnInit {
     // Validators.email verifie que le format est un email valide.
   }
 
+
+  enseignantAModifier(enseignant: Enseignant){
+
+    this.idEnseignantAModif = enseignant.id;
+
+    this.enseignantForm.patchValue({
+      nom: enseignant.nom,
+      prenom: enseignant.prenom,
+      email: enseignant.email,
+      tagIds: enseignant.tags.map(t => t.id),
+
+    });
+  }
+
+
+
   allEnseignant(): void {
-    this.enenseignantService.getAllEnseignant().subscribe({
+    this.enseignantService.getAllEnseignant().subscribe({
       next: (data) => {
         this.listEnseignant = data;
         this.cdr.detectChanges();
@@ -79,7 +104,7 @@ export class Enseignants implements OnInit {
 
     const enseignant: CreateEnseignant = this.enseignantForm.value;
 
-    this.enenseignantService.createEnseignant(enseignant).subscribe({
+    this.enseignantService.createEnseignant(enseignant).subscribe({
       next: () => {
         this.allEnseignant();
         this.enseignantForm.reset();
@@ -92,12 +117,13 @@ export class Enseignants implements OnInit {
         } else if (e.status === 409) {
           this.messageErreurCreation = 'Email déjà utilisé';
         }
+        this.cdr.detectChanges();
       },
     });
   }
 
   deleteEnseignantById(id: number): void {
-    this.enenseignantService.deleteEnseignant(id).subscribe({
+    this.enseignantService.deleteEnseignant(id).subscribe({
       next: () => {
         this.allEnseignant();
         this.cdr.detectChanges();
@@ -111,4 +137,59 @@ export class Enseignants implements OnInit {
       },
     });
   }
+
+
+  modifEnseignantById(): void {
+    const enseignantAModif: CreateEnseignant = this.enseignantForm.value;
+
+      this.enseignantService.editEnseignant(this.idEnseignantAModif!, enseignantAModif).subscribe({
+          next: () => {
+            this.idEnseignantAModif = undefined;
+            this.enseignantForm.reset();
+            this.allEnseignant();
+            this.cdr.detectChanges();
+          },
+
+          error: (e) => {
+            if (e.status === 404) {
+              this.messageErreurModif = 'Professeur introuvable.';
+            } else if (e.status === 409) {
+              this.messageErreurModif = 'Email déjà utilisé';
+            }
+            this.cdr.detectChanges();
+          },
+        });
+      };
+
+  
+
+  rechercherEnseignantByNom(nom_prenom: string): void{
+
+
+    this.enseignantSelectionne = [];
+
+    this.rechercheEffectuee = false;
+
+    this.enseignantService.rechercherEnseignant(nom_prenom).subscribe({
+
+      next: (enseignant) => {
+
+        this.enseignantSelectionne = enseignant;
+        this.rechercheEffectuee = true;
+        this.cdr.detectChanges();
+
+
+      },
+
+      error: (e) => {
+
+      console.error('Erreur :', e);
+      
+      }
+
+
+      });
+
+  };
+
 }

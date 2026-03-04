@@ -34,6 +34,8 @@ export class GestionTags implements OnInit {
 
   tagForm!: FormGroup;
 
+  idTagModif?: number;
+
   constructor(
     private tagService: TagService,
     private cdr: ChangeDetectorRef,
@@ -54,6 +56,17 @@ export class GestionTags implements OnInit {
       }),
     });
   }
+
+  tagAModifier(tag: Tag): void {
+
+    this.idTagModif = tag.id; 
+    this.tagForm.patchValue({ // pour pré remplir les données du form
+      nomTag: tag.nomTag,
+      couleur: tag.couleur,
+    });
+  }
+
+
 
   allTags(): void {
     this.tagService.getAllTags().subscribe({
@@ -105,12 +118,14 @@ export class GestionTags implements OnInit {
     });
   }
 
-  modifierTagById(id: number, nomTag: string, couleur: string): void {
-    const tagamodif: CreateTag = { nomTag, couleur };
+  modifierTagById(): void {
+    const tagamodif: CreateTag = this.tagForm.value;
 
-    this.tagService.modifierTag(id, tagamodif).subscribe({
+    this.tagService.modifierTag(this.idTagModif!, tagamodif).subscribe({
       next: () => {
         this.messageSucces = 'Tag modifié avec succès !';
+        this.idTagModif = undefined;
+        this.tagForm.reset();
         this.allTags();
         this.cdr.detectChanges();
       },
@@ -121,6 +136,7 @@ export class GestionTags implements OnInit {
         } else if (e.status === 409) {
           this.messageErreurModif = 'Un tag avec ce nom existe déjà.';
         }
+        this.cdr.detectChanges();
       },
     });
   }
