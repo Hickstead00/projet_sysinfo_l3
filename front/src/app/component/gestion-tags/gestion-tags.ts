@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TagService } from '../../service/tag-service';
 import { Tag } from '../../model/tag';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor } from '@angular/common';
 import { CreateTag } from '../../model/create-tag';
 import {
   FormBuilder,
@@ -10,10 +10,22 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-gestion-tags',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, 
+    ReactiveFormsModule, 
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './gestion-tags.html',
   styleUrl: './gestion-tags.scss',
 })
@@ -35,6 +47,10 @@ export class GestionTags implements OnInit {
   tagForm!: FormGroup;
 
   idTagModif?: number;
+
+  couleurs = ['#7c5c3e', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#ea580c', '#0891b2', '#4f46e5',];
+
+  couleurSelectionnee?: string;
 
   constructor(
     private tagService: TagService,
@@ -167,4 +183,11 @@ export class GestionTags implements OnInit {
       },
     });
   }
+
+
+  choisirCouleur(couleur: string){
+    this.couleurSelectionnee = couleur;
+    this.tagForm.get('couleur')?.setValue(couleur);
+  }
+
 }

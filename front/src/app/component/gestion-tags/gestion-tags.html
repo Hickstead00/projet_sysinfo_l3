@@ -1,96 +1,99 @@
-<h1>Gestion des Tags</h1>
+<div class="page">
 
-@if (messageSucces) {
+  <mat-card class="form">
+    <mat-card-header>
+      <mat-card-title class=>Nouveau tag</mat-card-title>
+      <mat-card-subtitle>Créez un tag de compétence</mat-card-subtitle>
+    </mat-card-header>
 
-<p class="message-succes"> {{ messageSucces }}</p>
-
-}
-
-
-<div class="tout-tag">
-
-    <h2>Get tout les tags</h2>
-
-    @if (messageErreurDelete) {
-
-    <p class="message-erreur"> {{ messageErreurDelete }}</p>
-
-    }
-
-    @if (messageErreurModif) {
-
-    <p class="message-erreur"> {{ messageErreurModif }}</p>
-
-    }
-
-    <div *ngFor="let tag of listTags">
-
-        {{tag.id}} {{tag.nomTag}} {{tag.couleur}}
-
-        <button (click)="deleteTagById(tag.id)">Supprimer</button>
-
-        <button (click)="tagAModifier(tag)">Modifier</button>
-        <!-- quand on clique on appelle modifierTagById avec l'id du tag et les valeurs actuelles des inputs -->
-
-
-
-    </div>
-
-</div>
-
-<div class="chercher-tag">
-
-    <h2>Get tag par id</h2>
-
-    <label>Chercher par ID :</label>
-
-    <input type="number" #idInput id="idTag"> <!-- #idInput permet de récupérer sa valeur au moment du clique -->
-
-    <button (click)="tagById(+idInput.value)">Rechercher</button>
-    <!-- au clique on récupère la valeur tapée / convertit en number avec + puis on appel la fonction tagbyid()-->
-
-    @if (messageErreurRecherche) {
-
-    <p class="message-erreur"> {{ messageErreurRecherche }}</p>
-
-    }
-
-</div>
-
-@if (tagSelectionne){
-
-<p> {{ tagSelectionne.nomTag }} {{ tagSelectionne.couleur }} {{ tagSelectionne.id }} </p>
-
-}
-
-
-
-<div class="creer-tag">
-
-    <h2>Post pour création de tag</h2>
-
-    <form [formGroup]="tagForm" (ngSubmit)=" idTagModif ? modifierTagById() : createTag()">
-
-        <input type="text" formControlName="nomTag" placeholder="nom du tag">
-
-        <input type="color" formControlName="couleur">
-
-        @if (messageErreurCreation) {
-
-        <p class="message-erreur"> {{ messageErreurCreation }}</p>
-
-        }
+    <mat-card-content>
+      <form [formGroup]="tagForm" (ngSubmit)="createTag()">
         
-        @if (messageErreurModif) {
+        <mat-label>Nom du tag<span style="color: #e05c5c">*</span></mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <input matInput formControlName="nomTag" placeholder="Ex: Programmation, Réseaux, IA…" />
+        </mat-form-field>
 
-        <p class="message-erreur">{{ messageErreurModif }}</p>
+        <label class="couleur-label">Couleur</label>
+        <div class="couleur-choix">
+          <div *ngFor="let c of couleurs" class="couleur"
+            [class.active]="couleurSelectionnee === c"
+            [style.background]="c"
+            (click)="choisirCouleur(c)">
+          </div>
+        </div>
 
+        <div class="btn-creer-tag">
+          <button mat-raised-button color="primary" type="submit" [disabled]="tagForm.invalid">
+            + Créer le tag
+          </button>
+          <button mat-stroked-button class="btn-annuler" type="button" (click)="tagForm.reset()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+
+
+
+  <mat-card class="tout-tag">
+    <mat-card-header>
+        <mat-card-title>Tags existants</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+        <mat-form-field appearance="outline" class="taille">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="number" #idInput placeholder="Rechercher par ID..."/>
+            <button mat-raised-button color="primary" matSuffix (click)="tagById(+idInput.value)">
+                Rechercher
+            </button>
+        </mat-form-field>
+
+        @if (messageErreurRecherche) {
+
+            <p class="message-erreur">{{ messageErreurRecherche }}</p>
         }
 
 
-        <button type="submit" [disabled]="tagForm.invalid">{{ idTagModif ? 'Modifier' : 'Créer' }}</button>
+        <div class="tag-grille">
 
-    </form>
+            @if (tagSelectionne) {
+                <mat-card class="tag-card">
+                    <mat-card-content>
+                        <div class="tag-header">
+                            <div class="tag-couleur" [style.background]="tagSelectionne.couleur"></div>
+                            {{ tagSelectionne.nomTag }}
+                        </div>
+                        <button mat-stroked-button class="btn-supprimer" (click)="deleteTagById(tagSelectionne.id)">
+                            Supprimer
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+            } @else {
+                <mat-card class="tag-card" *ngFor="let tag of listTags">
+                    <mat-card-content>
+                        <div class="tag-header">
+                            <div class="tag-couleur" [style.background]="tag.couleur"></div>
+                            {{ tag.nomTag }}
+                        </div>
+                        <button mat-stroked-button class="btn-supprimer" (click)="deleteTagById(tag.id)">
+                            Supprimer
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+            }
 
+
+        </div>
+
+    </mat-card-content>
+  </mat-card>
+  
 
 </div>
+
