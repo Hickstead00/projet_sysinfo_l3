@@ -64,5 +64,28 @@ public class TagController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/nom/{nomTag}")
+    @Operation(summary = "Récupérer un tag par son nom")
+    @ApiResponse(responseCode = "200", description = "Tag trouvé")
+    @ApiResponse(responseCode = "404", description = "Tag introuvable")
+    public ResponseEntity<TagResponse> getByName(@PathVariable String nomTag){
+        return ResponseEntity.ok(tagService.getByName(nomTag));
+    }
+
+    @GetMapping("/{id}/professeur/count")
+    @Operation(summary = "Nombre de professeurs associés à un tag")
+    @ApiResponse(responseCode = "200", description = "Nombre de professeurs récupéré")
+    @ApiResponse(responseCode = "404", description = "Tag introuvable")
+    public ResponseEntity<Long> getProfessorCountByTag(@PathVariable Long id){
+        return ResponseEntity.ok(tagService.getProfessorCountByTag(id));
+    }
+
+    @GetMapping("/{id}/ue/count")
+    @Operation(summary = "Nombre de UE associés à un tag")
+    @ApiResponse(responseCode = "200", description = "Nombre de UE récupéré")
+    @ApiResponse(responseCode = "404", description = "Tag introuvable")
+    public ResponseEntity<Long> getUeCountByTag(@PathVariable Long id){
+        return ResponseEntity.ok(tagService.getUeCountByTag(id));
+    }
 
 }

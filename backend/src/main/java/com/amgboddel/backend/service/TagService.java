@@ -75,4 +75,26 @@ public class TagService {
         return new TagResponse(tag.getId(), tag.getNomTag(), tag.getCouleur());
     }
 
+    public TagResponse getByName(String nomTag){
+        Tag tag = tagRepository.findByNomTag(nomTag)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag introuvable avec le nom : " + nomTag));
+        return toResponse(tag);
+    }
+
+    public Long getProfessorCountByTag(Long id){
+        if (!tagRepository.existsById(id)){
+            throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
+        }
+
+        return tagRepository.countProfesseursByTags_Id(id);
+    }
+
+    public Long getUeCountByTag(Long id){
+        if (!tagRepository.existsById(id)){
+            throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
+        }
+
+        return tagRepository.countUesByTags_Id(id);
+    }
+
 }
