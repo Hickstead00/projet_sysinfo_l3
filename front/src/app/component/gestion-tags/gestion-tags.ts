@@ -34,7 +34,7 @@ import { consumerPollProducersForChange } from '@angular/core/primitives/signals
 export class GestionTags implements OnInit {
   listTags: Tag[] = [];
 
-  tagSelectionne!: Tag;
+  tagSelectionne: Tag[] = [];
 
   messageErreurCreation?: string;
 
@@ -48,7 +48,7 @@ export class GestionTags implements OnInit {
 
   idTagModif?: number;
 
-  rechercheEffectue?: boolean;
+  rechercheEffectue: boolean = false;
 
   nbParTag: { [id: number]: { ens: number; ue: number } } = {};
 
@@ -186,7 +186,10 @@ export class GestionTags implements OnInit {
   }
 
   tagByNom(nom: string): void {
+    this.tagSelectionne = [];
+
     this.rechercheEffectue = false;
+
     this.tagService.getTagByNom(nom).subscribe({
       next: (tag) => {
         this.tagSelectionne = tag;

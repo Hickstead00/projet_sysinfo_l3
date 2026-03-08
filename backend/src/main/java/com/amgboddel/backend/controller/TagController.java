@@ -36,6 +36,12 @@ public class TagController {
         return ResponseEntity.ok(tagService.getById(id));
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des tags par nom")
+    public ResponseEntity<List<TagResponse>> search(@RequestParam String s){
+        return ResponseEntity.ok(tagService.search(s));
+    }
+
     @PostMapping
     @Operation(summary = "Créer un nouveau tag", description = "Crée un tag avec un nom unique et une couleur héxad. ")
     @ApiResponse(responseCode = "201", description = "Tag crée avec succès")
@@ -62,14 +68,6 @@ public class TagController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         tagService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/nom/{nomTag}")
-    @Operation(summary = "Récupérer un tag par son nom")
-    @ApiResponse(responseCode = "200", description = "Tag trouvé")
-    @ApiResponse(responseCode = "404", description = "Tag introuvable")
-    public ResponseEntity<TagResponse> getByName(@PathVariable String nomTag){
-        return ResponseEntity.ok(tagService.getByName(nomTag));
     }
 
     @GetMapping("/{id}/professeur/count")

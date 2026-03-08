@@ -59,7 +59,7 @@
       </mat-form-field>
 
       <div class="tag-grille">
-        <mat-card class="tag-card" *ngFor="let tag of rechercheEffectue ? [tagSelectionne] : listTags">
+        <mat-card class="tag-card" *ngFor="let tag of rechercheEffectue ? tagSelectionne : listTags">
           <mat-card-content>
             <div class="tag-header">
               <div class="tag-couleur" [style.background]="tag.couleur"></div>

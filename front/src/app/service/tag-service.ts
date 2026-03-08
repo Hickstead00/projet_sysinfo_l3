@@ -30,8 +30,8 @@ export class TagService {
     return this.http.put<Tag>(this.apiTag + '/' + id, tag);
   }
 
-  getTagByNom(nom: string): Observable<Tag> {
-    return this.http.get<Tag>(this.apiTag + '/nom/' + nom);
+  getTagByNom(nom: string): Observable<Tag[]> {
+    return this.http.get<Tag[]>(this.apiTag + '/search?s=' + nom);
   }
 
   getNbEnsTag(id: number): Observable<number> {

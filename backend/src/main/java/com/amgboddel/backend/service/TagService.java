@@ -31,6 +31,14 @@ public class TagService {
         return toResponse(tag);
     }
 
+    public List<TagResponse> search(String s){
+        return tagRepository
+                .findByNomTagContainingIgnoreCase(s)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     @Transactional
     public TagResponse create(TagRequest request){
         if (tagRepository.existsByNomTag(request.getNomTag())){
