@@ -61,6 +61,8 @@ projet_sysinfo_l3/
 | v0.1 | Structure projet + entités JPA + config CORS                                  |
 | v0.2 | CRUD Tags : repository, service, controller, DTOs, exceptions, Swagger        |
 | v0.3 | CRUD Professeurs : repository, service, controller, DTOs, exceptions, Swagger |
+| v0.4 | CRUD UE : repository, service, controller, DTOs, validation                   |
+| v0.5 | CRUD Maquette & Semestre : routes hiérarchiques, calcul ECTS, validations    |
 
 
 ## Architecture backend

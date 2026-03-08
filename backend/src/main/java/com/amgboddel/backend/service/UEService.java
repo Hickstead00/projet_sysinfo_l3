@@ -224,4 +224,40 @@ public class UEService {
                 .volumeHoraireTotal(volumeTotal)
                 .build();
     }
+
+    /**
+     * Version allégée de toResponse pour éviter les boucles infinies
+     * lors de l'inclusion dans les réponses de Semestre/Maquette.
+     * Retourne uniquement les infos de base de l'UE sans charger
+     * les relations complexes (enseignants, référents, prérequis).
+     */
+    public UEResponse toResponseLight(UE ue) {
+        List<TagResponse> tagResponses = ue.getTags() == null
+                ? Collections.emptyList()
+                : ue.getTags().stream()
+                .map(t -> new TagResponse(t.getId(), t.getNomTag(), t.getCouleur()))
+                .toList();
+
+        int volumeTotal = ue.getCm() + ue.getTd() + ue.getTp();
+
+        return UEResponse.builder()
+                .id(ue.getId())
+                .nomUe(ue.getNomUe())
+                .ects(ue.getEcts())
+                .cm(ue.getCm())
+                .td(ue.getTd())
+                .tp(ue.getTp())
+                .description(ue.getDescription())
+                .ueObligatoire(ue.getUeObligatoire())
+                .tags(tagResponses)
+                .enseignants(Collections.emptyList()) // Non chargé dans version light
+                .referents(Collections.emptyList())   // Non chargé dans version light
+                .prerequis(Collections.emptyList())   // Non chargé dans version light
+                .nbEnseignants(0)
+                .nbReferents(0)
+                .nbPrerequis(0)
+                .nbSemestres(0)
+                .volumeHoraireTotal(volumeTotal)
+                .build();
+    }
 }

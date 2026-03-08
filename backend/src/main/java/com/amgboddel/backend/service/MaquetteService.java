@@ -1,0 +1,158 @@
+package com.amgboddel.backend.service;
+
+import com.amgboddel.backend.dto.MaquetteRequest;
+import com.amgboddel.backend.dto.MaquetteResponse;
+import com.amgboddel.backend.dto.SemestreRequest;
+import com.amgboddel.backend.dto.SemestreResponse;
+import com.amgboddel.backend.entity.Maquette;
+import com.amgboddel.backend.entity.Semestre;
+import com.amgboddel.backend.exception.DuplicateResourceException;
+import com.amgboddel.backend.exception.ResourceNotFoundException;
+import com.amgboddel.backend.repository.MaquetteRepository;
+import com.amgboddel.backend.repository.SemestreRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class MaquetteService {
+
+    private final MaquetteRepository maquetteRepository;
+    private final SemestreRepository semestreRepository;
+    private final SemestreService semestreService;
+
+    @Transactional
+    public List<MaquetteResponse> getAll() {
+        return maquetteRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public MaquetteResponse getById(Long id) {
+        Maquette maquette = maquetteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maquette non trouvée avec l'ID : " + id));
+        return toResponse(maquette);
+    }
+
+    @Transactional
+    public List<MaquetteResponse> search(String s) {
+        return maquetteRepository.findByNomMaquetteContainingIgnoreCase(s)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public MaquetteResponse create(MaquetteRequest request) {
+        if (maquetteRepository.existsByNomMaquette(request.getNomMaquette())) {
+            throw new DuplicateResourceException("Une maquette avec le nom '" + request.getNomMaquette() + "' existe déjà");
+        }
+
+        Maquette maquette = new Maquette();
+        maquette.setNomMaquette(request.getNomMaquette());
+
+        maquette = maquetteRepository.save(maquette);
+
+        if (request.getSemestres() != null && !request.getSemestres().isEmpty()) {
+            for (SemestreRequest semestreRequest : request.getSemestres()) {
+                Semestre semestre = new Semestre();
+                semestre.setNumeroSemestre(semestreRequest.getNumeroSemestre());
+                semestre.setMaquette(maquette);
+
+                // Résoudre les UE si présentes
+                if (semestreRequest.getUeIds() != null && !semestreRequest.getUeIds().isEmpty()) {
+                    // Cette partie sera gérée dans le SemestreService lors de la création
+                }
+
+                semestreRepository.save(semestre);
+            }
+        }
+
+        // Recharger la maquette avec ses semestres
+        maquette = maquetteRepository.findById(maquette.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Erreur lors de la création de la maquette"));
+
+        return toResponse(maquette);
+    }
+
+    @Transactional
+    public MaquetteResponse update(Long id, MaquetteRequest request) {
+        Maquette maquette = maquetteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maquette non trouvée avec l'ID : " + id));
+
+        if (!maquette.getNomMaquette().equals(request.getNomMaquette())) {
+            if (maquetteRepository.existsByNomMaquette(request.getNomMaquette())) {
+                throw new DuplicateResourceException(
+                        "Une maquette avec le nom '" + request.getNomMaquette() + "' existe déjà"
+                );
+            }
+        }
+
+        maquette.setNomMaquette(request.getNomMaquette());
+        return toResponse(maquetteRepository.save(maquette));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!maquetteRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Maquette non trouvée avec l'ID : " + id);
+        }
+        maquetteRepository.deleteById(id);
+    }
+
+
+    public MaquetteResponse toResponse(Maquette maquette) {
+        List<SemestreResponse> semestresResponse = maquette.getSemestres() == null
+                ? Collections.emptyList()
+                : maquette.getSemestres().stream()
+                .map(semestreService::toResponse)
+                .toList();
+
+        int nbSemestres = semestresResponse.size();
+
+        int ectsTotal = semestresResponse.stream()
+                .mapToInt(SemestreResponse::getEctsTotal)
+                .sum();
+
+        int volumeHoraireTotal = semestresResponse.stream()
+                .mapToInt(SemestreResponse::getVolumeHoraireTotal)
+                .sum();
+
+        int nbUeTotal = semestresResponse.stream()
+                .mapToInt(SemestreResponse::getNbUe)
+                .sum();
+
+        // Validation des ECTS (60 ECTS par année, donc 60 * nombre d'années)
+        // On considère que 2 semestres = 1 année
+        int nbAnnees = (nbSemestres + 1) / 2;
+        int ectsAttendu = nbAnnees * 60;
+
+        boolean respecteEcts = (ectsTotal == ectsAttendu);
+        int ectsManquants = Math.max(0, ectsAttendu - ectsTotal);
+        int ectsSurplus = Math.max(0, ectsTotal - ectsAttendu);
+
+        // Calcul du coût estimé (optionnel, à implémenter plus tard avec les Paramètres)
+        Double coutEstime = 0.0; // TODO: Calculer avec les tarifs CM/TD/TP
+
+        return MaquetteResponse.builder()
+                .id(maquette.getId())
+                .nomMaquette(maquette.getNomMaquette())
+                .semestres(semestresResponse)
+                .nbSemestres(nbSemestres)
+                .ectsTotal(ectsTotal)
+                .volumeHoraireTotal(volumeHoraireTotal)
+                .nbUeTotal(nbUeTotal)
+                .respecteEcts(respecteEcts)
+                .ectsManquants(ectsManquants)
+                .ectsSurplus(ectsSurplus)
+                .coutEstime(coutEstime)
+                .build();
+    }
+}
