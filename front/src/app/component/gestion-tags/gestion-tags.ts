@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-gestion-tags',
@@ -33,9 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class GestionTags implements OnInit {
   listTags: Tag[] = [];
 
-  tagSelectionne?: Tag;
-
-  messageErreurRecherche?: string;
+  tagSelectionne!: Tag;
 
   messageErreurCreation?: string;
 
@@ -48,6 +47,10 @@ export class GestionTags implements OnInit {
   tagForm!: FormGroup;
 
   idTagModif?: number;
+
+  rechercheEffectue?: boolean;
+
+  nbParTag: { [id: number]: { ens: number; ue: number } } = {};
 
   couleurs = [
     '#7c5c3e',
@@ -104,28 +107,7 @@ export class GestionTags implements OnInit {
         // réponse du back avec succes (data) corps de ce que le back renvoie
 
         this.listTags = data;
-        this.cdr.detectChanges();
-      },
-    });
-  }
-
-  tagById(id: number): void {
-    this.messageErreurRecherche = undefined;
-    this.tagSelectionne = undefined;
-
-    this.tagService.getTagbyId(id).subscribe({
-      next: (tag) => {
-        this.tagSelectionne = tag;
-        this.cdr.detectChanges();
-      },
-
-      error: (e) => {
-        if (e.status === 404) {
-          this.messageErreurRecherche = `Le tag avec l'ID ${id} n'existe pas.`;
-        } else {
-          this.messageErreurRecherche = 'Une autre erreur est survenue.';
-        }
-
+        data.forEach((tag) => this.chargerNb(tag.id));
         this.cdr.detectChanges();
       },
     });
@@ -201,5 +183,40 @@ export class GestionTags implements OnInit {
   choisirCouleur(couleur: string) {
     this.couleurSelectionnee = couleur;
     this.tagForm.get('couleur')?.setValue(couleur);
+  }
+
+  tagByNom(nom: string): void {
+    this.rechercheEffectue = false;
+    this.tagService.getTagByNom(nom).subscribe({
+      next: (tag) => {
+        this.tagSelectionne = tag;
+        this.rechercheEffectue = true;
+        this.cdr.detectChanges();
+      },
+
+      error: (e) => {
+        if (e.status === 404) {
+          console.log('Aucun tag avec ce nom');
+        }
+      },
+    });
+  }
+
+  chargerNb(id: number): void {
+    this.nbParTag[id] = { ens: 0, ue: 0 };
+
+    this.tagService.getNbEnsTag(id).subscribe({
+      next: (nb) => {
+        this.nbParTag[id].ens = nb;
+        this.cdr.detectChanges();
+      },
+    });
+
+    this.tagService.getNbUeTag(id).subscribe({
+      next: (nb) => {
+        this.nbParTag[id].ue = nb;
+        this.cdr.detectChanges();
+      },
+    });
   }
 }

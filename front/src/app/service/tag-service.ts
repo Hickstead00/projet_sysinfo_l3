@@ -29,4 +29,16 @@ export class TagService {
   modifierTag(id: number, tag: CreateTag): Observable<Tag> {
     return this.http.put<Tag>(this.apiTag + '/' + id, tag);
   }
+
+  getTagByNom(nom: string): Observable<Tag> {
+    return this.http.get<Tag>(this.apiTag + '/nom/' + nom);
+  }
+
+  getNbEnsTag(id: number): Observable<number> {
+    return this.http.get<number>(this.apiTag + '/' + id + '/professeur/count');
+  }
+
+  getNbUeTag(id: number): Observable<number> {
+    return this.http.get<number>(this.apiTag + '/' + id + '/ue/count');
+  }
 }
