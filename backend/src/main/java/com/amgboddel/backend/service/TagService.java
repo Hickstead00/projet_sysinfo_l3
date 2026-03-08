@@ -86,7 +86,7 @@ public class TagService {
             throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
         }
 
-        return tagRepository.countProfesseursByTags_Id(id);
+        return tagRepository.countProfesseurByTagId(id);
     }
 
     public Long getUeCountByTag(Long id){
@@ -94,7 +94,7 @@ public class TagService {
             throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
         }
 
-        return tagRepository.countUesByTags_Id(id);
+        return tagRepository.countUeByTagId(id);
     }
 
 }
