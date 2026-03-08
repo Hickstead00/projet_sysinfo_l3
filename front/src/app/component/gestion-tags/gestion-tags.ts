@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TagService } from '../../service/tag-service';
 import { Tag } from '../../model/tag';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CreateTag } from '../../model/create-tag';
 import {
   FormBuilder,
@@ -11,15 +11,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-gestion-tags',
-  imports: [CommonModule, 
-    ReactiveFormsModule, 
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -48,7 +49,22 @@ export class GestionTags implements OnInit {
 
   idTagModif?: number;
 
-  couleurs = ['#7c5c3e', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#ea580c', '#0891b2', '#4f46e5',];
+  couleurs = [
+    '#7c5c3e',
+    '#2563eb',
+    '#16a34a',
+    '#7c3aed',
+    '#dc2626',
+    '#ea580c',
+    '#0891b2',
+    '#4f46e5',
+    '#0f172a',
+    '#059669',
+    '#d97706',
+    '#db2777',
+    '#2a1c42',
+    '#0284c7',
+  ];
 
   couleurSelectionnee?: string;
 
@@ -74,15 +90,13 @@ export class GestionTags implements OnInit {
   }
 
   tagAModifier(tag: Tag): void {
-
-    this.idTagModif = tag.id; 
-    this.tagForm.patchValue({ // pour pré remplir les données du form
+    this.idTagModif = tag.id;
+    this.tagForm.patchValue({
+      // pour pré remplir les données du form
       nomTag: tag.nomTag,
       couleur: tag.couleur,
     });
   }
-
-
 
   allTags(): void {
     this.tagService.getAllTags().subscribe({
@@ -184,10 +198,8 @@ export class GestionTags implements OnInit {
     });
   }
 
-
-  choisirCouleur(couleur: string){
+  choisirCouleur(couleur: string) {
     this.couleurSelectionnee = couleur;
     this.tagForm.get('couleur')?.setValue(couleur);
   }
-
 }

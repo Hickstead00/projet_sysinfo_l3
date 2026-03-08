@@ -12,15 +12,31 @@ import {
 import { CreateEnseignant } from '../../model/create-enseignant';
 import { Tag } from '../../model/tag';
 import { TagService } from '../../service/tag-service';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-enseignants',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
   templateUrl: './enseignants.html',
   styleUrl: './enseignants.scss',
 })
 export class Enseignants implements OnInit {
-
   listEnseignant: Enseignant[] = [];
 
   messageErreurListProf?: string;
@@ -34,8 +50,6 @@ export class Enseignants implements OnInit {
   enseignantForm!: FormGroup; // !  non nul/undefined
 
   tagDispo: Tag[] = [];
-
-  idEnseignantAModif?:  number;
 
   enseignantSelectionne: Enseignant[] = [];
 
@@ -72,22 +86,6 @@ export class Enseignants implements OnInit {
     // Validators.email verifie que le format est un email valide.
   }
 
-
-  enseignantAModifier(enseignant: Enseignant){
-
-    this.idEnseignantAModif = enseignant.id;
-
-    this.enseignantForm.patchValue({
-      nom: enseignant.nom,
-      prenom: enseignant.prenom,
-      email: enseignant.email,
-      tagIds: enseignant.tags.map(t => t.id),
-
-    });
-  }
-
-
-
   allEnseignant(): void {
     this.enseignantService.getAllEnseignant().subscribe({
       next: (data) => {
@@ -113,7 +111,7 @@ export class Enseignants implements OnInit {
 
       error: (e) => {
         if (e.status === 400) {
-          this.messageErreurCreation = ' Données invalides';
+          this.messageErreurCreation = 'Données invalides';
         } else if (e.status === 409) {
           this.messageErreurCreation = 'Email déjà utilisé';
         }
@@ -138,58 +136,35 @@ export class Enseignants implements OnInit {
     });
   }
 
-
-  modifEnseignantById(): void {
-    const enseignantAModif: CreateEnseignant = this.enseignantForm.value;
-
-      this.enseignantService.editEnseignant(this.idEnseignantAModif!, enseignantAModif).subscribe({
-          next: () => {
-            this.idEnseignantAModif = undefined;
-            this.enseignantForm.reset();
-            this.allEnseignant();
-            this.cdr.detectChanges();
-          },
-
-          error: (e) => {
-            if (e.status === 404) {
-              this.messageErreurModif = 'Professeur introuvable.';
-            } else if (e.status === 409) {
-              this.messageErreurModif = 'Email déjà utilisé';
-            }
-            this.cdr.detectChanges();
-          },
-        });
-      };
-
-  
-
-  rechercherEnseignantByNom(nom_prenom: string): void{
-
-
+  rechercherEnseignantByNom(nom_prenom: string): void {
     this.enseignantSelectionne = [];
 
     this.rechercheEffectuee = false;
 
     this.enseignantService.rechercherEnseignant(nom_prenom).subscribe({
-
       next: (enseignant) => {
-
         this.enseignantSelectionne = enseignant;
         this.rechercheEffectuee = true;
         this.cdr.detectChanges();
-
-
       },
 
       error: (e) => {
+        console.error('Erreur :', e);
+      },
+    });
+  }
 
-      console.error('Erreur :', e);
-      
-      }
-
-
-      });
-
-  };
-
+  getAvatarColor(prenom: string, nom: string): string {
+    const couleurs = [
+      '#1e3a6e',
+      '#16a34a',
+      '#7c3aed',
+      '#dc2626',
+      '#ea580c',
+      '#0891b2',
+      '#db2777',
+      '#059669',
+    ];
+    return couleurs[(prenom.charCodeAt(0) + nom.charCodeAt(0)) % couleurs.length];
+  }
 }
