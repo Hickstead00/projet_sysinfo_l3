@@ -10,4 +10,7 @@ public interface UERepository extends JpaRepository<UE, Long> {
 
     List<UE> findByNomUeContainingIgnoreCase(String nomUe);
     boolean existsByNomUe(String nomUe);
+    List<UE> findByTagsId(Long tagId);
+    List<UE> findByEnseignantsId(Long professeurId);
+    List<UE> findByReferentsId(Long professeurId);
 }

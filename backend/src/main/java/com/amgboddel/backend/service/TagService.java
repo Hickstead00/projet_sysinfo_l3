@@ -5,7 +5,9 @@ import com.amgboddel.backend.dto.TagResponse;
 import com.amgboddel.backend.entity.Tag;
 import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
+import com.amgboddel.backend.repository.ProfesseurRepository;
 import com.amgboddel.backend.repository.TagRepository;
+import com.amgboddel.backend.repository.UERepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import java.util.List;
 public class TagService {
 
     private final TagRepository tagRepository;
+    private final ProfesseurRepository professeurRepository;
+    private final UERepository ueRepository;
 
     public List<TagResponse> getAll(){
         return tagRepository.findAll()
@@ -72,10 +76,16 @@ public class TagService {
 
     @Transactional
     public void delete(Long id){
-        if (!tagRepository.existsById(id)){
-            throw new ResourceNotFoundException("Tag introuvable avec l'id : " + id);
-        }
-        tagRepository.deleteById(id);
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag introuvable avec l'id : " + id));
+
+        professeurRepository.findByTagsId(id)
+                .forEach(p -> p.getTags().remove(tag));
+
+        ueRepository.findByTagsId(id)
+                .forEach(ue -> ue.getTags().remove(tag));
+
+        tagRepository.delete(tag);
     }
 
 

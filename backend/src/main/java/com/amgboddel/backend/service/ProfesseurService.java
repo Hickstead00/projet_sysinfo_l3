@@ -9,6 +9,7 @@ import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.ProfesseurRepository;
 import com.amgboddel.backend.repository.TagRepository;
+import com.amgboddel.backend.repository.UERepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class ProfesseurService {
 
     private final ProfesseurRepository professeurRepository;
     private final TagRepository tagRepository;
+    private final UERepository ueRepository;
 
 
     @Transactional
@@ -82,10 +84,16 @@ public class ProfesseurService {
 
     @Transactional
     public void delete(Long id){
-        if (!professeurRepository.existsById(id)){
-            throw new ResourceNotFoundException("Professeur non trouvable avec l'id : " + id);
-        }
-        professeurRepository.deleteById(id);
+        Professeur professeur = professeurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Professeur non trouvable avec l'id : " + id));
+
+        ueRepository.findByEnseignantsId(id)
+                .forEach(ue -> ue.getEnseignants().remove(professeur));
+
+        ueRepository.findByReferentsId(id)
+                .forEach(ue -> ue.getReferents().remove(professeur));
+
+        professeurRepository.delete(professeur);
     }
 
 
