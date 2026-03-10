@@ -2,63 +2,99 @@
 <p class="sous-titre">Gérez l'équipe pédagogique et les affectations aux UE</p>
 
 @if (messageErreurListProf) {
-<p class="message-erreur">{{ messageErreurListProf }}</p>
+  <p class="message-erreur">{{ messageErreurListProf }}</p>
 }
 
+<div class="stats-cards">
+  <mat-card class="stat-card">
+    <mat-card-content>
+      <div class="stat-icon"><mat-icon>group</mat-icon></div>
+      <div class="stat-number">{{ listEnseignant.length }}</div>
+      <div class="stat-desc">Enseignants</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card">
+    <mat-card-content>
+      <div class="stat-icon"><mat-icon>menu_book</mat-icon></div>
+      <div class="stat-number">totalUe</div>
+      <div class="stat-desc">UE affectées</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card">
+    <mat-card-content>
+      <div class="stat-icon"><mat-icon>schedule</mat-icon></div>
+      <div class="stat-number">totalHeures</div>
+      <div class="stat-desc">Heures totales</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
 <div class="page">
-
-
   <mat-card class="tout-ens">
     <mat-card-header class="header-avec-recherche">
       <mat-card-title>Liste des enseignants</mat-card-title>
       <mat-form-field appearance="outline" class="search-inline">
         <mat-icon matPrefix>search</mat-icon>
-        <input matInput placeholder="Rechercher un enseignant..."
-          (input)="rechercherEnseignantByNom($event.target.value)" />
+        <input
+          matInput
+          placeholder="Rechercher un enseignant..."
+          (input)="rechercherEnseignantByNom($event.target.value)"
+        />
       </mat-form-field>
     </mat-card-header>
 
     <mat-card-content>
       <div class="ens-grille">
-        <mat-card class="ens-card" *ngFor="let ens of rechercheEffectuee ? enseignantSelectionne : listEnseignant">
+        <mat-card
+          class="ens-card"
+          *ngFor="let ens of rechercheEffectuee ? enseignantSelectionne : listEnseignant"
+        >
           <mat-card-content>
-
-            <div class="ens-header">
-              <div class="ens-avatar" [style.background]="getAvatarColor(ens.prenom, ens.nom)">
-                {{ ens.prenom[0] }}{{ ens.nom[0] }}
+            <div class="ens-card-top">
+              <div class="ens-header">
+                <div class="ens-avatar" [style.background]="getAvatarColor(ens.prenom, ens.nom)">
+                  {{ ens.prenom[0] }}{{ ens.nom[0] }}
+                </div>
+                <div class="ens-info">
+                  <div class="ens-nom">{{ ens.prenom }} {{ ens.nom }}</div>
+                  <div class="ens-email">✉ {{ ens.email }}</div>
+                </div>
               </div>
-              <div class="ens-info">
-                <div class="ens-nom">{{ ens.prenom }} {{ ens.nom }}</div>
-                <div class="ens-email">✉ {{ ens.email }}</div>
-              </div>
+              <button class="btn-delete" (click)="deleteEnseignantById(ens.id)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
             </div>
 
             <div class="ens-tags">
-              <span class="ens-tag" *ngFor="let tag of ens.tags">
-                {{ tag.nomTag }}
-              </span>
-
+              <span class="ens-tag" *ngFor="let tag of ens.tags">{{ tag.nomTag }}</span>
             </div>
 
             <div class="ens-stats">
-              <div class="stat"><span class="stat-val">{{ ens.nbUe }}</span><span class="stat-label">UE</span></div>
-              <div class="stat"><span class="stat-val">{{ ens.nbReferent }}</span><span
-                  class="stat-label">RÉFÉRENT</span></div>
-              <div class="stat"><span class="stat-val">{{ ens.totalCm }}h</span><span class="stat-label">CM</span></div>
-              <div class="stat"><span class="stat-val">{{ ens.totalTd }}h</span><span class="stat-label">TD</span></div>
-              <div class="stat"><span class="stat-val">{{ ens.totalTp }}h</span><span class="stat-label">TP</span></div>
+              <div class="stat">
+                <span class="stat-val">{{ ens.nbUe }}</span
+                ><span class="stat-label">UE</span>
+              </div>
+              <div class="stat">
+                <span class="stat-val">{{ ens.nbReferent }}</span
+                ><span class="stat-label">RÉFÉRENT</span>
+              </div>
+              <div class="stat">
+                <span class="stat-val">{{ ens.totalCm }}h</span><span class="stat-label">CM</span>
+              </div>
+              <div class="stat">
+                <span class="stat-val">{{ ens.totalTd }}h</span><span class="stat-label">TD</span>
+              </div>
+              <div class="stat">
+                <span class="stat-val">{{ ens.totalTp }}h</span><span class="stat-label">TP</span>
+              </div>
             </div>
-
-            <div class="ens-actions">
-              <button mat-stroked-button class="btn-supprimer" (click)="deleteEnseignantById(ens.id)">Supprimer</button>
-            </div>
-
           </mat-card-content>
         </mat-card>
       </div>
     </mat-card-content>
   </mat-card>
-
 
   <mat-card class="form">
     <mat-card-header>
@@ -68,53 +104,74 @@
 
     <mat-card-content>
       <form [formGroup]="enseignantForm" (ngSubmit)="createEnseignant()">
+        <p class="section-label">Informations personnelles</p>
 
         <div class="champ-row">
           <div>
             <mat-label>Prénom <span style="color: #e05c5c">*</span></mat-label>
             <mat-form-field appearance="outline" class="taille">
-              <input matInput formControlName="prenom" placeholder="Marie">
+              <input matInput formControlName="prenom" placeholder="Marie" />
             </mat-form-field>
           </div>
           <div>
             <mat-label>Nom <span style="color: #e05c5c">*</span></mat-label>
             <mat-form-field appearance="outline" class="taille">
-              <input matInput formControlName="nom" placeholder="Martin">
+              <input matInput formControlName="nom" placeholder="Martin" />
             </mat-form-field>
           </div>
         </div>
 
         <mat-label>Adresse e-mail <span style="color: #e05c5c">*</span></mat-label>
         <mat-form-field appearance="outline" class="taille">
-          <input matInput formControlName="email" placeholder="prenom.nom@univ.fr">
+          <input matInput formControlName="email" placeholder="prenom.nom@univ.fr" />
         </mat-form-field>
 
-        <mat-label>Tags</mat-label>
+        <div class="section-tag"></div>
+        <p class="section-label-tag">Compétences</p>
+
+        <mat-label class="label-tag">Tags<span style="color: #e05c5c">*</span></mat-label>
         <mat-form-field appearance="outline" class="taille">
-          <mat-select formControlName="tagIds" multiple placeholder="Sélectionner des tags">
-            <mat-option *ngFor="let t of tagDispo" [value]="t.id">
+          <mat-chip-grid #chipGrid>
+            <mat-chip-row *ngFor="let tag of tagsSelectionnes" (removed)="retirerTag(tag)">
+              {{ tag.nomTag }}
+              <button matChipRemove>✕</button>
+            </mat-chip-row>
+            <input
+              placeholder="Ajouter un tag..."
+              [matChipInputFor]="chipGrid"
+              [matAutocomplete]="auto"
+              (input)="tabByNom($event.target.value)"
+            />
+          </mat-chip-grid>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="ajouterTag($event)">
+            <mat-option *ngFor="let t of tagsFiltres" [value]="t">
               {{ t.nomTag }}
             </mat-option>
-          </mat-select>
+          </mat-autocomplete>
         </mat-form-field>
+        <small class="tags-msg"
+          >Les tags permettent de filtrer les enseignants par compétence</small
+        >
 
         @if (messageErreurCreation) {
-        <p class="message-erreur">{{ messageErreurCreation }}</p>
+          <p class="message-erreur">{{ messageErreurCreation }}</p>
         }
-
       </form>
     </mat-card-content>
 
     <div class="btn-creer-ens">
-      <button mat-raised-button color="primary" type="button" [disabled]="enseignantForm.invalid"
-        (click)="createEnseignant()">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        [disabled]="enseignantForm.invalid"
+        (click)="createEnseignant()"
+      >
         + Ajouter l'enseignant
       </button>
       <button mat-stroked-button class="btn-annuler" type="button" (click)="enseignantForm.reset()">
         Annuler
       </button>
     </div>
-
   </mat-card>
-
 </div>

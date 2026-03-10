@@ -19,6 +19,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatChipGrid, MatChipRow, MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-enseignants',
@@ -32,6 +37,10 @@ import { MatOptionModule } from '@angular/material/core';
     MatIconModule,
     MatSelectModule,
     MatOptionModule,
+    MatChipGrid,
+    MatChipRow,
+    MatChipsModule,
+    MatAutocompleteModule,
   ],
   templateUrl: './enseignants.html',
   styleUrl: './enseignants.scss',
@@ -45,8 +54,6 @@ export class Enseignants implements OnInit {
 
   messageErreurDelete?: string;
 
-  messageErreurModif?: string;
-
   enseignantForm!: FormGroup; // !  non nul/undefined
 
   tagDispo: Tag[] = [];
@@ -54,6 +61,10 @@ export class Enseignants implements OnInit {
   enseignantSelectionne: Enseignant[] = [];
 
   rechercheEffectuee: boolean = false;
+
+  tagsSelectionnes: Tag[] = [];
+
+  tagsFiltres: Tag[] = [];
 
   constructor(
     private enseignantService: EnseignantService,
@@ -106,6 +117,7 @@ export class Enseignants implements OnInit {
       next: () => {
         this.allEnseignant();
         this.enseignantForm.reset();
+        this.tagsSelectionnes = [];
         this.cdr.detectChanges();
       },
 
@@ -164,7 +176,69 @@ export class Enseignants implements OnInit {
       '#0891b2',
       '#db2777',
       '#059669',
+      '#b45309',
+      '#0369a1',
+      '#7c2d12',
+      '#166534',
+      '#581c87',
+      '#9f1239',
+      '#0f766e',
+      '#1d4ed8',
+      '#92400e',
+      '#065f46',
+      '#6b21a8',
+      '#be123c',
+      '#155e75',
+      '#14532d',
+      '#7e22ce',
+      '#0c4a6e',
+      '#854d0e',
+      '#134e4a',
+      '#4c1d95',
+      '#881337',
+      '#164e63',
+      '#15803d',
+      '#6d28d9',
+      '#b91c1c',
+      '#78350f',
+      '#0e7490',
+      '#7f1d1d',
+      '#1e4620',
+      '#3730a3',
+      '#9d174d',
+      '#0a3d62',
+      '#1a5276',
     ];
     return couleurs[(prenom.charCodeAt(0) + nom.charCodeAt(0)) % couleurs.length];
+  }
+
+  tabByNom(nom: string): void {
+    if (!nom) {
+      this.tagsFiltres = [];
+      return;
+    }
+
+    this.tagService.getTagByNom(nom).subscribe({
+      next: (tags) => {
+        this.tagsFiltres = tags;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  ajouterTag(event: MatAutocompleteSelectedEvent): void {
+    const tag: Tag = event.option.value; // recupre le tag cliqué depuis l'evenemnt
+
+    if (this.tagsSelectionnes.find((t) => t.id === tag.id)) return; // si tag déjà dans la liste on s'arrête
+
+    this.tagsSelectionnes.push(tag); // ajoute le tag à la liste de selections
+
+    this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) }); // rempli le form avec la liste des tags selection ( que leurs id via le map)
+  }
+
+  retirerTag(tag: Tag): void {
+    this.tagsSelectionnes = this.tagsSelectionnes.filter((t) => t.id !== tag.id); // garde seulement les tags qui n'ont pas l'id du tag à retirer
+
+    this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
   }
 }

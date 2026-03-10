@@ -15,7 +15,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-gestion-tags',
@@ -40,13 +39,9 @@ export class GestionTags implements OnInit {
 
   messageErreurDelete?: string;
 
-  messageErreurModif?: string;
-
   messageSucces?: string;
 
   tagForm!: FormGroup;
-
-  idTagModif?: number;
 
   rechercheEffectue: boolean = false;
 
@@ -92,15 +87,6 @@ export class GestionTags implements OnInit {
     });
   }
 
-  tagAModifier(tag: Tag): void {
-    this.idTagModif = tag.id;
-    this.tagForm.patchValue({
-      // pour pré remplir les données du form
-      nomTag: tag.nomTag,
-      couleur: tag.couleur,
-    });
-  }
-
   allTags(): void {
     this.tagService.getAllTags().subscribe({
       next: (data) => {
@@ -126,29 +112,6 @@ export class GestionTags implements OnInit {
           this.messageErreurDelete = 'Tag introuvable.';
           this.cdr.detectChanges();
         }
-      },
-    });
-  }
-
-  modifierTagById(): void {
-    const tagamodif: CreateTag = this.tagForm.value;
-
-    this.tagService.modifierTag(this.idTagModif!, tagamodif).subscribe({
-      next: () => {
-        this.messageSucces = 'Tag modifié avec succès !';
-        this.idTagModif = undefined;
-        this.tagForm.reset();
-        this.allTags();
-        this.cdr.detectChanges();
-      },
-
-      error: (e) => {
-        if (e.status === 404) {
-          this.messageErreurModif = 'Tag introuvable.';
-        } else if (e.status === 409) {
-          this.messageErreurModif = 'Un tag avec ce nom existe déjà.';
-        }
-        this.cdr.detectChanges();
       },
     });
   }

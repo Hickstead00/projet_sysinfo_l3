@@ -2,7 +2,6 @@
 <p class="sous-titre">Créez des tags pour catégoriser les enseignants et les UE par compétence</p>
 
 <div class="page">
-
   <mat-card class="form">
     <mat-card-header>
       <mat-card-title>Nouveau tag</mat-card-title>
@@ -11,7 +10,6 @@
 
     <mat-card-content>
       <form [formGroup]="tagForm" (ngSubmit)="createTag()">
-
         <mat-label>Nom du tag<span style="color: #e05c5c">*</span></mat-label>
         <mat-form-field appearance="outline" class="taille">
           <input matInput formControlName="nomTag" placeholder="Ex: Programmation, Réseaux, IA…" />
@@ -19,32 +17,36 @@
 
         <label class="couleur-label">Couleur</label>
         <div class="couleur-choix">
-          <div *ngFor="let c of couleurs" class="couleur" [class.active]="couleurSelectionnee === c"
-            [style.background]="c" (click)="choisirCouleur(c)">
-          </div>
+          <div
+            *ngFor="let c of couleurs"
+            class="couleur"
+            [class.active]="couleurSelectionnee === c"
+            [style.background]="c"
+            (click)="choisirCouleur(c)"
+          ></div>
         </div>
 
         @if (messageErreurCreation) {
-        <p class="message-erreur">{{ messageErreurCreation }}</p>
+          <p class="message-erreur">{{ messageErreurCreation }}</p>
         }
-
       </form>
     </mat-card-content>
 
-
     <div class="btn-creer-tag">
-      <button mat-raised-button color="primary" type="submit" [disabled]="tagForm.invalid" (click)="createTag()">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="tagForm.invalid"
+        (click)="createTag()"
+      >
         + Créer le tag
       </button>
       <button mat-stroked-button class="btn-annuler" type="button" (click)="tagForm.reset()">
         Annuler
       </button>
     </div>
-
   </mat-card>
-
-
-
 
   <mat-card class="tout-tag">
     <mat-card-header>
@@ -52,33 +54,43 @@
     </mat-card-header>
 
     <mat-card-content>
-
       <mat-form-field appearance="outline" class="taille">
         <mat-icon matPrefix>search</mat-icon>
-        <input matInput placeholder="Rechercher un tag..." (input)="tagByNom($event.target.value)" />
+        <input
+          matInput
+          placeholder="Rechercher un tag..."
+          (input)="tagByNom($event.target.value)"
+        />
       </mat-form-field>
 
       <div class="tag-grille">
-        <mat-card class="tag-card" *ngFor="let tag of rechercheEffectue ? tagSelectionne : listTags">
+        <mat-card
+          class="tag-card"
+          *ngFor="let tag of rechercheEffectue ? tagSelectionne : listTags"
+        >
           <mat-card-content>
-            <div class="tag-header">
-              <div class="tag-couleur" [style.background]="tag.couleur"></div>
-              {{ tag.nomTag }}
+            <div class="tag-card-top">
+              <div class="tag-header">
+                <div class="tag-couleur" [style.background]="tag.couleur"></div>
+                {{ tag.nomTag }}
+              </div>
+              <button class="btn-delete" (click)="deleteTagById(tag.id)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
             </div>
             <div class="tag-meta">
-              <span><mat-icon class="meta-icon">person_outline</mat-icon> {{ nbParTag[tag.id]?.ens ?? 0 }}
-                enseignants</span>
-              <span><mat-icon class="meta-icon">menu_book</mat-icon> {{ nbParTag[tag.id]?.ue ?? 0 }} UE</span>
+              <span
+                ><mat-icon class="meta-icon">person_outline</mat-icon>
+                {{ nbParTag[tag.id]?.ens ?? 0 }} enseignants</span
+              >
+              <span
+                ><mat-icon class="meta-icon">menu_book</mat-icon>
+                {{ nbParTag[tag.id]?.ue ?? 0 }} UE</span
+              >
             </div>
-            <button mat-stroked-button class="btn-supprimer" (click)="deleteTagById(tag.id)">
-              Supprimer
-            </button>
           </mat-card-content>
         </mat-card>
       </div>
-
     </mat-card-content>
   </mat-card>
-
-
 </div>
