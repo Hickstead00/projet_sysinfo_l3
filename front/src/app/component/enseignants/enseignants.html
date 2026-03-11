@@ -2,7 +2,7 @@
 <p class="sous-titre">Gérez l'équipe pédagogique et les affectations aux UE</p>
 
 @if (messageErreurListProf) {
-  <p class="message-erreur">{{ messageErreurListProf }}</p>
+<p class="message-erreur">{{ messageErreurListProf }}</p>
 }
 
 <div class="stats-cards">
@@ -37,20 +37,14 @@
       <mat-card-title>Liste des enseignants</mat-card-title>
       <mat-form-field appearance="outline" class="search-inline">
         <mat-icon matPrefix>search</mat-icon>
-        <input
-          matInput
-          placeholder="Rechercher un enseignant..."
-          (input)="rechercherEnseignantByNom($event.target.value)"
-        />
+        <input matInput placeholder="Rechercher un enseignant..."
+          (input)="rechercherEnseignantByNom($event.target.value)" />
       </mat-form-field>
     </mat-card-header>
 
     <mat-card-content>
       <div class="ens-grille">
-        <mat-card
-          class="ens-card"
-          *ngFor="let ens of rechercheEffectuee ? enseignantSelectionne : listEnseignant"
-        >
+        <mat-card class="ens-card" *ngFor="let ens of rechercheEffectuee ? enseignantSelectionne : listEnseignant">
           <mat-card-content>
             <div class="ens-card-top">
               <div class="ens-header">
@@ -73,12 +67,10 @@
 
             <div class="ens-stats">
               <div class="stat">
-                <span class="stat-val">{{ ens.nbUe }}</span
-                ><span class="stat-label">UE</span>
+                <span class="stat-val">{{ ens.nbUe }}</span><span class="stat-label">UE</span>
               </div>
               <div class="stat">
-                <span class="stat-val">{{ ens.nbReferent }}</span
-                ><span class="stat-label">RÉFÉRENT</span>
+                <span class="stat-val">{{ ens.nbReferent }}</span><span class="stat-label">RÉFÉRENT</span>
               </div>
               <div class="stat">
                 <span class="stat-val">{{ ens.totalCm }}h</span><span class="stat-label">CM</span>
@@ -136,12 +128,8 @@
               {{ tag.nomTag }}
               <button matChipRemove>✕</button>
             </mat-chip-row>
-            <input
-              placeholder="Ajouter un tag..."
-              [matChipInputFor]="chipGrid"
-              [matAutocomplete]="auto"
-              (input)="tabByNom($event.target.value)"
-            />
+            <input placeholder="Ajouter un tag..." [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+              (input)="tabByNom($event.target.value)" />
           </mat-chip-grid>
           <mat-autocomplete #auto="matAutocomplete" (optionSelected)="ajouterTag($event)">
             <mat-option *ngFor="let t of tagsFiltres" [value]="t">
@@ -149,24 +137,17 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <small class="tags-msg"
-          >Les tags permettent de filtrer les enseignants par compétence</small
-        >
+        <small class="tags-msg">Les tags permettent de filtrer les enseignants par compétence</small>
 
         @if (messageErreurCreation) {
-          <p class="message-erreur">{{ messageErreurCreation }}</p>
+        <p class="message-erreur">{{ messageErreurCreation }}</p>
         }
       </form>
     </mat-card-content>
 
     <div class="btn-creer-ens">
-      <button
-        mat-raised-button
-        color="primary"
-        type="button"
-        [disabled]="enseignantForm.invalid"
-        (click)="createEnseignant()"
-      >
+      <button mat-raised-button color="primary" type="button" [disabled]="enseignantForm.invalid"
+        (click)="createEnseignant()">
         + Ajouter l'enseignant
       </button>
       <button mat-stroked-button class="btn-annuler" type="button" (click)="enseignantForm.reset()">
