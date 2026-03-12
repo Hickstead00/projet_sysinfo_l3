@@ -79,7 +79,7 @@ export class Enseignants implements OnInit {
     this.allEnseignant();
 
     this.tagService.getAllTags().subscribe({
-      next: (data) => (this.tagDispo = data),
+      next: (tags) => (this.tagDispo = tags),
     });
   }
 

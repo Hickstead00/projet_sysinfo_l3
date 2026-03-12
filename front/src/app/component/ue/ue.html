@@ -1,1 +1,51 @@
-<p>ue works!</p>
+<div class="page">
+  <mat-card class="form">
+    <mat-card-header>
+      <mat-card-title>Nouvelle Unité d'enseignement</mat-card-title>
+      <mat-card-subtitle>Créez une nouvelle UE pour vos maquettes</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <mat-card-content>
+    <form [formGroup]="ueForm" (ngSubmit)="createUe()">
+      <mat-label>Intitulé de l'UE<span style="color: #e05c5c">*</span></mat-label>
+      <mat-form-field appearance="outline" class="taille">
+        <input matInput formControlName="nomUe" placeholder="Algorithmique avancée" />
+      </mat-form-field>
+
+      <mat-label>Crédit ECTS<span style="color: #e05c5c">*</span></mat-label>
+      <mat-form-field appearance="outline" class="taille">
+        <input matInput formControlName="ects" type="number" placeholder="6" />
+      </mat-form-field>
+
+      <mat-label>UE non obligatoire (stage, projet, etc...)</mat-label>
+      <mat-checkbox formControlName="ueObligatoire"></mat-checkbox>
+
+      <div class="section-volume-horaire"></div>
+      <p class="section-label-horaire">Volume Horaire</p>
+
+      <mat-label>CM(h)</mat-label>
+      <mat-form-field>
+        <input matInput formControlName="cm" type="number" placeholder="18" />
+      </mat-form-field>
+
+      <mat-label>TD(h)</mat-label>
+      <mat-form-field>
+        <input matInput formControlName="td" type="number" placeholder="18" />
+      </mat-form-field>
+
+      <mat-label>TP(h)</mat-label>
+      <mat-form-field>
+        <input matInput formControlName="tp" type="number" placeholder="18" />
+      </mat-form-field>
+
+      <div class="section-equipe-pedagogique"></div>
+      <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
+      <mat-select formControlName="referents" placeholder="Séléctionner un enseignant...">
+        <mat-option *ngFor="let ens of enseignantDispo" [value]="ens.id"
+          >{{ ens.nom }}{{ ens.prenom }}</mat-option
+        >
+      </mat-select>
+    </form>
+  </mat-card-content>
+</div>
