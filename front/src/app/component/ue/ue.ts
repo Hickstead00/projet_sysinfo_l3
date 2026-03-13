@@ -19,9 +19,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { MatChipGrid, MatChipRow, MatChipsModule } from '@angular/material/chips';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { ThumbPosition } from '@angular/material/slider/testing';
 
 @Component({
   selector: 'app-ue',
@@ -50,6 +54,10 @@ export class UE implements OnInit {
   ueForm!: FormGroup;
 
   enseignantDispo: Enseignant[] = [];
+
+  enseignantSelectionnes: Enseignant[] = [];
+
+  enseignantFiltres: Enseignant[] = [];
 
   constructor(
     private ueService: UeService,
@@ -106,6 +114,7 @@ export class UE implements OnInit {
       next: () => {
         this.allUe();
         this.ueForm.reset();
+        this.enseignantSelectionnes = [];
         this.cdr.detectChanges();
       },
 
@@ -118,5 +127,35 @@ export class UE implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  enseignantByNom(nom_prenom: string): void {
+    if (!nom_prenom) {
+      this.enseignantFiltres = [];
+      return;
+    }
+
+    this.enseignantService.rechercherEnseignant(nom_prenom).subscribe({
+      next: (ens) => {
+        this.enseignantFiltres = ens;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  ajouterEnseignant(event: MatAutocompleteSelectedEvent): void {
+    const ens: Enseignant = event.option.value;
+
+    if (this.enseignantSelectionnes.find((e) => e.id === ens.id)) return;
+
+    this.enseignantSelectionnes.push(ens);
+
+    this.ueForm.patchValue({ enseignants: this.enseignantSelectionnes.map((e) => e.id) });
+  }
+
+  retirerEnseignant(ens: Enseignant): void {
+    this.enseignantSelectionnes = this.enseignantSelectionnes.filter((e) => e.id !== ens.id);
+
+    this.ueForm.patchValue({ enseignants: this.enseignantSelectionnes.map((e) => e.id) });
   }
 }

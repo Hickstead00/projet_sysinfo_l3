@@ -140,7 +140,7 @@
               placeholder="Ajouter un tag..."
               [matChipInputFor]="chipGrid"
               [matAutocomplete]="auto"
-              (input)="tabByNom($event.target.value)"
+              (input)="tagByNom($event.target.value)"
             />
           </mat-chip-grid>
           <mat-autocomplete #auto="matAutocomplete" (optionSelected)="ajouterTag($event)">

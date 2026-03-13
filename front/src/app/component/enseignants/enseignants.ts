@@ -212,7 +212,7 @@ export class Enseignants implements OnInit {
     return couleurs[(prenom.charCodeAt(0) + nom.charCodeAt(0)) % couleurs.length];
   }
 
-  tabByNom(nom: string): void {
+  tagByNom(nom: string): void {
     if (!nom) {
       this.tagsFiltres = [];
       return;

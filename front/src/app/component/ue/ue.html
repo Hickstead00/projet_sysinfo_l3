@@ -43,9 +43,34 @@
       <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
       <mat-select formControlName="referents" placeholder="Séléctionner un enseignant...">
         <mat-option *ngFor="let ens of enseignantDispo" [value]="ens.id"
-          >{{ ens.nom }}{{ ens.prenom }}</mat-option
-        >
+          >{{ ens.nom }}{{ ens.prenom }}
+        </mat-option>
       </mat-select>
+
+      <mat-label class="label-enseignant-associe">Enseignants associés</mat-label>
+      <mat-form-field appearance="outline" class="taille">
+        <mat-chip-grid #chipGrid>
+          <mat-chip-row
+            *ngFor="let ens of enseignantSelectionnes"
+            (removed)="retirerEnseignant(ens)"
+          >
+            {{ ens.nom }}{{ ens.prenom }}
+            <button matChipRemove>✕</button>
+          </mat-chip-row>
+          <input
+            placeholder="Ajouter un enseignant..."
+            [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto"
+            (input)="enseignantByNom($event.target.value)"
+          />
+        </mat-chip-grid>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="ajouterEnseignant($event)">
+          <mat-option *ngFor="let e of enseignantFiltres" [value]="e">
+            {{ e.nom }} {{ e.prenom }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <small class="enseignant-msg">Tapez pour rechercher et ajouter des enseignants</small>
     </form>
   </mat-card-content>
 </div>
