@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UE } from '../component/ue/ue';
+import { Ue } from '../model/ue';
 import { Observable } from 'rxjs';
 import { CreateUe } from '../model/create-ue';
 
@@ -12,23 +12,23 @@ export class UeService {
 
   constructor(private http: HttpClient) {}
 
-  getAllUe(): Observable<UE[]> {
-    return this.http.get<UE[]>(this.apiUE);
+  getAllUe(): Observable<Ue[]> {
+    return this.http.get<Ue[]>(this.apiUE);
   }
 
-  getUeByNom(nom: string): Observable<UE[]> {
-    return this.http.get<UE[]>(this.apiUE + 'search?s=' + nom);
+  getUeByNom(nom: string): Observable<Ue[]> {
+    return this.http.get<Ue[]>(this.apiUE + '/search?s=' + nom);
   }
 
-  createUe(ue: CreateUe): Observable<UE> {
-    return this.http.post<UE>(this.apiUE, ue);
+  createUe(ue: CreateUe): Observable<Ue> {
+    return this.http.post<Ue>(this.apiUE, ue);
   }
 
-  deleteUe(id: number): Observable<UE> {
-    return this.http.delete<UE>(this.apiUE + '/' + id);
+  deleteUe(id: number): Observable<Ue> {
+    return this.http.delete<Ue>(this.apiUE + '/' + id);
   }
 
-  modifierUe(id: number, ue: CreateUe): Observable<UE> {
-    return this.http.put<UE>(this.apiUE + '/' + id, ue);
+  modifierUe(id: number, ue: CreateUe): Observable<Ue> {
+    return this.http.put<Ue>(this.apiUE + '/' + id, ue);
   }
 }

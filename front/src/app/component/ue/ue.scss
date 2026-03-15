@@ -1,0 +1,210 @@
+:host {
+  display: block;
+  background: #e8eaed;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e2a3a;
+  margin-bottom: 4px;
+}
+
+.sous-titre {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.form {
+  background: #fff;
+  border-radius: 14px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+mat-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e2a3a;
+}
+
+mat-card-header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #cacfd3;
+  margin-bottom: 16px;
+}
+
+mat-card-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+mat-label {
+  color: #1e2a3a;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+mat-form-field {
+  margin-top: 8px;
+}
+
+.taille {
+  width: 100%;
+  min-width: 0;
+}
+
+.champ-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  div {
+    min-width: 0;
+  }
+}
+
+.champ-horaire {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+
+  div {
+    min-width: 0;
+  }
+}
+
+.section-label,
+.section-label-horaire,
+.section-label-equipe-pedagogique,
+.section-label-tag,
+.section-label-prerequis {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.section-divider,
+.section-volume-horaire,
+.section-equipe-pedagogique,
+.section-tag,
+.section-prerequis {
+  border-top: 1px solid #cacfd3;
+  margin: 16px 0;
+}
+
+mat-select {
+  width: 100%;
+  border: 1px solid #cacfd3;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: #fff;
+  color: #1e2a3a;
+  font-size: 0.875rem;
+  margin-top: 8px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+.message-erreur {
+  color: #e05c5c;
+  background: #fff0f0;
+  border: 1px solid #f5c0c0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+small {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.label-enseignant-associe,
+.label-tag {
+  display: block;
+  margin-top: 12px;
+}
+
+::ng-deep .chip-ens.mat-mdc-chip {
+  background: #e2e8f0 !important;
+  color: #1e2a3a !important;
+  border: 1px solid #94a3b8 !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+}
+
+::ng-deep .chip-ue.mat-mdc-chip {
+  background: #e8f4f0 !important;
+  color: #0f766e !important;
+  border: 1px solid #99d6cc !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+}
+
+::ng-deep mat-chip-row {
+  background: #c0aa90 !important;
+  color: #291f15 !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+}
+
+::ng-deep .mat-mdc-chip-remove {
+  color: inherit !important;
+}
+
+.btn-creer-ue {
+  margin-top: 0;
+  padding: 16px 0;
+  margin-left: 21px;
+  margin-right: 21px;
+  border-top: 1px solid #cacfd3;
+  display: flex;
+  gap: 10px;
+
+  button {
+    border-radius: 8px !important;
+  }
+
+  .btn-annuler {
+    color: #1e2a3a !important;
+    border-color: #cacfd3 !important;
+    background: #e7e9ea !important;
+  }
+
+  button[color='primary'] {
+    background-color: #042b7e !important;
+    color: white !important;
+  }
+
+  button[disabled] {
+    background-color: #042b7e !important;
+    color: white !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+    pointer-events: all !important;
+  }
+}

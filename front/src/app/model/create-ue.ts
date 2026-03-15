@@ -1,7 +1,3 @@
-import { Enseignant } from './enseignant';
-import { Tag } from './tag';
-import { Ue } from './ue';
-
 export interface CreateUe {
   nomUe: string;
   ects: number;
@@ -10,13 +6,8 @@ export interface CreateUe {
   tp: number;
   description: string;
   ueObligatoire: boolean;
-  tags: Tag[];
-  enseignants: Enseignant[];
-  referents: Enseignant[];
-  prerequis: Ue[];
-  nbEnseignants: number;
-  nbReferents: number;
-  nbPrerequis: number;
-  nbSemestres: number;
-  volumeHoraireTotal: number;
+  tagIds: number[];
+  enseignantIds: number[];
+  referentIds: number[];
+  prerequisIds: number[];
 }

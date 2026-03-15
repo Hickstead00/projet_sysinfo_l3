@@ -4,73 +4,124 @@
       <mat-card-title>Nouvelle Unité d'enseignement</mat-card-title>
       <mat-card-subtitle>Créez une nouvelle UE pour vos maquettes</mat-card-subtitle>
     </mat-card-header>
-  </mat-card>
 
-  <mat-card-content>
-    <form [formGroup]="ueForm" (ngSubmit)="createUe()">
-      <mat-label>Intitulé de l'UE<span style="color: #e05c5c">*</span></mat-label>
-      <mat-form-field appearance="outline" class="taille">
-        <input matInput formControlName="nomUe" placeholder="Algorithmique avancée" />
-      </mat-form-field>
 
-      <mat-label>Crédit ECTS<span style="color: #e05c5c">*</span></mat-label>
-      <mat-form-field appearance="outline" class="taille">
-        <input matInput formControlName="ects" type="number" placeholder="6" />
-      </mat-form-field>
+    <mat-card-content>
+      <form [formGroup]="ueForm" (ngSubmit)="createUe()">
+        <mat-label>Intitulé de l'UE<span style="color: #e05c5c">*</span></mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <input matInput formControlName="nomUe" placeholder="Algorithmique avancée" />
+        </mat-form-field>
 
-      <mat-label>UE non obligatoire (stage, projet, etc...)</mat-label>
-      <mat-checkbox formControlName="ueObligatoire"></mat-checkbox>
+        <mat-label>Crédit ECTS<span style="color: #e05c5c">*</span></mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <input matInput formControlName="ects" type="number" placeholder="6" />
+        </mat-form-field>
 
-      <div class="section-volume-horaire"></div>
-      <p class="section-label-horaire">Volume Horaire</p>
+        <mat-label>UE non obligatoire (stage, projet, etc...)</mat-label>
+        <mat-checkbox (change)="ueForm.patchValue({ ueObligatoire: !$event.checked })"></mat-checkbox>
 
-      <mat-label>CM(h)</mat-label>
-      <mat-form-field>
-        <input matInput formControlName="cm" type="number" placeholder="18" />
-      </mat-form-field>
+        <div class="section-volume-horaire"></div>
+        <p class="section-label-horaire">Volume Horaire</p>
 
-      <mat-label>TD(h)</mat-label>
-      <mat-form-field>
-        <input matInput formControlName="td" type="number" placeholder="18" />
-      </mat-form-field>
+        <div class="champ-horaire">
+          <div>
+            <mat-label>CM (h)</mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput formControlName="cm" type="number" placeholder="18" />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-label>TD (h)</mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput formControlName="td" type="number" placeholder="18" />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-label>TP (h)</mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput formControlName="tp" type="number" placeholder="18" />
+            </mat-form-field>
+          </div>
+        </div>
 
-      <mat-label>TP(h)</mat-label>
-      <mat-form-field>
-        <input matInput formControlName="tp" type="number" placeholder="18" />
-      </mat-form-field>
-
-      <div class="section-equipe-pedagogique"></div>
-      <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
-      <mat-select formControlName="referents" placeholder="Séléctionner un enseignant...">
-        <mat-option *ngFor="let ens of enseignantDispo" [value]="ens.id"
-          >{{ ens.nom }}{{ ens.prenom }}
-        </mat-option>
-      </mat-select>
-
-      <mat-label class="label-enseignant-associe">Enseignants associés</mat-label>
-      <mat-form-field appearance="outline" class="taille">
-        <mat-chip-grid #chipGrid>
-          <mat-chip-row
-            *ngFor="let ens of enseignantSelectionnes"
-            (removed)="retirerEnseignant(ens)"
-          >
-            {{ ens.nom }}{{ ens.prenom }}
-            <button matChipRemove>✕</button>
-          </mat-chip-row>
-          <input
-            placeholder="Ajouter un enseignant..."
-            [matChipInputFor]="chipGrid"
-            [matAutocomplete]="auto"
-            (input)="enseignantByNom($event.target.value)"
-          />
-        </mat-chip-grid>
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="ajouterEnseignant($event)">
-          <mat-option *ngFor="let e of enseignantFiltres" [value]="e">
-            {{ e.nom }} {{ e.prenom }}
+        <div class="section-equipe-pedagogique"></div>
+        <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
+        <mat-label class="label-referent">Responsable de l'UE <span style="color: #e05c5c">*</span></mat-label>
+        <mat-select placeholder="Sélectionner un enseignant..."
+          (valueChange)="ueForm.patchValue({ referentIds: [$event] })">
+          <mat-option *ngFor="let ens of enseignantDispo" [value]="ens.id">
+            {{ ens.nom }} {{ ens.prenom }}
           </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <small class="enseignant-msg">Tapez pour rechercher et ajouter des enseignants</small>
-    </form>
-  </mat-card-content>
+        </mat-select>
+        <small>Seuls les enseignants avec des tags correspondants sont affichés</small>
+
+        <mat-label class="label-enseignant-associe">Enseignants associés</mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <mat-chip-grid #chipGridEns>
+            <mat-chip-row class="chip-ens" *ngFor="let ens of enseignantSelectionnes"
+              (removed)="retirerEnseignant(ens)">
+              {{ ens.nom }}{{ ens.prenom }}
+              <button matChipRemove>✕</button>
+            </mat-chip-row>
+            <input placeholder="Ajouter un enseignant..." [matChipInputFor]="chipGridEns" [matAutocomplete]="autoEns"
+              (input)="enseignantByNom($event.target.value)" />
+          </mat-chip-grid>
+          <mat-autocomplete #autoEns="matAutocomplete" (optionSelected)="ajouterEnseignant($event)">
+            <mat-option *ngFor="let e of enseignantFiltres" [value]="e">
+              {{ e.nom }} {{ e.prenom }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <small class="enseignant-msg">Tapez pour rechercher et ajouter des enseignants</small>
+
+        <div class="section-tag"></div>
+        <p class="section-label-tag">Tags</p>
+
+        <mat-label class="label-tag">Tags associés</mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <mat-chip-grid #chipGridTag>
+            <mat-chip-row *ngFor="let tag of tagsSelectionnes" (removed)="retirerTag(tag)">
+              {{ tag.nomTag }}
+              <button matChipRemove>✕</button>
+            </mat-chip-row>
+            <input placeholder="Ajouter un tag..." [matChipInputFor]="chipGridTag" [matAutocomplete]="autoTag"
+              (input)="tagByNom($event.target.value)" />
+          </mat-chip-grid>
+          <mat-autocomplete #autoTag="matAutocomplete" (optionSelected)="ajouterTag($event)">
+            <mat-option *ngFor="let t of tagsFiltres" [value]="t">
+              {{ t.nomTag }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <small class="tags-msg">Les tags permettent de filtrer les enseignants disponibles</small>
+
+        <mat-label>Prérequis</mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <mat-chip-grid #chipGridUe>
+            <mat-chip-row class="chip-ue" *ngFor="let ue of ueSelectionnes" (removed)="retirerUe(ue)">
+              {{ ue.nomUe }}
+              <button matChipRemove>✕</button>
+            </mat-chip-row>
+            <input placeholder="Ajouter une UE prérequis..." [matChipInputFor]="chipGridUe" [matAutocomplete]="autoUe"
+              (input)="ueByNom($event.target.value)" />
+          </mat-chip-grid>
+          <mat-autocomplete #autoUe="matAutocomplete" (optionSelected)="ajouterUe($event)">
+            <mat-option *ngFor="let u of ueFiltres" [value]="u">
+              {{ u.nomUe }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+      </form>
+    </mat-card-content>
+    <div class="btn-creer-ue">
+      <button mat-raised-button color="primary" type="button" [disabled]="ueForm.invalid" (click)="createUe()">
+        + Créer l'UE
+      </button>
+      <button mat-stroked-button class="btn-annuler" type="button" (click)="ueForm.reset()">
+        Annuler
+      </button>
+    </div>
+  </mat-card>
 </div>

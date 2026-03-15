@@ -89,11 +89,11 @@ export class GestionTags implements OnInit {
 
   allTags(): void {
     this.tagService.getAllTags().subscribe({
-      next: (data) => {
+      next: (tags) => {
         // réponse du back avec succes (data) corps de ce que le back renvoie
 
-        this.listTags = data;
-        data.forEach((tag) => this.chargerNb(tag.id));
+        this.listTags = tags;
+        tags.forEach((tag) => this.chargerNb(tag.id));
         this.cdr.detectChanges();
       },
     });
