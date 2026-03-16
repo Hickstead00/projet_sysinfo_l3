@@ -27,10 +27,15 @@ h1 {
   margin-top: 24px;
 }
 
-.form {
+.form,
+.tout-ue {
   background: #fff;
   border-radius: 14px;
   box-sizing: border-box;
+  width: 100%;
+}
+
+.form {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -69,16 +74,6 @@ mat-form-field {
   min-width: 0;
 }
 
-.champ-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-
-  div {
-    min-width: 0;
-  }
-}
-
 .champ-horaire {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -92,8 +87,7 @@ mat-form-field {
 .section-label,
 .section-label-horaire,
 .section-label-equipe-pedagogique,
-.section-label-tag,
-.section-label-prerequis {
+.section-label-tag {
   font-size: 0.7rem;
   font-weight: 600;
   color: #64748b;
@@ -103,11 +97,9 @@ mat-form-field {
   margin-top: 0;
 }
 
-.section-divider,
 .section-volume-horaire,
 .section-equipe-pedagogique,
-.section-tag,
-.section-prerequis {
+.section-tag {
   border-top: 1px solid #cacfd3;
   margin: 16px 0;
 }
@@ -152,7 +144,6 @@ small {
 ::ng-deep .chip-ens.mat-mdc-chip {
   background: #e2e8f0 !important;
   color: #1e2a3a !important;
-  border: 1px solid #94a3b8 !important;
   border-radius: 6px !important;
   font-size: 0.8rem !important;
 }
@@ -160,7 +151,6 @@ small {
 ::ng-deep .chip-ue.mat-mdc-chip {
   background: #e8f4f0 !important;
   color: #0f766e !important;
-  border: 1px solid #99d6cc !important;
   border-radius: 6px !important;
   font-size: 0.8rem !important;
 }
@@ -206,5 +196,204 @@ small {
     opacity: 1 !important;
     cursor: not-allowed !important;
     pointer-events: all !important;
+  }
+}
+
+.header-avec-recherche {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #cacfd3;
+  margin-bottom: 16px;
+
+  mat-card-title {
+    margin: 0;
+  }
+}
+
+.search-inline {
+  width: 260px;
+  margin: 0 !important;
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background-color: #e8eaed !important;
+    border-radius: 8px;
+  }
+
+  ::ng-deep .mat-mdc-form-field-infix {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    min-height: 36px !important;
+  }
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+.ue-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead tr {
+    border-bottom: 1px solid #e8eef4;
+  }
+
+  th {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #94aab8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #e8eef4;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: #f8fafc;
+    }
+  }
+
+  td {
+    padding: 12px;
+    vertical-align: top;
+  }
+}
+
+.td-intitule {
+  width: auto;
+}
+
+.ue-nom {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1e2a3a;
+  margin-bottom: 2px;
+}
+
+.ue-referent {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.ue-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.ue-tag {
+  font-size: 0.68rem;
+  background: #c0aa90;
+  color: #291f15;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+.ue-prerequis {
+  font-size: 0.72rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.prerequis-icon {
+  font-size: 0.85rem !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.td-semestre {
+  white-space: nowrap;
+  width: 120px;
+}
+
+.badge-semestre {
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.badge-optionnel {
+  display: inline-block;
+  margin-top: 4px;
+  background: #fef9c3;
+  color: #854d0e;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.td-horaire {
+  width: 120px;
+  font-size: 0.78rem;
+  color: #64748b;
+
+  div {
+    margin-bottom: 2px;
+  }
+}
+
+.td-ects {
+  text-align: center;
+  width: 60px;
+}
+
+.badge-ects {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1e3a6e;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.td-actions {
+  width: 50px;
+  white-space: nowrap;
+}
+
+.btn-action {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #94aab8;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #1e2a3a;
+  }
+
+  &.btn-delete:hover {
+    color: #e05c5c;
+  }
+
+  mat-icon {
+    font-size: 1.1rem;
+    width: 18px;
+    height: 18px;
   }
 }

@@ -67,6 +67,9 @@ export class UEComponent implements OnInit {
   ueSelectionnes: Ue[] = [];
 
   ueFiltres: Ue[] = [];
+
+  rechercheEffectue: boolean = false;
+
   constructor(
     private ueService: UeService,
     private cdr: ChangeDetectorRef,
@@ -140,6 +143,8 @@ export class UEComponent implements OnInit {
   }
 
   ueByNom(nom: string): void {
+    this.rechercheEffectue = false;
+
     if (!nom) {
       this.ueFiltres = [];
       return;
@@ -148,7 +153,23 @@ export class UEComponent implements OnInit {
     this.ueService.getUeByNom(nom).subscribe({
       next: (ue) => {
         this.ueFiltres = ue;
+        this.rechercheEffectue = true;
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  deleteUeById(id: number): void {
+    this.ueService.deleteUe(id).subscribe({
+      next: (ue) => {
+        this.allUe();
+        this.cdr.detectChanges();
+      },
+
+      error: (e) => {
+        {
+          console.log('Erreur detecté par le backend');
+        }
       },
     });
   }
