@@ -5,16 +5,13 @@ import com.amgboddel.backend.dto.MaquetteResponse;
 import com.amgboddel.backend.dto.SemestreRequest;
 import com.amgboddel.backend.dto.SemestreResponse;
 import com.amgboddel.backend.entity.Maquette;
-import com.amgboddel.backend.entity.Semestre;
 import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.MaquetteRepository;
-import com.amgboddel.backend.repository.SemestreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +20,6 @@ import java.util.List;
 public class MaquetteService {
 
     private final MaquetteRepository maquetteRepository;
-    private final SemestreRepository semestreRepository;
     private final SemestreService semestreService;
 
     @Transactional
@@ -62,16 +58,7 @@ public class MaquetteService {
 
         if (request.getSemestres() != null && !request.getSemestres().isEmpty()) {
             for (SemestreRequest semestreRequest : request.getSemestres()) {
-                Semestre semestre = new Semestre();
-                semestre.setNumeroSemestre(semestreRequest.getNumeroSemestre());
-                semestre.setMaquette(maquette);
-
-                // Résoudre les UE si présentes
-                if (semestreRequest.getUeIds() != null && !semestreRequest.getUeIds().isEmpty()) {
-                    // Cette partie sera gérée dans le SemestreService lors de la création
-                }
-
-                semestreRepository.save(semestre);
+                semestreService.create(maquette.getId(), semestreRequest);
             }
         }
 

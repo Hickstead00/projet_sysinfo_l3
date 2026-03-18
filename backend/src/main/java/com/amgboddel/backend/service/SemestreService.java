@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -146,31 +145,6 @@ public class SemestreService {
 
     private void requestToEntity(SemestreRequest request, Semestre semestre) {
         semestre.setNumeroSemestre(request.getNumeroSemestre());
-
-        Set<UE> ues = resolveUeIds(request.getUeIds());
-        semestre.setUes(ues);
-    }
-
-    private Set<UE> resolveUeIds(List<Long> ueIds) {
-        if (ueIds == null || ueIds.isEmpty()) {
-            return new HashSet<>();
-        }
-
-        List<UE> ues = ueRepository.findAllById(ueIds);
-
-        if (ues.size() != ueIds.size()) {
-            Set<Long> foundIds = ues.stream()
-                    .map(UE::getId)
-                    .collect(Collectors.toSet());
-
-            List<Long> missing = ueIds.stream()
-                    .filter(id -> !foundIds.contains(id))
-                    .toList();
-
-            throw new ResourceNotFoundException("UE non trouvées avec les IDs suivants : " + missing);
-        }
-
-        return new HashSet<>(ues);
     }
 
     public SemestreResponse toResponse(Semestre semestre) {
