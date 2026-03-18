@@ -115,6 +115,16 @@ public class SemestreService {
         UE ue = ueRepository.findById(ueId)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
 
+        boolean dejaPresente = semestreRepository.findByMaquetteId(maquetteId)
+                .stream()
+                .flatMap(s -> s.getUes().stream())
+                .anyMatch(u -> u.getId().equals(ueId));
+
+        if (dejaPresente) {
+            throw new DuplicateResourceException(
+                    "L'UE " + ueId + " est déjà présente dans un semestre de cette maquette");
+        }
+
         semestre.getUes().add(ue);
         return toResponse(semestreRepository.save(semestre));
     }

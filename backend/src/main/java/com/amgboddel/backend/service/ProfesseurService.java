@@ -2,6 +2,7 @@ package com.amgboddel.backend.service;
 
 import com.amgboddel.backend.dto.ProfesseurRequest;
 import com.amgboddel.backend.dto.ProfesseurResponse;
+import com.amgboddel.backend.dto.ProfesseurStatsProjection;
 import com.amgboddel.backend.dto.TagResponse;
 import com.amgboddel.backend.entity.Professeur;
 import com.amgboddel.backend.entity.Tag;
@@ -126,18 +127,20 @@ public class ProfesseurService {
                 .map(t -> new TagResponse(t.getId(), t.getNomTag(), t.getCouleur()))
                 .toList();
 
+        ProfesseurStatsProjection stats = ueRepository.findStatsByEnseignantId(prof.getId());
+        Long nbReferent = ueRepository.countByReferentId(prof.getId());
+
         return ProfesseurResponse.builder()
                 .id(prof.getId())
                 .nom(prof.getNom())
                 .prenom(prof.getPrenom())
                 .email(prof.getEmail())
                 .tags(tagResponses)
-                // TODO PLUS TARD : Remplacer par vraies valeurs calculer, valeurs de 0 pour fournir des valeurs à consommer au frontend
-                .nbUe(0)
-                .nbReferent(0)
-                .totalCm(0)
-                .totalTd(0)
-                .totalTp(0)
+                .nbUe(stats.getNbUe().intValue())
+                .nbReferent(nbReferent.intValue())
+                .totalCm(stats.getTotalCm().intValue())
+                .totalTd(stats.getTotalTd().intValue())
+                .totalTp(stats.getTotalTp().intValue())
                 .build();
     }
 

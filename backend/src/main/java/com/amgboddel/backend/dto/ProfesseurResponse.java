@@ -16,10 +16,7 @@ public class ProfesseurResponse {
     private String nom;
     private String prenom;
     private String email;
-    private List<TagResponse> tags; // Liste des tags associé au professeur
-
-    // A partir d'ici dummy values pour faciler le dev front -> les valeurs réelles seront calculées plus tard
-
+    private List<TagResponse> tags;
     private int nbUe;
     private int nbReferent;
     private int totalCm;

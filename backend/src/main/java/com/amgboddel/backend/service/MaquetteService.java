@@ -5,6 +5,7 @@ import com.amgboddel.backend.dto.MaquetteResponse;
 import com.amgboddel.backend.dto.SemestreRequest;
 import com.amgboddel.backend.dto.SemestreResponse;
 import com.amgboddel.backend.entity.Maquette;
+import com.amgboddel.backend.entity.Parametres;
 import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.MaquetteRepository;
@@ -21,6 +22,7 @@ public class MaquetteService {
 
     private final MaquetteRepository maquetteRepository;
     private final SemestreService semestreService;
+    private final ParametresService parametresService;
 
     @Transactional
     public List<MaquetteResponse> getAll() {
@@ -125,8 +127,14 @@ public class MaquetteService {
         int ectsManquants = Math.max(0, ectsAttendu - ectsTotal);
         int ectsSurplus = Math.max(0, ectsTotal - ectsAttendu);
 
-        // Calcul du coût estimé (optionnel, à implémenter plus tard avec les Paramètres)
-        Double coutEstime = 0.0; // TODO: Calculer avec les tarifs CM/TD/TP
+        Parametres params = parametresService.getOrCreate();
+        double coutEstime = semestresResponse.stream()
+                .flatMap(s -> s.getUes().stream())
+                .mapToDouble(ue ->
+                        ue.getCm() * params.getTarifCm() +
+                        ue.getTd() * params.getTarifTd() +
+                        ue.getTp() * params.getTarifTp()
+                ).sum();
 
         return MaquetteResponse.builder()
                 .id(maquette.getId())

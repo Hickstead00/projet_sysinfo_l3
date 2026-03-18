@@ -216,11 +216,10 @@ public class UEService {
                 .enseignants(enseignants)
                 .referents(referents)
                 .prerequis(prerequis)
-                // à vérifier
                 .nbEnseignants(enseignants.size())
                 .nbReferents(referents.size())
                 .nbPrerequis(prerequis.size())
-                .nbSemestres(0)
+                .nbSemestres(ue.getSemestres().size())
                 .volumeHoraireTotal(volumeTotal)
                 .build();
     }
