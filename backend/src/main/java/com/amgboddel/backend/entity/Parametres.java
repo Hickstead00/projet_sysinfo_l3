@@ -13,9 +13,23 @@ import lombok.Setter;
 public class Parametres {
 
     @Id
-    @Column(name = "nom_parametre")
-    private String nomParametre;
+    private Long id = 1L;
 
     @Column(nullable = false)
-    private String valeur;
+    private Double tarifCm = 45.0;
+
+    @Column(nullable = false)
+    private Double tarifTd = 37.5;
+
+    @Column(nullable = false)
+    private Double tarifTp = 37.5;
+
+    @Column(nullable = false)
+    private Double budgetMax = 0.0;
+
+    @Column(nullable = false)
+    private Boolean alertesEctsActives = true;
+
+    @Column(nullable = false)
+    private Boolean alertesPrerequisActives = true;
 }

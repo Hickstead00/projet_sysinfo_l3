@@ -198,7 +198,7 @@ public class UEService {
         List<UEResponse> prerequis = ue.getPrerequis() == null
                 ? Collections.emptyList()
                 : ue.getPrerequis().stream()
-                .map(this::toResponse)
+                .map(this::toResponseLight)
                 .toList();
 
         int volumeTotal = ue.getCm() + ue.getTd() + ue.getTp();

@@ -8,6 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ParametresResponse {
-    private String nomParametre;
-    private String valeur;
+    private Double tarifCm;
+    private Double tarifTd;
+    private Double tarifTp;
+    private Double budgetMax;
+    private Boolean alertesEctsActives;
+    private Boolean alertesPrerequisActives;
 }

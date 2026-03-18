@@ -3,14 +3,10 @@ package com.amgboddel.backend.service;
 import com.amgboddel.backend.dto.ParametresRequest;
 import com.amgboddel.backend.dto.ParametresResponse;
 import com.amgboddel.backend.entity.Parametres;
-import com.amgboddel.backend.exception.DuplicateResourceException;
-import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.ParametresRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,64 +14,35 @@ public class ParametresService {
 
     private final ParametresRepository parametresRepository;
 
-    public List<ParametresResponse> getAll() {
-        return parametresRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    public ParametresResponse getByName(String nomParametre) {
-        Parametres parametre = parametresRepository.findById(nomParametre)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Paramètre introuvable avec le nom : " + nomParametre));
-        return toResponse(parametre);
+    public ParametresResponse get() {
+        return toResponse(getOrCreate());
     }
 
     @Transactional
-    public ParametresResponse create(ParametresRequest request) {
-        if (parametresRepository.existsById(request.getNomParametre())) {
-            throw new DuplicateResourceException(
-                    "Un paramètre avec le nom : " + request.getNomParametre() + " existe déjà");
-        }
-
-        Parametres parametre = new Parametres();
-        parametre.setNomParametre(request.getNomParametre());
-        parametre.setValeur(request.getValeur());
-
-        Parametres saved = parametresRepository.save(parametre);
-        return toResponse(saved);
+    public ParametresResponse update(ParametresRequest request) {
+        Parametres parametres = getOrCreate();
+        parametres.setTarifCm(request.getTarifCm());
+        parametres.setTarifTd(request.getTarifTd());
+        parametres.setTarifTp(request.getTarifTp());
+        parametres.setBudgetMax(request.getBudgetMax());
+        parametres.setAlertesEctsActives(request.getAlertesEctsActives());
+        parametres.setAlertesPrerequisActives(request.getAlertesPrerequisActives());
+        return toResponse(parametresRepository.save(parametres));
     }
 
-    @Transactional
-    public ParametresResponse update(String nomParametre, ParametresRequest request) {
-        Parametres parametre = parametresRepository.findById(nomParametre)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Paramètre introuvable avec le nom : " + nomParametre));
-
-        if (!nomParametre.equals(request.getNomParametre()) &&
-                parametresRepository.existsById(request.getNomParametre())) {
-            throw new DuplicateResourceException(
-                    "Un paramètre avec le nom : " + request.getNomParametre() + " existe déjà");
-        }
-
-        parametre.setNomParametre(request.getNomParametre());
-        parametre.setValeur(request.getValeur());
-
-        Parametres saved = parametresRepository.save(parametre);
-        return toResponse(saved);
+    public Parametres getOrCreate() {
+        return parametresRepository.findById(1L)
+                .orElseGet(() -> parametresRepository.save(new Parametres()));
     }
 
-    @Transactional
-    public void delete(String nomParametre) {
-        Parametres parametre = parametresRepository.findById(nomParametre)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Paramètre introuvable avec le nom : " + nomParametre));
-
-        parametresRepository.delete(parametre);
-    }
-
-    private ParametresResponse toResponse(Parametres parametre) {
-        return new ParametresResponse(parametre.getNomParametre(), parametre.getValeur());
+    private ParametresResponse toResponse(Parametres parametres) {
+        return new ParametresResponse(
+                parametres.getTarifCm(),
+                parametres.getTarifTd(),
+                parametres.getTarifTp(),
+                parametres.getBudgetMax(),
+                parametres.getAlertesEctsActives(),
+                parametres.getAlertesPrerequisActives()
+        );
     }
 }
