@@ -27,6 +27,8 @@ public class MaquetteResponse {
     private Integer ectsManquants;
     private Integer ectsSurplus;
 
-    // Validation budgétaire (si besoin)
+    // Validation budgétaire
     private Double coutEstime;
+    private Double budgetMax;
+    private Boolean budgetDepasse;
 }

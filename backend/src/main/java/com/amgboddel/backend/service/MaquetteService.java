@@ -136,6 +136,9 @@ public class MaquetteService {
                         ue.getTp() * params.getTarifTp()
                 ).sum();
 
+        double budgetMax = params.getBudgetMax();
+        boolean budgetDepasse = budgetMax > 0 && coutEstime > budgetMax;
+
         return MaquetteResponse.builder()
                 .id(maquette.getId())
                 .nomMaquette(maquette.getNomMaquette())
@@ -148,6 +151,8 @@ public class MaquetteService {
                 .ectsManquants(ectsManquants)
                 .ectsSurplus(ectsSurplus)
                 .coutEstime(coutEstime)
+                .budgetMax(budgetMax)
+                .budgetDepasse(budgetDepasse)
                 .build();
     }
 }
