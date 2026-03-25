@@ -80,9 +80,14 @@ public class SemestreController {
     }
 
     @PostMapping("/{semestreId}/ues/{ueId}")
-    @Operation(summary = "Ajouter une UE à un semestre")
+    @Operation(summary = "Ajouter une UE à un semestre",
+            description = "Valide que tous les prérequis directs de l'UE sont placés dans un semestre " +
+                    "avec un numéro strictement inférieur au semestre cible. " +
+                    "En cas d'erreur 422, le champ 'message' liste les UEs prérequises manquantes ou mal placées.")
     @ApiResponse(responseCode = "200", description = "UE ajoutée au semestre avec succès")
     @ApiResponse(responseCode = "404", description = "Semestre ou UE non trouvé(e)")
+    @ApiResponse(responseCode = "409", description = "UE déjà présente dans un semestre de cette maquette")
+    @ApiResponse(responseCode = "422", description = "Prérequis non respectés : une ou plusieurs UEs prérequises sont absentes ou placées dans un semestre égal ou ultérieur")
     public ResponseEntity<SemestreResponse> addUE(
             @PathVariable Long maquetteId,
             @PathVariable Long semestreId,
@@ -92,9 +97,13 @@ public class SemestreController {
     }
 
     @DeleteMapping("/{semestreId}/ues/{ueId}")
-    @Operation(summary = "Retirer une UE d'un semestre")
+    @Operation(summary = "Retirer une UE d'un semestre",
+            description = "Bloque le retrait si une UE placée dans un semestre ultérieur de la même maquette " +
+                    "a cette UE comme prérequis direct. " +
+                    "En cas d'erreur 422, le champ 'message' liste les UEs dépendantes avec leur semestre.")
     @ApiResponse(responseCode = "200", description = "UE retirée du semestre avec succès")
     @ApiResponse(responseCode = "404", description = "Semestre ou UE non trouvé(e)")
+    @ApiResponse(responseCode = "422", description = "Retrait impossible : des UEs placées dans des semestres ultérieurs dépendent de cette UE comme prérequis")
     public ResponseEntity<SemestreResponse> removeUE(
             @PathVariable Long maquetteId,
             @PathVariable Long semestreId,
