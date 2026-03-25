@@ -30,6 +30,7 @@ public class ParametresService {
         return toResponse(parametresRepository.save(parametres));
     }
 
+    @Transactional
     public Parametres getOrCreate() {
         return parametresRepository.findById(1L)
                 .orElseGet(() -> parametresRepository.save(new Parametres()));

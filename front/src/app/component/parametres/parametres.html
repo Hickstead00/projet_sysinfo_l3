@@ -1,0 +1,151 @@
+<h1>Paramètres</h1>
+<p class="sous-titre">Configurez les règles de validation et la tarification des maquettes</p>
+
+<div class="wrapper">
+
+  <mat-card class="nav-lateral">
+    <div class="nav-item" [class.active]="sectionActive === 'section-ects'" (click)="scrollVers('section-ects')">
+      <mat-icon>school</mat-icon>
+      Configuration ECTS
+    </div>
+    <div class="nav-item" [class.active]="sectionActive === 'section-tarification'" (click)="scrollVers('section-tarification')">
+      <mat-icon>payments</mat-icon>
+      Tarification
+    </div>
+    <div class="nav-item" [class.active]="sectionActive === 'section-alertes'" (click)="scrollVers('section-alertes')">
+      <mat-icon>notifications_none</mat-icon>
+      Alertes
+    </div>
+  </mat-card>
+
+  <form [formGroup]="parametresForm" (ngSubmit)="enregistrer()">
+
+    <mat-card id="section-ects">
+      <mat-card-header>
+        <mat-card-title>Configuration ECTS</mat-card-title>
+        <mat-card-subtitle>Règles de validation académique appliquées à toutes les maquettes</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="ects-grille">
+          <div class="ects-entete">Niveau</div>
+          <div class="ects-entete">ECTS Semestre 1</div>
+          <div class="ects-entete">ECTS Semestre 2</div>
+          <div class="ects-entete">Total année</div>
+
+          <div class="ects-niveau">Licence 1</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur ects-total">60 ECTS</div>
+
+          <div class="ects-niveau">Licence 2</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur ects-total">60 ECTS</div>
+
+          <div class="ects-niveau">Licence 3</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur ects-total">60 ECTS</div>
+
+          <div class="ects-niveau">Master 1</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur ects-total">60 ECTS</div>
+
+          <div class="ects-niveau">Master 2</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur">30</div>
+          <div class="ects-valeur ects-total">60 ECTS</div>
+        </div>
+        <small>Ces valeurs sont fixes et s'appliquent à toutes les maquettes.</small>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card id="section-tarification">
+      <mat-card-header>
+        <mat-card-title>Tarification horaire</mat-card-title>
+        <mat-card-subtitle>Définissez le coût horaire pour chaque type d'enseignement</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="tarif-grille">
+          <div class="tarif-bloc">
+            <mat-label>Cours Magistraux (CM) <span class="requis">*</span></mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput type="number" formControlName="tarifCm" min="0" />
+              <span matSuffix>€ / heure</span>
+            </mat-form-field>
+          </div>
+          <div class="tarif-bloc">
+            <mat-label>Travaux Dirigés (TD) <span class="requis">*</span></mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput type="number" formControlName="tarifTd" min="0" />
+              <span matSuffix>€ / heure</span>
+            </mat-form-field>
+          </div>
+          <div class="tarif-bloc">
+            <mat-label>Travaux Pratiques (TP) <span class="requis">*</span></mat-label>
+            <mat-form-field appearance="outline" class="taille">
+              <input matInput type="number" formControlName="tarifTp" min="0" />
+              <span matSuffix>€ / heure</span>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="section-separateur"></div>
+        <p class="section-label">Budget maximum</p>
+
+        <mat-label>Plafond budgétaire global <span class="requis">*</span></mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <input matInput type="number" formControlName="budgetMax" min="0" />
+          <span matSuffix>€</span>
+        </mat-form-field>
+        <small>Définissez 0 pour désactiver le contrôle budgétaire.</small>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card id="section-alertes">
+      <mat-card-header>
+        <mat-card-title>Alertes de validation</mat-card-title>
+        <mat-card-subtitle>Configurez les alertes affichées lors de la construction des maquettes</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="alerte-ligne">
+          <div class="alerte-texte">
+            <p class="alerte-titre">Alerte dépassement ECTS</p>
+            <small>Afficher un avertissement si le nombre d'ECTS dépasse la limite du semestre</small>
+          </div>
+          <mat-slide-toggle formControlName="alertesEctsActives" color="primary"></mat-slide-toggle>
+        </div>
+
+        <div class="section-separateur"></div>
+
+        <div class="alerte-ligne">
+          <div class="alerte-texte">
+            <p class="alerte-titre">Alerte prérequis non respectés</p>
+            <small>Bloquer le placement d'une UE si ses prérequis ne sont pas dans un semestre antérieur</small>
+          </div>
+          <mat-slide-toggle formControlName="alertesPrerequisActives" color="primary"></mat-slide-toggle>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (messageErreur) {
+      <p class="message-erreur">{{ messageErreur }}</p>
+    }
+
+    @if (messageSucces) {
+      <p class="message-succes">{{ messageSucces }}</p>
+    }
+
+    <div class="btn-actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="parametresForm.invalid">
+        Enregistrer
+      </button>
+      <button mat-stroked-button class="btn-annuler" type="button" (click)="reinitialiser()">
+        Réinitialiser
+      </button>
+    </div>
+
+  </form>
+
+</div>
