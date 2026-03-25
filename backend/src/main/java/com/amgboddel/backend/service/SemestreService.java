@@ -7,6 +7,7 @@ import com.amgboddel.backend.entity.Maquette;
 import com.amgboddel.backend.entity.Semestre;
 import com.amgboddel.backend.entity.UE;
 import com.amgboddel.backend.exception.DuplicateResourceException;
+import com.amgboddel.backend.exception.PrerequisiteViolationException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.MaquetteRepository;
 import com.amgboddel.backend.repository.SemestreRepository;
@@ -115,14 +116,37 @@ public class SemestreService {
         UE ue = ueRepository.findById(ueId)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
 
-        boolean dejaPresente = semestreRepository.findByMaquetteId(maquetteId)
-                .stream()
+        List<Semestre> semestresMaquette = semestreRepository.findByMaquetteId(maquetteId);
+
+        boolean dejaPresente = semestresMaquette.stream()
                 .flatMap(s -> s.getUes().stream())
                 .anyMatch(u -> u.getId().equals(ueId));
 
         if (dejaPresente) {
             throw new DuplicateResourceException(
                     "L'UE " + ueId + " est déjà présente dans un semestre de cette maquette");
+        }
+
+
+        Map<Long, Integer> ueIdVersNumeroSemestre = new HashMap<>();
+        for (Semestre s : semestresMaquette) {
+            for (UE u : s.getUes()) {
+                ueIdVersNumeroSemestre.put(u.getId(), s.getNumeroSemestre());
+            }
+        }
+
+        List<String> prerequisManquants = new ArrayList<>();
+        for (UE prereq : ue.getPrerequis()) {
+            Integer numeroSemestrePrereq = ueIdVersNumeroSemestre.get(prereq.getId());
+            if (numeroSemestrePrereq == null || numeroSemestrePrereq >= semestre.getNumeroSemestre()) {
+                prerequisManquants.add(prereq.getNomUe());
+            }
+        }
+
+        if (!prerequisManquants.isEmpty()) {
+            throw new PrerequisiteViolationException(
+                    "Prérequis non respectés : " + String.join(", ", prerequisManquants) +
+                    " doivent être placés dans un semestre antérieur.");
         }
 
         semestre.getUes().add(ue);
@@ -138,6 +162,26 @@ public class SemestreService {
 
         UE ue = ueRepository.findById(ueId)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
+
+
+        List<String> ueDependantes = new ArrayList<>();
+        for (Semestre s : semestreRepository.findByMaquetteId(maquetteId)) {
+            if (s.getNumeroSemestre() > semestre.getNumeroSemestre()) {
+                for (UE u : s.getUes()) {
+                    boolean dependDeCetteUe = u.getPrerequis().stream()
+                            .anyMatch(p -> p.getId().equals(ueId));
+                    if (dependDeCetteUe) {
+                        ueDependantes.add(u.getNomUe() + " (S" + s.getNumeroSemestre() + ")");
+                    }
+                }
+            }
+        }
+
+        if (!ueDependantes.isEmpty()) {
+            throw new PrerequisiteViolationException(
+                    "Impossible de retirer \"" + ue.getNomUe() + "\" : " +
+                    String.join(", ", ueDependantes) + " en dépendent.");
+        }
 
         semestre.getUes().remove(ue);
         return toResponse(semestreRepository.save(semestre));
