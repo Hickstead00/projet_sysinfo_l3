@@ -23,6 +23,10 @@ public class Maquette {
     @Column(nullable = false)
     private String nomMaquette;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TypeMaquette typeMaquette;
+
     @OneToMany(mappedBy = "maquette", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("maquette")
     private List<Semestre> semestres = new ArrayList<>();

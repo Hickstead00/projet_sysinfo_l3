@@ -6,6 +6,7 @@ import com.amgboddel.backend.dto.SemestreRequest;
 import com.amgboddel.backend.dto.SemestreResponse;
 import com.amgboddel.backend.entity.Maquette;
 import com.amgboddel.backend.entity.Parametres;
+import com.amgboddel.backend.entity.TypeMaquette;
 import com.amgboddel.backend.exception.DuplicateResourceException;
 import com.amgboddel.backend.exception.ResourceNotFoundException;
 import com.amgboddel.backend.repository.MaquetteRepository;
@@ -55,13 +56,15 @@ public class MaquetteService {
 
         Maquette maquette = new Maquette();
         maquette.setNomMaquette(request.getNomMaquette());
+        maquette.setTypeMaquette(request.getTypeMaquette());
 
         maquette = maquetteRepository.save(maquette);
 
-        if (request.getSemestres() != null && !request.getSemestres().isEmpty()) {
-            for (SemestreRequest semestreRequest : request.getSemestres()) {
-                semestreService.create(maquette.getId(), semestreRequest);
-            }
+        int nbSemestres = request.getTypeMaquette() == TypeMaquette.LICENCE ? 6 : 4;
+        for (int i = 1; i <= nbSemestres; i++) {
+            SemestreRequest semestreRequest = new SemestreRequest();
+            semestreRequest.setNumeroSemestre(i);
+            semestreService.create(maquette.getId(), semestreRequest);
         }
 
         // Recharger la maquette avec ses semestres
@@ -85,6 +88,7 @@ public class MaquetteService {
         }
 
         maquette.setNomMaquette(request.getNomMaquette());
+        maquette.setTypeMaquette(request.getTypeMaquette());
         return toResponse(maquetteRepository.save(maquette));
     }
 
@@ -142,6 +146,7 @@ public class MaquetteService {
         return MaquetteResponse.builder()
                 .id(maquette.getId())
                 .nomMaquette(maquette.getNomMaquette())
+                .typeMaquette(maquette.getTypeMaquette())
                 .semestres(semestresResponse)
                 .nbSemestres(nbSemestres)
                 .ectsTotal(ectsTotal)

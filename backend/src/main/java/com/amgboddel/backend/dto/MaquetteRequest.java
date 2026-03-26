@@ -1,13 +1,12 @@
 package com.amgboddel.backend.dto;
 
+import com.amgboddel.backend.entity.TypeMaquette;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +18,7 @@ public class MaquetteRequest {
     @Schema(description = "Nom de la maquette", example = "Licence Informatique 2025-2026")
     private String nomMaquette;
 
-    @Schema(description = "Liste des semestres de la maquette (4 à 6 semestres)")
-    private List<SemestreRequest> semestres = new ArrayList<>();
+    @NotNull(message = "Le type de maquette est obligatoire")
+    @Schema(description = "Type de maquette : LICENCE (6 semestres) ou MASTER (4 semestres)", example = "LICENCE")
+    private TypeMaquette typeMaquette;
 }

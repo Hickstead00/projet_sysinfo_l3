@@ -1,5 +1,6 @@
 package com.amgboddel.backend.dto;
 
+import com.amgboddel.backend.entity.TypeMaquette;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,9 @@ public class MaquetteResponse {
 
     @Schema(description = "Nom de la maquette (ex: Licence Informatique MIAGE)")
     private String nomMaquette;
+
+    @Schema(description = "Type de maquette : LICENCE ou MASTER")
+    private TypeMaquette typeMaquette;
 
     @Schema(description = "Liste des semestres de la maquette avec leurs UEs")
     private List<SemestreResponse> semestres;

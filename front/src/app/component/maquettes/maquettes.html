@@ -1,0 +1,93 @@
+@if (showModale) {
+  <div class="modale-overlay">
+    <div class="modale">
+      <div class="modale-header">
+        <mat-icon class="modale-icon">school</mat-icon>
+        <h2>Maquettes pédagogiques</h2>
+        <p class="modale-sous-titre">Créez ou reprenez une maquette de formation</p>
+      </div>
+
+      <div class="modale-section">
+        <h3>Créer une maquette</h3>
+
+        <div class="type-choix">
+          <button
+            mat-raised-button
+            [class.type-actif]="typeSelectionne === 'LICENCE'"
+            (click)="choisirType('LICENCE')"
+          >
+            <mat-icon>menu_book</mat-icon>
+            Licence
+            <span class="type-detail">6 semestres</span>
+          </button>
+          <button
+            mat-raised-button
+            [class.type-actif]="typeSelectionne === 'MASTER'"
+            (click)="choisirType('MASTER')"
+          >
+            <mat-icon>workspace_premium</mat-icon>
+            Master
+            <span class="type-detail">4 semestres</span>
+          </button>
+        </div>
+
+        @if (typeSelectionne) {
+          <form [formGroup]="maquetteForm" (ngSubmit)="creerMaquette()">
+            <mat-form-field appearance="outline" class="taille">
+              <mat-label>Nom de la maquette</mat-label>
+              <input
+                matInput
+                formControlName="nomMaquette"
+                placeholder="Ex: Licence Informatique 2025-2026"
+              />
+            </mat-form-field>
+
+            @if (messageErreur) {
+              <p class="message-erreur">{{ messageErreur }}</p>
+            }
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="btn-creer"
+              [disabled]="maquetteForm.invalid"
+            >
+              Créer la maquette
+            </button>
+          </form>
+        }
+      </div>
+
+      @if (maquettesExistantes.length > 0) {
+        <div class="modale-section">
+          <h3>Reprendre une maquette</h3>
+
+          <div class="maquettes-liste">
+            @for (maquette of maquettesExistantes; track maquette.id) {
+              <div class="maquette-item" (click)="ouvrirMaquette(maquette)">
+                <div class="maquette-info">
+                  <span class="maquette-nom">{{ maquette.nomMaquette }}</span>
+                  <span class="maquette-detail">
+                    {{ maquette.nbSemestres }} semestres
+                    · {{ maquette.nbUeTotal }} UE
+                    · {{ maquette.ectsTotal }} ECTS
+                  </span>
+                </div>
+                <button class="btn-delete" (click)="supprimerMaquette(maquette.id, $event)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (!showModale && maquetteActive) {
+  <div class="page-maquette">
+    <p>Maquette : {{ maquetteActive.nomMaquette }} — {{ maquetteActive.nbSemestres }} semestres</p>
+  </div>
+}
