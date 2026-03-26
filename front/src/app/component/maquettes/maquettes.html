@@ -88,6 +88,189 @@
 
 @if (!showModale && maquetteActive) {
   <div class="page-maquette">
-    <p>Maquette : {{ maquetteActive.nomMaquette }} — {{ maquetteActive.nbSemestres }} semestres</p>
+
+    <!--COLONNE GAUCHE-->
+    <div class="bibliotheque">
+      <h3>Bibliothèque d'UE</h3>
+      <mat-form-field appearance="outline" class="taille">
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          placeholder="Rechercher une UE..."
+          (input)="filtrerBibliotheque($event.target.value)"
+        />
+      </mat-form-field>
+
+      <div class="ue-liste">
+        @for (ue of bibliothequeFiltre; track ue.id) {
+          <div class="ue-card-biblio">
+            <div class="ue-card-header">
+              <span class="ue-ects-badge">{{ ue.ects }} ECTS</span>
+            </div>
+            <div class="ue-nom">{{ ue.nomUe }}</div>
+            <div class="ue-heures">
+              CM: {{ ue.cm }}h · TD: {{ ue.td }}h · TP: {{ ue.tp }}h
+            </div>
+            @if (ue.tags.length > 0) {
+              <div class="ue-tags">
+                @for (tag of ue.tags; track tag.id) {
+                  <span class="tag-badge" [style.background]="tag.couleur">{{ tag.nomTag }}</span>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (bibliothequeFiltre.length === 0) {
+          <p class="aucun-resultat">Aucune UE trouvée</p>
+        }
+      </div>
+    </div>
+
+    <!--COLONNE CENTRE-->
+    <div class="centre">
+      <div class="maquette-header">
+        <h2>{{ maquetteActive.nomMaquette }}</h2>
+
+        <div class="annee-tabs">
+          @for (annee of getAnnees(); track annee; let i = $index) {
+            <button
+              mat-raised-button
+              [class.annee-active]="anneeActive === i"
+              (click)="choisirAnnee(i)"
+            >
+              {{ annee }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="semestres-row">
+        @for (semestre of getSemestresAnnee(); track semestre.id) {
+          <div class="semestre-col">
+            <div class="semestre-header">
+              <h3>Semestre {{ semestre.numeroSemestre }}</h3>
+              <span class="semestre-info">
+                {{ semestre.ectsTotal }} ECTS / 30 · {{ semestre.volumeHoraireTotal }}h
+              </span>
+            </div>
+
+            <div class="semestre-contenu">
+              @for (ue of semestre.ues; track ue.id) {
+                <div class="ue-card-semestre">
+                  <div class="ue-card-top">
+                    <span class="ue-nom">{{ ue.nomUe }}</span>
+                    <span class="ue-ects-badge">{{ ue.ects }} ECTS</span>
+                  </div>
+                  <div class="ue-heures">
+                    CM: {{ ue.cm }}h · TD: {{ ue.td }}h · TP: {{ ue.tp }}h
+                  </div>
+                </div>
+              }
+
+              @if (semestre.ues.length === 0) {
+                <div class="drop-zone-vide">
+                  <mat-icon>add_circle_outline</mat-icon>
+                  <span>Glissez une UE ici</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!--COLONNE DROITE-->
+    <div class="recapitulatif">
+      <h3>Récapitulatif</h3>
+
+      <div class="recap-section">
+        <h4>Crédits ECTS</h4>
+        <div class="recap-ects">
+          <div class="recap-ects-bloc">
+            <span class="recap-nombre">{{ maquetteActive.ectsTotal }}</span>
+            <span class="recap-label">ECTS actuels</span>
+          </div>
+          <div class="recap-ects-bloc">
+            <span class="recap-nombre">{{ maquetteActive.typeMaquette === 'LICENCE' ? 180 : 120 }}</span>
+            <span class="recap-label">Requis {{ maquetteActive.typeMaquette === 'LICENCE' ? 'Licence' : 'Master' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recap-section">
+        <h4>Volume horaire</h4>
+        <div class="recap-ligne">
+          <span>Cours magistraux</span>
+          <span>{{ getVolumeTotal('cm') }}h</span>
+        </div>
+        <div class="recap-ligne">
+          <span>Travaux dirigés</span>
+          <span>{{ getVolumeTotal('td') }}h</span>
+        </div>
+        <div class="recap-ligne">
+          <span>Travaux pratiques</span>
+          <span>{{ getVolumeTotal('tp') }}h</span>
+        </div>
+        <div class="recap-ligne recap-total">
+          <span>Total</span>
+          <span>{{ maquetteActive.volumeHoraireTotal }}h</span>
+        </div>
+      </div>
+
+      @if (parametres) {
+        <div class="recap-section">
+          <h4>Coût de la maquette</h4>
+          <div class="recap-ligne">
+            <span>CM ({{ getVolumeTotal('cm') }}h x {{ parametres.tarifCm }}€)</span>
+            <span>{{ getCout('cm') }} €</span>
+          </div>
+          <div class="recap-ligne">
+            <span>TD ({{ getVolumeTotal('td') }}h x {{ parametres.tarifTd }}€)</span>
+            <span>{{ getCout('td') }} €</span>
+          </div>
+          <div class="recap-ligne">
+            <span>TP ({{ getVolumeTotal('tp') }}h x {{ parametres.tarifTp }}€)</span>
+            <span>{{ getCout('tp') }} €</span>
+          </div>
+          <div class="recap-ligne recap-total" [class.recap-alerte]="maquetteActive.budgetDepasse">
+            <span>Coût total</span>
+            <span>{{ maquetteActive.coutEstime }} €</span>
+          </div>
+
+          @if (maquetteActive.budgetDepasse) {
+            <div class="alerte alerte-danger">
+              <mat-icon>warning</mat-icon>
+              Budget dépassé (max {{ maquetteActive.budgetMax }} €)
+            </div>
+          }
+        </div>
+
+        <div class="recap-section">
+          <h4>Validation</h4>
+          @for (semestre of maquetteActive.semestres; track semestre.id) {
+            @if (semestre.ectsManquants > 0) {
+              <div class="alerte alerte-warning">
+                <mat-icon>warning</mat-icon>
+                S{{ semestre.numeroSemestre }} : {{ semestre.ectsManquants }} ECTS manquants
+              </div>
+            }
+            @if (semestre.ectsSurplus > 0) {
+              <div class="alerte alerte-warning">
+                <mat-icon>info</mat-icon>
+                S{{ semestre.numeroSemestre }} : {{ semestre.ectsSurplus }} ECTS en surplus
+              </div>
+            }
+          }
+          @if (maquetteActive.respecteEcts) {
+            <div class="alerte alerte-succes">
+              <mat-icon>check_circle</mat-icon>
+              ECTS respectés
+            </div>
+          }
+        </div>
+      }
+    </div>
+
   </div>
 }

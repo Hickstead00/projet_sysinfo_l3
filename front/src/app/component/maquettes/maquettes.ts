@@ -13,8 +13,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MaquetteService } from '../../service/maquette-service';
+import { UeService } from '../../service/ue-service';
+import { ParametresService } from '../../service/parametres-service';
 import { Maquette } from '../../model/maquette';
 import { CreateMaquette } from '../../model/create-maquette';
+import { Ue } from '../../model/ue';
+import { Parametres } from '../../model/parametres';
+import { Semestre } from '../../model/semestre';
 
 @Component({
   selector: 'app-maquettes',
@@ -38,8 +43,16 @@ export class MaquettesComponent implements OnInit {
   messageErreur?: string;
   showModale = true;
 
+  bibliothequeUe: Ue[] = [];
+  bibliothequeFiltre: Ue[] = [];
+  parametres?: Parametres;
+  anneeActive = 0;
+  rechercheBibliotheque = '';
+
   constructor(
     private maquetteService: MaquetteService,
+    private ueService: UeService,
+    private parametresService: ParametresService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
   ) {}
@@ -85,6 +98,7 @@ export class MaquettesComponent implements OnInit {
       next: (maquette) => {
         this.maquetteActive = maquette;
         this.showModale = false;
+        this.chargerPageMaquette();
         this.cdr.detectChanges();
       },
       error: (e) => {
@@ -101,6 +115,7 @@ export class MaquettesComponent implements OnInit {
   ouvrirMaquette(maquette: Maquette): void {
     this.maquetteActive = maquette;
     this.showModale = false;
+    this.chargerPageMaquette();
     this.cdr.detectChanges();
   }
 
@@ -111,5 +126,75 @@ export class MaquettesComponent implements OnInit {
         this.chargerMaquettes();
       },
     });
+  }
+
+  chargerPageMaquette(): void {
+    this.ueService.getAllUe().subscribe({
+      next: (ues) => {
+        this.bibliothequeUe = ues;
+        this.bibliothequeFiltre = ues;
+        this.cdr.detectChanges();
+      },
+    });
+
+    this.parametresService.getParametres().subscribe({
+      next: (params) => {
+        this.parametres = params;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  filtrerBibliotheque(valeur: string): void {
+    this.rechercheBibliotheque = valeur;
+    if (!valeur) {
+      this.bibliothequeFiltre = this.bibliothequeUe;
+    } else {
+      const recherche = valeur.toLowerCase();
+      this.bibliothequeFiltre = this.bibliothequeUe.filter((ue) =>
+        ue.nomUe.toLowerCase().includes(recherche),
+      );
+    }
+  }
+
+  choisirAnnee(index: number): void {
+    this.anneeActive = index;
+  }
+
+  getAnnees(): string[] {
+    if (!this.maquetteActive) return [];
+    if (this.maquetteActive.typeMaquette === 'LICENCE') {
+      return ['L1', 'L2', 'L3'];
+    }
+    return ['M1', 'M2'];
+  }
+
+  getSemestresAnnee(): Semestre[] {
+    if (!this.maquetteActive) return [];
+    const debut = this.anneeActive * 2;
+    return this.maquetteActive.semestres
+      .filter((s) => s.numeroSemestre === debut + 1 || s.numeroSemestre === debut + 2)
+      .sort((a, b) => a.numeroSemestre - b.numeroSemestre);
+  }
+
+  getCout(type: 'cm' | 'td' | 'tp'): number {
+    if (!this.maquetteActive || !this.parametres) return 0;
+    const tarif =
+      type === 'cm'
+        ? this.parametres.tarifCm
+        : type === 'td'
+          ? this.parametres.tarifTd
+          : this.parametres.tarifTp;
+    const heures = this.maquetteActive.semestres
+      .flatMap((s) => s.ues)
+      .reduce((sum, ue) => sum + ue[type], 0);
+    return heures * tarif;
+  }
+
+  getVolumeTotal(type: 'cm' | 'td' | 'tp'): number {
+    if (!this.maquetteActive) return 0;
+    return this.maquetteActive.semestres
+      .flatMap((s) => s.ues)
+      .reduce((sum, ue) => sum + ue[type], 0);
   }
 }
