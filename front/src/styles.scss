@@ -36,3 +36,12 @@ body {
   height: 100%;
 }
 
+.cdk-drag-preview {
+  cursor: grabbing !important;
+}
+
+body.dragging-active,
+body.dragging-active * {
+  cursor: grabbing !important;
+}
+

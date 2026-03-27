@@ -101,10 +101,11 @@
         />
       </mat-form-field>
 
-      <div class="ue-liste">
+      <div class="ue-liste" cdkDropList [cdkDropListConnectedTo]="getDropListIds()" [cdkDropListData]="bibliothequeFiltre" [cdkDropListSortingDisabled]="true" id="bibliotheque">
         @for (ue of bibliothequeFiltre; track ue.id) {
-          <div class="ue-card-biblio">
+          <div class="ue-card-biblio" [class.ue-placee]="isUePlacee(ue)" cdkDrag [cdkDragData]="ue" (cdkDragStarted)="onDragStarted()" (cdkDragEnded)="onDragEnded()">
             <div class="ue-card-header">
+              <mat-icon class="drag-handle">drag_indicator</mat-icon>
               <span class="ue-ects-badge">{{ ue.ects }} ECTS</span>
             </div>
             <div class="ue-nom">{{ ue.nomUe }}</div>
@@ -151,16 +152,30 @@
             <div class="semestre-header">
               <h3>Semestre {{ semestre.numeroSemestre }}</h3>
               <span class="semestre-info">
-                {{ semestre.ectsTotal }} ECTS / 30 · {{ semestre.volumeHoraireTotal }}h
+                {{ semestre.ectsTotal }} ECTS / 30 · {{ semestre.volumeHoraireTotal }}h total
               </span>
             </div>
 
-            <div class="semestre-contenu">
+            <div class="semestre-contenu"
+                 [class.semestre-survole]="isDragging"
+                 [class.semestre-survole-actif]="semestreSurvoleId === semestre.id"
+                 cdkDropList
+                 [id]="'semestre-' + semestre.id"
+                 [cdkDropListData]="semestre.ues"
+                 [cdkDropListConnectedTo]="['bibliotheque']"
+                 [cdkDropListSortingDisabled]="true"
+                 (cdkDropListEntered)="onDropListEntered(semestre.id)"
+                 (cdkDropListDropped)="onDrop($event, semestre)">
               @for (ue of semestre.ues; track ue.id) {
                 <div class="ue-card-semestre">
                   <div class="ue-card-top">
                     <span class="ue-nom">{{ ue.nomUe }}</span>
-                    <span class="ue-ects-badge">{{ ue.ects }} ECTS</span>
+                    <div class="ue-card-actions">
+                      <span class="ue-ects-badge">{{ ue.ects }} ECTS</span>
+                      <button class="btn-retirer" (click)="retirerUe(semestre, ue)" title="Retirer du semestre">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
                   </div>
                   <div class="ue-heures">
                     CM: {{ ue.cm }}h · TD: {{ ue.td }}h · TP: {{ ue.tp }}h
@@ -168,10 +183,15 @@
                 </div>
               }
 
-              @if (semestre.ues.length === 0) {
-                <div class="drop-zone-vide">
-                  <mat-icon>add_circle_outline</mat-icon>
-                  <span>Glissez une UE ici</span>
+              <div class="drop-zone-vide" [class.drop-zone-seule]="semestre.ues.length === 0">
+                <mat-icon>add_circle_outline</mat-icon>
+                <span>Glissez une UE ici</span>
+              </div>
+
+              @if (erreurSemestreId === semestre.id) {
+                <div class="erreur-drop-inline">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ erreurSemestreMessage }}</span>
                 </div>
               }
             </div>

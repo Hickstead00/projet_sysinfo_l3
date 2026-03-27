@@ -146,7 +146,7 @@ public class SemestreService {
         if (!prerequisManquants.isEmpty()) {
             throw new PrerequisiteViolationException(
                     "Prérequis non respectés : " + String.join(", ", prerequisManquants) +
-                    " doivent être placés dans un semestre antérieur.");
+                    " doit être placé dans un semestre antérieur.");
         }
 
         semestre.getUes().add(ue);
@@ -180,7 +180,7 @@ public class SemestreService {
         if (!ueDependantes.isEmpty()) {
             throw new PrerequisiteViolationException(
                     "Impossible de retirer \"" + ue.getNomUe() + "\" : " +
-                    String.join(", ", ueDependantes) + " en dépendent.");
+                    String.join(", ", ueDependantes) + " en dépend.");
         }
 
         semestre.getUes().remove(ue);

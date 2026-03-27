@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -12,6 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {
+  CdkDragDrop,
+  DragDropModule,
+} from '@angular/cdk/drag-drop';
 import { MaquetteService } from '../../service/maquette-service';
 import { UeService } from '../../service/ue-service';
 import { ParametresService } from '../../service/parametres-service';
@@ -31,6 +35,7 @@ import { Semestre } from '../../model/semestre';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    DragDropModule,
   ],
   templateUrl: './maquettes.html',
   styleUrl: './maquettes.scss',
@@ -42,18 +47,23 @@ export class MaquettesComponent implements OnInit {
   typeSelectionne?: 'LICENCE' | 'MASTER';
   messageErreur?: string;
   showModale = true;
+  isDragging = false;
+  semestreSurvoleId?: number;
+  erreurSemestreId?: number;
+  erreurSemestreMessage?: string;
+  private erreurTimeout?: ReturnType<typeof setTimeout>;
 
   bibliothequeUe: Ue[] = [];
   bibliothequeFiltre: Ue[] = [];
   parametres?: Parametres;
   anneeActive = 0;
-  rechercheBibliotheque = '';
 
   constructor(
     private maquetteService: MaquetteService,
     private ueService: UeService,
     private parametresService: ParametresService,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
     private fb: FormBuilder,
   ) {}
 
@@ -146,7 +156,6 @@ export class MaquettesComponent implements OnInit {
   }
 
   filtrerBibliotheque(valeur: string): void {
-    this.rechercheBibliotheque = valeur;
     if (!valeur) {
       this.bibliothequeFiltre = this.bibliothequeUe;
     } else {
@@ -196,5 +205,94 @@ export class MaquettesComponent implements OnInit {
     return this.maquetteActive.semestres
       .flatMap((s) => s.ues)
       .reduce((sum, ue) => sum + ue[type], 0);
+  }
+
+  isUePlacee(ue: Ue): boolean {
+    if (!this.maquetteActive) return false;
+    return this.maquetteActive.semestres.some((s) =>
+      s.ues.some((u) => u.id === ue.id),
+    );
+  }
+
+  getDropListIds(): string[] {
+    return this.getSemestresAnnee().map((s) => 'semestre-' + s.id);
+  }
+
+  onDragStarted(): void {
+    document.body.classList.add('dragging-active');
+    this.isDragging = true;
+  }
+
+  onDragEnded(): void {
+    document.body.classList.remove('dragging-active');
+    this.isDragging = false;
+    this.semestreSurvoleId = undefined;
+  }
+
+  onDropListEntered(semestreId: number): void {
+    this.semestreSurvoleId = semestreId;
+  }
+
+  onDrop(event: CdkDragDrop<Ue[]>, semestre: Semestre): void {
+    if (!this.maquetteActive) return;
+
+    const ue: Ue = event.item.data;
+
+    this.ngZone.run(() => {
+      this.maquetteService
+        .addUeToSemestre(this.maquetteActive!.id, semestre.id, ue.id)
+        .subscribe({
+          next: () => this.rafraichirMaquette(),
+          error: (e) => {
+            if (e.status === 409) {
+              this.afficherErreurSemestre(semestre.id, `"${ue.nomUe}" est déjà placée dans cette maquette.`);
+            } else if (e.status === 422) {
+              this.afficherErreurSemestre(semestre.id, e.error?.message || `Prérequis non respectés pour "${ue.nomUe}".`);
+            }
+          },
+        });
+    });
+  }
+
+  retirerUe(semestre: Semestre, ue: Ue): void {
+    if (!this.maquetteActive) return;
+
+    this.ngZone.run(() => {
+      this.maquetteService
+        .removeUeFromSemestre(this.maquetteActive!.id, semestre.id, ue.id)
+        .subscribe({
+          next: () => this.rafraichirMaquette(),
+          error: (e) => {
+            if (e.status === 422) {
+              this.afficherErreurSemestre(semestre.id, e.error?.message || `Impossible de retirer "${ue.nomUe}" : des UE en dépendent.`);
+            }
+          },
+        });
+    });
+  }
+
+  private afficherErreurSemestre(semestreId: number, message: string): void {
+    if (this.erreurTimeout) clearTimeout(this.erreurTimeout);
+    this.erreurSemestreId = semestreId;
+    this.erreurSemestreMessage = message;
+    this.cdr.detectChanges();
+    this.erreurTimeout = setTimeout(() => {
+      this.erreurSemestreId = undefined;
+      this.erreurSemestreMessage = undefined;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
+  private rafraichirMaquette(): void {
+    if (!this.maquetteActive) return;
+
+    this.ngZone.run(() => {
+      this.maquetteService.getMaquetteById(this.maquetteActive!.id).subscribe({
+        next: (maquette) => {
+          this.maquetteActive = maquette;
+          this.cdr.detectChanges();
+        },
+      });
+    });
   }
 }
