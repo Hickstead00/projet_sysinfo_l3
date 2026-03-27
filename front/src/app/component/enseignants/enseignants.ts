@@ -115,6 +115,8 @@ export class Enseignants implements OnInit {
 
     this.enseignantService.createEnseignant(enseignant).subscribe({
       next: () => {
+        this.rechercheEffectuee = false;
+        this.enseignantSelectionne = [];
         this.allEnseignant();
         this.enseignantForm.reset();
         this.tagsSelectionnes = [];
@@ -135,6 +137,8 @@ export class Enseignants implements OnInit {
   deleteEnseignantById(id: number): void {
     this.enseignantService.deleteEnseignant(id).subscribe({
       next: () => {
+        this.rechercheEffectuee = false;
+        this.enseignantSelectionne = [];
         this.allEnseignant();
         this.cdr.detectChanges();
       },

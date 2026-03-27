@@ -103,6 +103,8 @@ export class GestionTags implements OnInit {
     this.tagService.deleteTag(id).subscribe({
       next: () => {
         this.messageSucces = 'Tag supprimé avec succès !';
+        this.rechercheEffectue = false;
+        this.tagSelectionne = [];
         this.allTags();
         this.cdr.detectChanges();
       },
@@ -126,6 +128,8 @@ export class GestionTags implements OnInit {
     this.tagService.createTag(tag).subscribe({
       next: () => {
         this.messageSucces = 'Tag créé avec succès !';
+        this.rechercheEffectue = false;
+        this.tagSelectionne = [];
         this.tagForm.reset();
         this.allTags();
         this.cdr.detectChanges();
