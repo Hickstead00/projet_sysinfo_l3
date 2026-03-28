@@ -5,14 +5,18 @@
         <span class="logo-text">GestMaquette</span>
     </div>
 
-    <ul>
+    <div class="nav-separator"></div>
 
-        <li><a routerLink="/ue" routerLinkActive="active">Unité d'enseignement</a></li>
-        <li><a routerLink="/maquettes" routerLinkActive="active">Maquettes</a></li>
+    <ul class="nav-links-main">
+        <li><a routerLink="/gestionTags" routerLinkActive="active">Tags</a></li>
         <li><a routerLink="/enseignants" routerLinkActive="active">Enseignants</a></li>
-        <li><a routerLink="/gestionTags" routerLinkActive="active">Gestion Tags</a></li>
-        <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
+        <li><a routerLink="/ue" routerLinkActive="active">UEs</a></li>
+        <li><a routerLink="/maquettes" routerLinkActive="active">Maquettes</a></li>
+    </ul>
 
+    <ul class="nav-links-right">
+        <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
+        <li><a class="nav-session" href="#">Utilisateur</a></li>
     </ul>
 
 </nav>
