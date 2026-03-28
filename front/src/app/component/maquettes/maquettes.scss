@@ -28,8 +28,15 @@
 }
 
 .modale-header {
+  position: relative;
   text-align: center;
   margin-bottom: 28px;
+
+  .btn-retour-modale {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 
   h2 {
     font-size: 1.4rem;

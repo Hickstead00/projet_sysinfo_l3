@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import {
   FormBuilder,
   FormControl,
@@ -65,7 +65,12 @@ export class MaquettesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     private fb: FormBuilder,
+    private location: Location,
   ) {}
+
+  retourArriere(): void {
+    this.location.back();
+  }
 
   ngOnInit(): void {
     this.initForm();
