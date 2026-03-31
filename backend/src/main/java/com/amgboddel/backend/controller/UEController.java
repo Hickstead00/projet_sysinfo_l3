@@ -71,4 +71,18 @@ public class UEController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/count")
+    @Operation(summary = "Caluler le nombre total d'UE")
+    @ApiResponse(responseCode = "200", description = "Nombre d'UE récupéré")
+    @ApiResponse(responseCode = "404", description = "Nombre d'UE non récupéré")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(ueService.count());
+    }
+
+    @GetMapping("/hourlyVolume")
+    @Operation(summary = "Calculer le nombre d'heure totale dans les UE")
+    @ApiResponse(responseCode = "200", description = "Nombre d'heure total récupéré")
+    @ApiResponse(responseCode = "404", description = "Nombre d'heure total non récupéré")
+    public ResponseEntity<Integer> hourlyVolume(){ return ResponseEntity.ok(ueService.hourlyVolume());}
+
 }

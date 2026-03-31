@@ -24,6 +24,8 @@ import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import { MatChipGrid, MatChipRow, MatChipsModule } from '@angular/material/chips';
+import { ViewChild, ElementRef } from '@angular/core';
+import {UeService} from '../../service/ue-service';
 
 @Component({
   selector: 'app-enseignants',
@@ -66,8 +68,17 @@ export class Enseignants implements OnInit {
 
   tagsFiltres: Tag[] = [];
 
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
+
+  searchControl = new FormControl('', { nonNullable: true });
+
+  numberUE: number = 0;
+
+  hourlyVolumeUE : number = 0;
+
   constructor(
     private enseignantService: EnseignantService,
+    private ueService: UeService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private tagService: TagService,
@@ -77,7 +88,8 @@ export class Enseignants implements OnInit {
     this.initForm();
 
     this.allEnseignant();
-
+    this.countTotalUE();
+    this.hourlyVolume();
     this.tagService.getAllTags().subscribe({
       next: (tags) => (this.tagDispo = tags),
     });
@@ -107,7 +119,11 @@ export class Enseignants implements OnInit {
   }
 
   createEnseignant(): void {
-    if (this.enseignantForm.invalid) return;
+    if (this.enseignantForm.invalid) {
+      this.messageErreurCreation = "Un nom, prénom et email valide sont obligatoires";
+      this.cdr.detectChanges();
+      return;
+    }
 
     this.messageErreurCreation = undefined;
 
@@ -117,6 +133,7 @@ export class Enseignants implements OnInit {
       next: () => {
         this.rechercheEffectuee = false;
         this.enseignantSelectionne = [];
+        this.searchControl.setValue('');
         this.allEnseignant();
         this.enseignantForm.reset();
         this.tagsSelectionnes = [];
@@ -139,6 +156,7 @@ export class Enseignants implements OnInit {
       next: () => {
         this.rechercheEffectuee = false;
         this.enseignantSelectionne = [];
+        this.searchControl.setValue('');
         this.allEnseignant();
         this.cdr.detectChanges();
       },
@@ -238,11 +256,38 @@ export class Enseignants implements OnInit {
     this.tagsSelectionnes.push(tag); // ajoute le tag à la liste de selections
 
     this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) }); // rempli le form avec la liste des tags selection ( que leurs id via le map)
+    this.tagInput.nativeElement.value = '';
   }
 
   retirerTag(tag: Tag): void {
     this.tagsSelectionnes = this.tagsSelectionnes.filter((t) => t.id !== tag.id); // garde seulement les tags qui n'ont pas l'id du tag à retirer
 
     this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
+  }
+
+  countTotalUE(): void {
+    this.ueService.count().subscribe({
+      next: (total) => {
+        this.numberUE = total;
+        this.cdr.detectChanges();
+      },
+
+      error: (e) => {
+        console.error('Erreur dans le calcul total UE :', e);
+      }
+    });
+  }
+
+  hourlyVolume() : void {
+    this.ueService.hourlyVolume().subscribe({
+      next: (total) =>{
+        this.hourlyVolumeUE = total;
+        this.cdr.detectChanges();
+      },
+
+      error : (e) =>{
+        console.error('Erreur dans le calcul du volume horaire UE', e);
+      }
+    });
   }
 }

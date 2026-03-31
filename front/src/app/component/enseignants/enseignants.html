@@ -17,15 +17,15 @@
   <mat-card class="stat-card">
     <mat-card-content>
       <div class="stat-icon"><mat-icon>menu_book</mat-icon></div>
-      <div class="stat-number">totalUe</div>
-      <div class="stat-desc">UE affectées</div>
+      <div class="stat-number">{{ numberUE }}</div>
+      <div class="stat-desc">Nombre d'UE</div>
     </mat-card-content>
   </mat-card>
 
   <mat-card class="stat-card">
     <mat-card-content>
       <div class="stat-icon"><mat-icon>schedule</mat-icon></div>
-      <div class="stat-number">totalHeures</div>
+      <div class="stat-number">{{ hourlyVolumeUE }}</div>
       <div class="stat-desc">Heures totales</div>
     </mat-card-content>
   </mat-card>
@@ -40,6 +40,7 @@
         <input
           matInput
           placeholder="Rechercher un enseignant..."
+          [formControl]="searchControl"
           (input)="rechercherEnseignantByNom($event.target.value)"
         />
       </mat-form-field>
@@ -137,6 +138,7 @@
               <button matChipRemove>✕</button>
             </mat-chip-row>
             <input
+              #tagInput
               placeholder="Ajouter un tag..."
               [matChipInputFor]="chipGrid"
               [matAutocomplete]="auto"
@@ -164,7 +166,6 @@
         mat-raised-button
         color="primary"
         type="button"
-        [disabled]="enseignantForm.invalid"
         (click)="createEnseignant()"
       >
         + Ajouter l'enseignant

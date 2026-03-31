@@ -259,4 +259,15 @@ public class UEService {
                 .volumeHoraireTotal(volumeTotal)
                 .build();
     }
+
+    public Long count() {
+        return ueRepository.count();
+    }
+
+    public int hourlyVolume(){
+        return ueRepository.findAll()
+                .stream()
+                .mapToInt(ue -> ue.getCm() + ue.getTd() + ue.getTp())
+                .sum();
+    }
 }

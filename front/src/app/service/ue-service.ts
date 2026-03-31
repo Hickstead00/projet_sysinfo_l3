@@ -31,4 +31,12 @@ export class UeService {
   modifierUe(id: number, ue: CreateUe): Observable<Ue> {
     return this.http.put<Ue>(this.apiUE + '/' + id, ue);
   }
+
+  count() : Observable<number> {
+    return this.http.get<number>(this.apiUE + '/count');
+  }
+
+  hourlyVolume() : Observable<number> {
+    return this.http.get<number>(this.apiUE + '/hourlyVolume');
+  }
 }
