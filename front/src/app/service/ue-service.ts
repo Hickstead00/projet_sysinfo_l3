@@ -39,4 +39,8 @@ export class UeService {
   hourlyVolume() : Observable<number> {
     return this.http.get<number>(this.apiUE + '/hourlyVolume');
   }
+
+  countUEattachToTeachers() : Observable<number> {
+    return this.http.get<number>(this.apiUE + '/countUEattachToTeachers');
+  }
 }

@@ -79,6 +79,14 @@ public class UEController {
         return ResponseEntity.ok(ueService.count());
     }
 
+    @GetMapping("/countUEattachToTeachers")
+    @Operation(summary = "Caluler le nombre total d'UE")
+    @ApiResponse(responseCode = "200", description = "Nombre d'UE attachés à des enseignants récupéré")
+    @ApiResponse(responseCode = "404", description = "Nombre d'UE attachés à des enseignants non récupéré")
+    public ResponseEntity<Long> countUEattachToTeachers() {
+        return ResponseEntity.ok(ueService.countUEattachToTeachers());
+    }
+
     @GetMapping("/hourlyVolume")
     @Operation(summary = "Calculer le nombre d'heure totale dans les UE")
     @ApiResponse(responseCode = "200", description = "Nombre d'heure total récupéré")

@@ -69,6 +69,10 @@ public class ProfesseurController {
         professeurService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/hourlyVolumeTeachers")
+    @Operation(summary = "Calculer le nombre d'heure totale dans les UE affectés à des enseignants")
+    @ApiResponse(responseCode = "200", description = "Nombre d'heure total des enseignants récupéré")
+    @ApiResponse(responseCode = "404", description = "Nombre d'heure total des enseignants non récupéré")
+    public ResponseEntity<Long> hourlyVolume(){ return ResponseEntity.ok(professeurService.hourlyVolumeTeachers());}
 
 }

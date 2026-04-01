@@ -144,4 +144,17 @@ public class ProfesseurService {
                 .build();
     }
 
+    public Long hourlyVolumeTeachers(){
+        List<Professeur> lesProfesseurs = professeurRepository.findAll();
+        Long compteur = Long.valueOf(0);
+        for (Professeur leProf : lesProfesseurs){
+             Long idProf = leProf.getId();
+            Long total = ueRepository
+                    .findStatsByEnseignantId(idProf)
+                    .getTotalHeures();
+            System.out.println("Total heures = " + total);
+            compteur += (total != null ? total : Long.valueOf(0));
+        }
+        return compteur;
+    }
 }

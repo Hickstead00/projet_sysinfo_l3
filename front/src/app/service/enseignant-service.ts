@@ -34,4 +34,7 @@ export class EnseignantService {
 
   }
 
+  hourlyVolumeTeachers() : Observable<number> {
+    return this.http.get<number>(this.apiEnseignant + '/hourlyVolumeTeachers');
+  }
 }

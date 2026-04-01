@@ -264,6 +264,10 @@ public class UEService {
         return ueRepository.count();
     }
 
+    public Long countUEattachToTeachers(){
+        return ueRepository.countDistinctByEnseignantsIsNotEmpty();
+    }
+
     public int hourlyVolume(){
         return ueRepository.findAll()
                 .stream()

@@ -36,4 +36,6 @@ public interface UERepository extends JpaRepository<UE, Long> {
             WHERE r.id_professeur = :profId
             """, nativeQuery = true)
     Long countByReferentId(@Param("profId") Long profId);
+
+    Long countDistinctByEnseignantsIsNotEmpty();
 }

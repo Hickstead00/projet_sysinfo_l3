@@ -72,9 +72,9 @@ export class Enseignants implements OnInit {
 
   searchControl = new FormControl('', { nonNullable: true });
 
-  numberUE: number = 0;
+  countUEattachToTeachers: number = 0;
 
-  hourlyVolumeUE : number = 0;
+  hourlyVolumeUETeachers : number = 0;
 
   constructor(
     private enseignantService: EnseignantService,
@@ -88,8 +88,8 @@ export class Enseignants implements OnInit {
     this.initForm();
 
     this.allEnseignant();
-    this.countTotalUE();
-    this.hourlyVolume();
+    this.countTotalUEattachToTeachers();
+    this.getHourlyVolumeTeachers();
     this.tagService.getAllTags().subscribe({
       next: (tags) => (this.tagDispo = tags),
     });
@@ -265,10 +265,23 @@ export class Enseignants implements OnInit {
     this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
   }
 
-  countTotalUE(): void {
-    this.ueService.count().subscribe({
+  getHourlyVolumeTeachers() : void {
+    this.enseignantService.hourlyVolumeTeachers().subscribe({
+      next: (total) =>{
+        this.hourlyVolumeUETeachers = total;
+        this.cdr.detectChanges();
+      },
+
+      error : (e) =>{
+        console.error('Erreur dans le calcul du volume horaire UE', e);
+      }
+    });
+  }
+
+  countTotalUEattachToTeachers(): void {
+    this.ueService.countUEattachToTeachers().subscribe({
       next: (total) => {
-        this.numberUE = total;
+        this.countUEattachToTeachers = total;
         this.cdr.detectChanges();
       },
 
@@ -278,16 +291,4 @@ export class Enseignants implements OnInit {
     });
   }
 
-  hourlyVolume() : void {
-    this.ueService.hourlyVolume().subscribe({
-      next: (total) =>{
-        this.hourlyVolumeUE = total;
-        this.cdr.detectChanges();
-      },
-
-      error : (e) =>{
-        console.error('Erreur dans le calcul du volume horaire UE', e);
-      }
-    });
-  }
 }
