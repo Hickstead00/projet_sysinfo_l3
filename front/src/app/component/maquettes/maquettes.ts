@@ -19,6 +19,7 @@ import {
 import { MaquetteService } from '../../service/maquette-service';
 import { UeService } from '../../service/ue-service';
 import { ParametresService } from '../../service/parametres-service';
+import { PdfExportService } from '../../service/pdf-export-service';
 import { Maquette } from '../../model/maquette';
 import { CreateMaquette } from '../../model/create-maquette';
 import { Ue } from '../../model/ue';
@@ -66,6 +67,7 @@ export class MaquettesComponent implements OnInit {
     private ngZone: NgZone,
     private fb: FormBuilder,
     private location: Location,
+    private pdfExportService: PdfExportService,
   ) {}
 
   retourArriere(): void {
@@ -286,6 +288,11 @@ export class MaquettesComponent implements OnInit {
       this.erreurSemestreMessage = undefined;
       this.cdr.detectChanges();
     }, 3000);
+  }
+
+  exporterPdf(): void {
+    if (!this.maquetteActive) return;
+    this.pdfExportService.exporterMaquette(this.maquetteActive, this.parametres);
   }
 
   private rafraichirMaquette(): void {
