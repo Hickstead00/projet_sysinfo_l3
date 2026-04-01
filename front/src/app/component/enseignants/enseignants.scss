@@ -304,6 +304,11 @@ small {
   color: #64748b;
 }
 
+.ens-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .btn-delete {
   background: transparent;
   border: none;

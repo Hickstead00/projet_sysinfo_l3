@@ -50,7 +50,7 @@
       <div class="ens-grille">
         <mat-card
           class="ens-card"
-          *ngFor="let ens of rechercheEffectuee ? enseignantSelectionne : listEnseignant"
+          *ngFor="let ens of teacherPage"
         >
           <mat-card-content>
             <div class="ens-card-top">
@@ -63,9 +63,14 @@
                   <div class="ens-email">✉ {{ ens.email }}</div>
                 </div>
               </div>
-              <button class="btn-delete" (click)="deleteEnseignantById(ens.id)">
-                <mat-icon>delete_outline</mat-icon>
-              </button>
+              <div class="ens-actions">
+                <button class="btn-delete" (click)="updateEnseignantForm(ens)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button class="btn-delete" (click)="deleteEnseignantById(ens.id)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
             </div>
 
             <div class="ens-tags">
@@ -94,10 +99,15 @@
           </mat-card-content>
         </mat-card>
       </div>
+      <mat-paginator
+        [length]="totalTeachers"
+        [pageSize]="teacherByPage"
+        (page)="pageChange($event)">
+      </mat-paginator>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="form">
+  <mat-card class="form" [style.border]="enseignantEnCours ? '5px solid orange' : 'none'">
     <mat-card-header>
       <mat-card-title>Nouvel Enseignant</mat-card-title>
       <mat-card-subtitle>Ajouter un membre à l'équipe</mat-card-subtitle>
@@ -166,9 +176,9 @@
         mat-raised-button
         color="primary"
         type="button"
-        (click)="createEnseignant()"
+        (click)="manageEnseignant()"
       >
-        + Ajouter l'enseignant
+        {{ enseignantEnCours ? 'Modifier l’enseignant' : '+ Ajouter l’enseignant' }}
       </button>
       <button mat-stroked-button class="btn-annuler" type="button" (click)="enseignantForm.reset()">
         Annuler

@@ -19,6 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -43,6 +45,7 @@ import {UeService} from '../../service/ue-service';
     MatChipRow,
     MatChipsModule,
     MatAutocompleteModule,
+    MatPaginatorModule,
   ],
   templateUrl: './enseignants.html',
   styleUrl: './enseignants.scss',
@@ -75,6 +78,16 @@ export class Enseignants implements OnInit {
   countUEattachToTeachers: number = 0;
 
   hourlyVolumeUETeachers : number = 0;
+
+  currentPage = 0;
+
+  teacherByPage = 10;
+
+  totalTeachers = 0;
+
+  teacherPage: Enseignant[] = [];
+
+  enseignantEnCours?: Enseignant;
 
   constructor(
     private enseignantService: EnseignantService,
@@ -113,9 +126,20 @@ export class Enseignants implements OnInit {
     this.enseignantService.getAllEnseignant().subscribe({
       next: (data) => {
         this.listEnseignant = data;
+        this.totalTeachers = data.length;
+        this.updateTeachersByPage();
         this.cdr.detectChanges();
       },
     });
+  }
+
+  manageEnseignant(): void {
+    if (this.enseignantEnCours) {
+      this.updateEnseignant();
+    } else {
+      this.createEnseignant();
+    }
+    this.enseignantEnCours = undefined;
   }
 
   createEnseignant(): void {
@@ -135,6 +159,42 @@ export class Enseignants implements OnInit {
         this.enseignantSelectionne = [];
         this.searchControl.setValue('');
         this.allEnseignant();
+        this.updateTeachersByPage();
+        this.enseignantForm.reset();
+        this.tagsSelectionnes = [];
+        this.cdr.detectChanges();
+      },
+
+      error: (e) => {
+        if (e.status === 400) {
+          this.messageErreurCreation = 'Données invalides';
+        } else if (e.status === 409) {
+          this.messageErreurCreation = 'Email déjà utilisé';
+        }
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  updateEnseignant(): void {
+    if (!this.enseignantEnCours) return;
+    if (this.enseignantForm.invalid) {
+      this.messageErreurCreation = "Un nom, prénom et email valide sont obligatoires";
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.messageErreurCreation = undefined;
+
+    const enseignantData: CreateEnseignant = this.enseignantForm.value;
+
+    this.enseignantService.editEnseignant(this.enseignantEnCours.id, enseignantData).subscribe({
+      next: () => {
+        this.rechercheEffectuee = false;
+        this.enseignantSelectionne = [];
+        this.searchControl.setValue('');
+        this.allEnseignant();
+        this.updateTeachersByPage();
         this.enseignantForm.reset();
         this.tagsSelectionnes = [];
         this.cdr.detectChanges();
@@ -158,6 +218,7 @@ export class Enseignants implements OnInit {
         this.enseignantSelectionne = [];
         this.searchControl.setValue('');
         this.allEnseignant();
+        this.updateTeachersByPage();
         this.cdr.detectChanges();
       },
 
@@ -179,6 +240,7 @@ export class Enseignants implements OnInit {
       next: (enseignant) => {
         this.enseignantSelectionne = enseignant;
         this.rechercheEffectuee = true;
+        this.updateTeachersByPage();
         this.cdr.detectChanges();
       },
 
@@ -289,6 +351,28 @@ export class Enseignants implements OnInit {
         console.error('Erreur dans le calcul total UE :', e);
       }
     });
+  }
+
+  updateTeachersByPage(): void {
+    const start = this.currentPage * this.teacherByPage;
+    const end = start + this.teacherByPage;
+    this.teacherPage = (this.rechercheEffectuee ? this.enseignantSelectionne : this.listEnseignant).slice(start, end);
+  }
+
+  pageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.updateTeachersByPage();
+  }
+
+  updateEnseignantForm(ens: Enseignant): void {
+    this.enseignantEnCours = ens;
+    this.enseignantForm.patchValue({
+      prenom: ens.prenom,
+      nom: ens.nom,
+      email: ens.email,
+      tagIds: ens.tags.map(t => t.id)
+    });
+    this.tagsSelectionnes = [...ens.tags];
   }
 
 }
