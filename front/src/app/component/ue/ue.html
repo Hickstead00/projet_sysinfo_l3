@@ -1,26 +1,24 @@
 <div class="page">
-  <mat-card class="form">
+  <mat-card class="form" [style.border]="ueEnCours ? '5px solid orange' : 'none'">
     <mat-card-header>
       <mat-card-title>Nouvelle Unité d'enseignement</mat-card-title>
       <mat-card-subtitle>Créez une nouvelle UE pour vos maquettes</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <form [formGroup]="ueForm" (ngSubmit)="createUe()">
+      <form [formGroup]="ueForm" (ngSubmit)="createModifUe()">
         <mat-label>Intitulé de l'UE<span style="color: #e05c5c">*</span></mat-label>
         <mat-form-field appearance="outline" class="taille">
           <input matInput formControlName="nomUe" placeholder="Algorithmique avancée" />
         </mat-form-field>
 
-        <mat-label>Crédit ECTS<span style="color: #e05c5c">*</span></mat-label>
+        <mat-label>Crédit ECTS</mat-label>
         <mat-form-field appearance="outline" class="taille">
           <input matInput formControlName="ects" type="number" placeholder="6" />
         </mat-form-field>
 
         <mat-label>UE non obligatoire (stage, projet, etc...)</mat-label>
-        <mat-checkbox
-          (change)="ueForm.patchValue({ ueObligatoire: !$event.checked })"
-        ></mat-checkbox>
+        <mat-checkbox (change)="ueForm.patchValue({ ueObligatoire: !$event.checked })"></mat-checkbox>
 
         <div class="section-volume-horaire"></div>
         <p class="section-label-horaire">Volume Horaire</p>
@@ -48,13 +46,9 @@
 
         <div class="section-equipe-pedagogique"></div>
         <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
-        <mat-label class="label-referent"
-          >Responsable de l'UE <span style="color: #e05c5c">*</span></mat-label
-        >
-        <mat-select
-          placeholder="Sélectionner un enseignant..."
-          (valueChange)="ueForm.patchValue({ referentIds: [$event] })"
-        >
+        <mat-label class="label-referent">Responsable de l'UE <span style="color: #e05c5c">*</span></mat-label>
+        <mat-select placeholder="Sélectionner un enseignant..." [value]="referentSelectionne"
+          (valueChange)="referentSelectionne = $event; ueForm.patchValue({ referentIds: [$event] })">
           <mat-option *ngFor="let ens of enseignantDispo" [value]="ens.id">
             {{ ens.nom }} {{ ens.prenom }}
           </mat-option>
@@ -64,20 +58,13 @@
         <mat-label class="label-enseignant-associe">Enseignants associés</mat-label>
         <mat-form-field appearance="outline" class="taille">
           <mat-chip-grid #chipGridEns>
-            <mat-chip-row
-              class="chip-ens"
-              *ngFor="let ens of enseignantSelectionnes"
-              (removed)="retirerEnseignant(ens)"
-            >
+            <mat-chip-row class="chip-ens" *ngFor="let ens of enseignantSelectionnes"
+              (removed)="retirerEnseignant(ens)">
               {{ ens.nom }}{{ ens.prenom }}
               <button matChipRemove>✕</button>
             </mat-chip-row>
-            <input
-              placeholder="Ajouter un enseignant..."
-              [matChipInputFor]="chipGridEns"
-              [matAutocomplete]="autoEns"
-              (input)="enseignantByNom($event.target.value)"
-            />
+            <input #ensInput placeholder="Ajouter un enseignant..." [matChipInputFor]="chipGridEns"
+              [matAutocomplete]="autoEns" (input)="enseignantByNom($event.target.value)" />
           </mat-chip-grid>
           <mat-autocomplete #autoEns="matAutocomplete" (optionSelected)="ajouterEnseignant($event)">
             <mat-option *ngFor="let e of enseignantFiltres" [value]="e">
@@ -97,12 +84,8 @@
               {{ tag.nomTag }}
               <button matChipRemove>✕</button>
             </mat-chip-row>
-            <input
-              placeholder="Ajouter un tag..."
-              [matChipInputFor]="chipGridTag"
-              [matAutocomplete]="autoTag"
-              (input)="tagByNom($event.target.value)"
-            />
+            <input #tagInput placeholder="Ajouter un tag..." [matChipInputFor]="chipGridTag" [matAutocomplete]="autoTag"
+              (input)="tagByNom($event.target.value)" />
           </mat-chip-grid>
           <mat-autocomplete #autoTag="matAutocomplete" (optionSelected)="ajouterTag($event)">
             <mat-option *ngFor="let t of tagsFiltres" [value]="t">
@@ -115,20 +98,12 @@
         <mat-label>Prérequis</mat-label>
         <mat-form-field appearance="outline" class="taille">
           <mat-chip-grid #chipGridUe>
-            <mat-chip-row
-              class="chip-ue"
-              *ngFor="let ue of ueSelectionnes"
-              (removed)="retirerUe(ue)"
-            >
+            <mat-chip-row class="chip-ue" *ngFor="let ue of ueSelectionnes" (removed)="retirerUe(ue)">
               {{ ue.nomUe }}
               <button matChipRemove>✕</button>
             </mat-chip-row>
-            <input
-              placeholder="Ajouter une UE prérequis..."
-              [matChipInputFor]="chipGridUe"
-              [matAutocomplete]="autoUe"
-              (input)="ueByNom($event.target.value)"
-            />
+            <input #ueInput placeholder="Ajouter une UE prérequis..." [matChipInputFor]="chipGridUe"
+              [matAutocomplete]="autoUe" (input)="ueByNom($event.target.value)" />
           </mat-chip-grid>
           <mat-autocomplete #autoUe="matAutocomplete" (optionSelected)="ajouterUe($event)">
             <mat-option *ngFor="let u of ueFiltres" [value]="u">
@@ -136,19 +111,16 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        @if (messageErreurCreation) {
+        <p class="message-erreur">{{ messageErreurCreation }}</p>
+        }
       </form>
     </mat-card-content>
     <div class="btn-creer-ue">
-      <button
-        mat-raised-button
-        color="primary"
-        type="button"
-        [disabled]="ueForm.invalid"
-        (click)="createUe()"
-      >
-        + Créer l'UE
+      <button mat-raised-button color="primary" type="button" (click)="createModifUe()">
+        {{ ueEnCours ? 'Modifier l\'UE' : '+ Créer l\'UE' }}
       </button>
-      <button mat-stroked-button class="btn-annuler" type="button" (click)="ueForm.reset()">
+      <button mat-stroked-button class="btn-annuler" type="button" (click)="annuler()">
         Annuler
       </button>
     </div>
@@ -175,7 +147,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ue of rechercheEffectue ? ueFiltres : listUe">
+          <tr *ngFor="let ue of rechercheEffectue ? ueFiltres : uePage">
             <td class="td-intitule">
               <div class="ue-nom">{{ ue.nomUe }}</div>
               <div class="ue-referent">
@@ -201,6 +173,9 @@
               <span class="badge-ects">{{ ue.ects }}</span>
             </td>
             <td class="td-actions">
+              <button class="btn-action" (click)="updateUeForm(ue)">
+                <mat-icon>edit</mat-icon>
+              </button>
               <button class="btn-action btn-delete" (click)="deleteUeById(ue.id)">
                 <mat-icon>delete_outline</mat-icon>
               </button>
@@ -208,6 +183,8 @@
           </tr>
         </tbody>
       </table>
+      <mat-paginator [length]="totalUe" [pageSize]="11" [hidePageSize]="true" (page)="pageChange($event)">
+      </mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>

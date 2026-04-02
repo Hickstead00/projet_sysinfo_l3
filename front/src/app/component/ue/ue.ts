@@ -27,6 +27,8 @@ import { MatChipGrid, MatChipRow, MatChipsModule } from '@angular/material/chips
 import { MatCheckbox } from '@angular/material/checkbox';
 import { TagService } from '../../service/tag-service';
 import { Ue } from '../../model/ue';
+import { ViewChild, ElementRef } from '@angular/core';
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-ue',
@@ -45,6 +47,7 @@ import { Ue } from '../../model/ue';
     MatChipsModule,
     MatAutocompleteModule,
     MatCheckbox,
+    MatPaginatorModule,
   ],
   templateUrl: './ue.html',
   styleUrl: './ue.scss',
@@ -70,6 +73,26 @@ export class UEComponent implements OnInit {
 
   rechercheEffectue: boolean = false;
 
+  @ViewChild('ensInput') ensInput!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('ueInput') ueInput!: ElementRef<HTMLInputElement>;
+
+  messageErreurCreation?: string;
+
+  currentPage = 0;
+
+  ueByPage = 11;
+
+  totalUe = 0;
+
+  uePage: Ue[] = [];
+
+  ueEnCours?: Ue;
+
+  referentSelectionne: number | null = null;
+
   constructor(
     private ueService: UeService,
     private cdr: ChangeDetectorRef,
@@ -83,9 +106,6 @@ export class UEComponent implements OnInit {
     this.initForm();
     this.enseignantService.getAllEnseignant().subscribe({
       next: (ens) => (this.enseignantDispo = ens),
-    });
-    this.ueService.getAllUe().subscribe({
-      next: (ue) => (this.listUe = ue),
     });
   }
 
@@ -103,7 +123,10 @@ export class UEComponent implements OnInit {
       ueObligatoire: new FormControl<boolean>(true, { nonNullable: true }),
       tagIds: new FormControl<number[]>([]),
       enseignantIds: new FormControl<number[]>([]),
-      referentIds: new FormControl<number[]>([]),
+      referentIds: new FormControl<number[]>([], {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       prerequisIds: new FormControl<number[]>([]),
     });
   }
@@ -112,30 +135,43 @@ export class UEComponent implements OnInit {
     this.ueService.getAllUe().subscribe({
       next: (ue) => {
         this.listUe = ue;
+        this.totalUe = ue.length;
+        this.updateUeByPage();
         this.cdr.detectChanges();
       },
     });
   }
 
-  createUe(): void {
-    if (this.ueForm.invalid) return;
+  createModifUe(): void {
+    if (this.ueForm.invalid) {
+      this.messageErreurCreation = 'Un intitulé et responsable sont obligatoires';
+      this.cdr.detectChanges();
+      return;
+    }
 
+    this.messageErreurCreation = undefined;
     const ue: CreateUe = this.ueForm.value;
 
-    this.ueService.createUe(ue).subscribe({
+    const modif = this.ueEnCours
+      ? this.ueService.modifierUe(this.ueEnCours.id, ue)
+      : this.ueService.createUe(ue);
+
+    modif.subscribe({
       next: () => {
         this.allUe();
         this.ueForm.reset();
+        this.referentSelectionne = null;
         this.enseignantSelectionnes = [];
         this.tagsSelectionnes = [];
         this.ueSelectionnes = [];
+        this.ueEnCours = undefined;
         this.cdr.detectChanges();
       },
       error: (e) => {
         if (e.status === 400) {
-          console.log('données invalides');
+          this.messageErreurCreation = 'Données invalides';
         } else if (e.status === 409) {
-          console.log('ue déjà existante');
+          this.messageErreurCreation = 'Une UE avec ce nom existe déjà';
         }
         this.cdr.detectChanges();
       },
@@ -162,6 +198,8 @@ export class UEComponent implements OnInit {
   deleteUeById(id: number): void {
     this.ueService.deleteUe(id).subscribe({
       next: (ue) => {
+        this.rechercheEffectue = false;
+        this.ueFiltres = [];
         this.allUe();
         this.cdr.detectChanges();
       },
@@ -172,16 +210,6 @@ export class UEComponent implements OnInit {
         }
       },
     });
-  }
-
-  ajouterUe(event: MatAutocompleteSelectedEvent): void {
-    const ue: Ue = event.option.value;
-
-    if (this.ueSelectionnes.find((u) => u.id === ue.id)) return;
-
-    this.ueSelectionnes.push(ue);
-
-    this.ueForm.patchValue({ prerequisIds: this.ueSelectionnes.map((u) => u.id) });
   }
 
   retirerUe(ue: Ue): void {
@@ -206,12 +234,29 @@ export class UEComponent implements OnInit {
 
   ajouterEnseignant(event: MatAutocompleteSelectedEvent): void {
     const ens: Enseignant = event.option.value;
-
     if (this.enseignantSelectionnes.find((e) => e.id === ens.id)) return;
-
     this.enseignantSelectionnes.push(ens);
-
     this.ueForm.patchValue({ enseignantIds: this.enseignantSelectionnes.map((e) => e.id) });
+    this.ensInput.nativeElement.value = '';
+    this.enseignantFiltres = [];
+  }
+
+  ajouterTag(event: MatAutocompleteSelectedEvent): void {
+    const tag: Tag = event.option.value;
+    if (this.tagsSelectionnes.find((t) => t.id === tag.id)) return;
+    this.tagsSelectionnes.push(tag);
+    this.ueForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
+    this.tagInput.nativeElement.value = '';
+    this.tagsFiltres = [];
+  }
+
+  ajouterUe(event: MatAutocompleteSelectedEvent): void {
+    const ue: Ue = event.option.value;
+    if (this.ueSelectionnes.find((u) => u.id === ue.id)) return;
+    this.ueSelectionnes.push(ue);
+    this.ueForm.patchValue({ prerequisIds: this.ueSelectionnes.map((u) => u.id) });
+    this.ueInput.nativeElement.value = '';
+    this.ueFiltres = [];
   }
 
   retirerEnseignant(ens: Enseignant): void {
@@ -234,19 +279,51 @@ export class UEComponent implements OnInit {
     });
   }
 
-  ajouterTag(event: MatAutocompleteSelectedEvent): void {
-    const tag: Tag = event.option.value; // recupre le tag cliqué depuis l'evenemnt
-
-    if (this.tagsSelectionnes.find((t) => t.id === tag.id)) return; // si tag déjà dans la liste on s'arrête
-
-    this.tagsSelectionnes.push(tag); // ajoute le tag à la liste de selections
-
-    this.ueForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) }); // rempli le form avec la liste des tags selection ( que leurs id via le map)
-  }
-
   retirerTag(tag: Tag): void {
     this.tagsSelectionnes = this.tagsSelectionnes.filter((t) => t.id !== tag.id); // garde seulement les tags qui n'ont pas l'id du tag à retirer
 
     this.ueForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
+  }
+
+  updateUeByPage(): void {
+    const start = this.currentPage * this.ueByPage;
+    const end = start + this.ueByPage;
+    this.uePage = (this.rechercheEffectue ? this.ueFiltres : this.listUe).slice(start, end);
+  }
+
+  pageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.updateUeByPage();
+  }
+
+  updateUeForm(ue: Ue): void {
+    this.ueEnCours = ue;
+    this.referentSelectionne = ue.referents?.[0]?.id ?? null;
+    this.ueForm.patchValue({
+      nomUe: ue.nomUe,
+      ects: ue.ects,
+      cm: ue.cm,
+      td: ue.td,
+      tp: ue.tp,
+      description: ue.description,
+      ueObligatoire: ue.ueObligatoire,
+      tagIds: ue.tags.map((t) => t.id),
+      enseignantIds: ue.enseignants.map((e) => e.id),
+      referentIds: ue.referents.map((r) => r.id),
+      prerequisIds: ue.prerequis.map((u) => u.id),
+    });
+    this.tagsSelectionnes = [...ue.tags];
+    this.enseignantSelectionnes = [...ue.enseignants];
+    this.ueSelectionnes = [...ue.prerequis];
+  }
+
+  annuler(): void {
+    this.ueForm.reset();
+    this.referentSelectionne = null;
+    this.enseignantSelectionnes = [];
+    this.tagsSelectionnes = [];
+    this.ueSelectionnes = [];
+    this.ueEnCours = undefined;
+    this.messageErreurCreation = undefined;
   }
 }

@@ -32,15 +32,15 @@ export class UeService {
     return this.http.put<Ue>(this.apiUE + '/' + id, ue);
   }
 
-  count() : Observable<number> {
+  count(): Observable<number> {
     return this.http.get<number>(this.apiUE + '/count');
   }
 
-  hourlyVolume() : Observable<number> {
+  hourlyVolume(): Observable<number> {
     return this.http.get<number>(this.apiUE + '/hourlyVolume');
   }
 
-  countUEattachToTeachers() : Observable<number> {
+  countUEattachToTeachers(): Observable<number> {
     return this.http.get<number>(this.apiUE + '/countUEattachToTeachers');
   }
 }
