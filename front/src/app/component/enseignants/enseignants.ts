@@ -375,4 +375,11 @@ export class Enseignants implements OnInit {
     this.tagsSelectionnes = [...ens.tags];
   }
 
+  annuler(): void {
+    this.enseignantForm.reset();
+    this.tagsSelectionnes = [];
+    this.enseignantEnCours = undefined;
+    this.messageErreurCreation = undefined;
+  }
+
 }
