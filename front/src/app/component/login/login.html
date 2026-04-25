@@ -1,0 +1,27 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="logo.png" alt="logo" class="login-logo">
+    <h1>GestMaquette</h1>
+    <p class="login-subtitle">Connectez-vous pour continuer</p>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email"
+               placeholder="votre@email.fr" required>
+      </div>
+
+      <div class="form-group">
+        <label for="motDePasse">Mot de passe</label>
+        <input id="motDePasse" type="password" [(ngModel)]="motDePasse" name="motDePasse"
+               placeholder="Mot de passe" required>
+      </div>
+
+      @if (erreur) {
+        <p class="login-erreur">{{ erreur }}</p>
+      }
+
+      <button type="submit">Se connecter</button>
+    </form>
+  </div>
+</div>

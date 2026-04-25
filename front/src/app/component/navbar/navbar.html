@@ -16,7 +16,10 @@
 
     <ul class="nav-links-right">
         <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
-        <li><a class="nav-session" href="#">Utilisateur</a></li>
+        @if (utilisateur) {
+            <li><span class="nav-session">{{ utilisateur.nomUtilisateur }}</span></li>
+            <li><a class="nav-deconnexion" (click)="deconnexion()">Déconnexion</a></li>
+        }
     </ul>
 
 </nav>
