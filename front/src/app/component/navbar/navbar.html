@@ -1,7 +1,7 @@
 <nav class="navbar">
 
     <div class="nav-logo">
-        <img src="logo.png" alt="logo" class="logo-icon">
+        <img src="/logo.png" alt="logo" class="logo-icon">
         <span class="logo-text">GestMaquette</span>
     </div>
 
@@ -17,8 +17,8 @@
     <ul class="nav-links-right">
         <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
         @if (utilisateur) {
-            <li><span class="nav-session">{{ utilisateur.nomUtilisateur }}</span></li>
-            <li><a class="nav-deconnexion" (click)="deconnexion()">Déconnexion</a></li>
+        <li><span class="nav-session">{{ utilisateur.nomUtilisateur }}</span></li>
+        <li><a class="nav-deconnexion" (click)="deconnexion()">Déconnexion</a></li>
         }
     </ul>
 
