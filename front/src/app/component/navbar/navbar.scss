@@ -108,3 +108,28 @@ li a.active {
     background-color: #fef2f2 !important;
   }
 }
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.user-nom {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1e2a3a;
+}
+
+.user-email {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}

@@ -11,14 +11,22 @@
         <li><a routerLink="/gestionTags" routerLinkActive="active">Tags</a></li>
         <li><a routerLink="/enseignants" routerLinkActive="active">Enseignants</a></li>
         <li><a routerLink="/ue" routerLinkActive="active">UEs</a></li>
-        <li><a routerLink="/maquettes" routerLinkActive="active">Maquettes</a></li>
+        @if (utilisateur?.role != "SECRETAIRE"){
+          <li><a routerLink="/maquettes" routerLinkActive="active">Maquettes</a></li>
+        }
     </ul>
 
     <ul class="nav-links-right">
         <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
         @if (utilisateur) {
-        <li><span class="nav-session">{{ utilisateur.nomUtilisateur }}</span></li>
-        <li><a class="nav-deconnexion" (click)="deconnexion()">Déconnexion</a></li>
+          <li><div class="user-avatar" [style.background]="getAvatarColor(utilisateur.nomUtilisateur)">
+            {{ utilisateur.nomUtilisateur[0] }}
+          </div></li>
+          <li>
+            <div class="user-nom">{{ utilisateur.nomUtilisateur }}</div>
+            <div class="user-email"> {{ utilisateur.email }}</div>
+          </li>
+          <li><a class="nav-deconnexion" (click)="deconnexion()">Déconnexion</a></li>
         }
     </ul>
 
