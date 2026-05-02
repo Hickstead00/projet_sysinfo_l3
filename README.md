@@ -1,87 +1,102 @@
-# GestMaquette
+# 🎓 GestMaquette
 
-Plateforme de gestion des maquettes pédagogiques universitaires.
+> **Plateforme de gestion intelligente des maquettes pédagogiques universitaires.**
 
-**Projet L3 MIAGE — Université d'Orléans — 2025-2026**
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
+[![Angular](https://img.shields.io/badge/Angular-17+-red?logo=angular)](https://angular.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://www.docker.com/)
 
-## Équipe
+Ce projet, réalisé dans le cadre de la **L3 MIAGE à l'Université d'Orléans (2025-2026)**, permet de piloter les maquettes de formation, de gérer les charges d'enseignement et de suivre les unités d'enseignement (UE) via un système de tags dynamiques.
 
-- AMGHAR Gassien
-- BODIN Virgile
-- DELAHAYE Antoine
+---
 
-## Stack technique
+## 🚀 Lancement Rapide
 
-| Composant        | Technologie             |
-| ---------------- | ----------------------- |
-| Frontend         | Angular                 |
-| Backend          | Java 21 / Spring Boot 4 |
-| Base de données  | PostgreSQL 16           |
-| Conteneurisation | Docker Compose          |
+L'application est entièrement conteneurisée pour garantir une **portabilité totale**. Aucune installation locale de Java, Node ou PostgreSQL n'est requise.
 
-## Prérequis
+### 1. Prérequis
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et lancé.
 
-- [Docker](https://www.docker.com/) et Docker Compose installés
-
-## Lancement
-
+### 2. Installation
 ```bash
-git clone
+# Cloner le projet
+git clone https://github.com/Hickstead00/projet_sysinfo_l3
 cd projet_sysinfo_l3
+
+# Lancer toute la stack (Frontend, API, BDD)
 docker compose up --build
 ```
 
-Une fois le docker lancé l'application est disponible aux URL's suivants
+### 3. Accès aux services
+| Service | URL | Description |
+| :--- | :--- | :--- |
+| **Frontend** | [http://localhost:4200](http://localhost:4200) | Interface utilisateur Angular |
+| **Backend API** | [http://localhost:8080](http://localhost:8080) | Point d'entrée de l'API REST |
+| **Swagger UI** | [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) | Documentation interactive de l'API |
 
-| Service     | URL                                   |
-| ----------- | ------------------------------------- |
-| Frontend    | http://localhost:4200                 |
-| Backend API | http://localhost:8080                 |
-| Swagger UI  | http://localhost:8080/swagger-ui.html |
+---
 
-## Comptes par défaut
+## 🏗️ Architecture du Système
 
-> _À venir — les comptes de démonstration seront ajoutés dans une version ultérieure._
+Le projet suit un pattern **MVC distribué** pour une séparation stricte des responsabilités.
 
-## Structure du projet
-
+### 🌐 Frontend (Vue)
+Développé avec **Angular & Angular Material**. L'architecture est modulaire et fortement typée.
+*   **Gestion des Modèles :** Utilisation de DTOs TypeScript (interfaces avec et sans ID) pour sécuriser les flux de création/modification.
+*   **Arborescence :**
+```text
+src/app
+├── component/    ← Composants UI (Enseignants, UE, Tags...)
+├── model/        ← Interfaces et DTOs (Données)
+├── service/      ← Communication asynchrone avec l'API
+├── guard/        ← Sécurisation des accès aux routes
+└── interceptor/  ← Gestion globale des headers et erreurs
 ```
-projet_sysinfo_l3/
-├── backend/          ← API Spring Boot
-├── front/            ← Application Angular
-├── database/         ← Scripts SQL d'initialisation + triggers si necessaire
-├── docker-compose.yml
-└── README.md
-```
 
-## Tags de version
-
-| Tag  | Description                                                                   |
-| ---- | ----------------------------------------------------------------------------- |
-| v0.1 | Structure projet + entités JPA + config CORS                                  |
-| v0.2 | CRUD Tags : repository, service, controller, DTOs, exceptions, Swagger        |
-| v0.3 | CRUD Professeurs : repository, service, controller, DTOs, exceptions, Swagger |
-| v0.4 | CRUD UE : repository, service, controller, DTOs, validation                   |
-| v0.5 | CRUD Maquette & Semestre : routes hiérarchiques, calcul ECTS, validations    |
-
-
-## Architecture backend
-
-```
+### ⚙️ Backend (Contrôleur)
+Développé avec **Java 21** et **Spring Boot 4**. Il assure la logique métier et la sécurité.
+*   **Arborescence :**
+```text
 com.amgboddel.backend
-├── config/        ← Configuration (CORS, sécurité)
-├── entity/        ← Entités JPA
-├── repository/    ← Interfaces Spring Data
-├── service/       ← Logique métier
-├── controller/    ← Endpoints REST
-├── dto/           ← Objets de transfert
-└── exception/     ← Exceptions levées
+├── config/       ← Sécurité et configuration CORS
+├── controller/   ← Exposition des Endpoints REST
+├── service/      ← Logique métier (calculs d'heures, validations)
+├── repository/   ← Couche d'accès aux données (Spring Data JPA)
+├── entity/       ← Modèles persistants en base de données
+└── dto/          ← Objets de transfert pour limiter l'exposition des entités
+└── exception/    ← Controleur d'exception global, pour rediriger correctement ces dernières.
 ```
 
-## Base de données
+### 🗄️ Base de données (Modèle)
+Utilisation de **PostgreSQL 16**. Le schéma comporte 13 tables gérant l'intégrité référentielle des maquettes.
 
-13 tables générées automatiquement par Hibernate :
+---
 
-**Tables principales :** utilisateur, tag, professeur, ue, maquette, semestre, parametres
+## 🛠️ Portabilité & Docker
+L'utilisation de `docker-compose.yml` permet de virtualiser l'environnement Linux nécessaire au projet :
+*   **Isolation :** Les conflits de versions locales sont impossibles.
+*   **Persistence :** Les données de la base PostgreSQL sont conservées via des volumes Docker.
+*   **Réseau :** Le backend et la base de données communiquent sur un réseau privé isolé.
 
-**Tables de jointure :** tag_ue, tag_professeur, enseigne, referent, prerequis_ue, semestre_ue
+---
+
+## 📈 Suivi des Versions (Tags)
+
+| Tag | État | Fonctionnalités clés |
+| :--- | :--- | :--- |
+| **v0.1** | ✅ | Init de la stack + Entités JPA + Config Docker |
+| **v0.2** | ✅ | CRUD Tags & Swagger Integration |
+| **v0.3** | ✅ | Gestion des Professeurs & Logique Service |
+| **v0.4** | ✅ | Gestion des UE & Validations métier |
+| **v0.5** | 🚀 | Maquettes, Semestres et calculs automatiques d'ECTS |
+
+---
+
+## 👥 L'Équipe
+*   **AMGHAR Gassien**
+*   **BODIN Virgile**
+*   **DELAHAYE Antoine**
+
+---
+*Projet réalisé dans un but pédagogique - MIAGE Orléans.*
