@@ -88,11 +88,15 @@ L'utilisation de `docker-compose.yml` permet de virtualiser l'environnement Linu
 
 | Tag | État | Fonctionnalités clés |
 | :--- | :--- | :--- |
-| **v0.1** | ✅ | Init de la stack + Entités JPA + Config Docker |
-| **v0.2** | ✅ | CRUD Tags & Swagger Integration |
-| **v0.3** | ✅ | Gestion des Professeurs & Logique Service |
-| **v0.4** | ✅ | Gestion des UE & Validations métier |
-| **v0.5** | 🚀 | Maquettes, Semestres et calculs automatiques d'ECTS |
+| **v0.1** | ✅ | Initialisation de la structure du projet |
+| **v0.2** | ✅ | Page Tag + Nav barre fonctionnelles |
+| **v0.3** | ✅ | Page Enseignant fonctionnelle |
+| **v0.4** | ✅ | Page UE fonctionnelle |
+| **v0.5** | ✅ | Ajout de la page paramètre, non fonctionnelle |
+| **v0.6** | ✅ | Page Maquette fonctionnelle |
+| **v0.7** | ✅ | Export vers PDF opérationnel |
+| **v0.8** | ✅ | Authentification fonctionnelle, credentials non affichés |
+| **v1.0** | 🚀 | Version actuelle de l'application |
 
 ---
 
