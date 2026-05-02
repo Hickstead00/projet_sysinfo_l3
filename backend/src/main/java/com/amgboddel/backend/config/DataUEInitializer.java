@@ -66,7 +66,7 @@ public class DataUEInitializer implements CommandLineRunner {
             log.warn("Tags ou professeurs manquants. Initialisation UE annulée.");
             return;
         }
-        
+
         UE ueUn = new UE();
         ueUn.setNomUe("Java avancé");
         ueUn.setEcts(5);
@@ -79,7 +79,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueUn.getTags().add(tags.get(1));
         ueUn.getEnseignants().add(profs.get(0));
         ueUn.getReferents().add(profs.get(1));
-        
+
         UE ueDeux = new UE();
         ueDeux.setNomUe("Algorithmique et complexité");
         ueDeux.setEcts(4);
@@ -88,13 +88,11 @@ public class DataUEInitializer implements CommandLineRunner {
         ueDeux.setTp(24);
         ueDeux.setDescription("Étude des algorithmes et de leur complexité.");
         ueDeux.setUeObligatoire(true);
-
         ueDeux.getTags().add(tags.get(2));
         ueDeux.getTags().add(tags.get(3));
-
         ueDeux.getEnseignants().add(profs.get(2));
         ueDeux.getReferents().add(profs.get(3));
-        
+
         UE ueTrois = new UE();
         ueTrois.setNomUe("Système d'informations");
         ueTrois.setEcts(4);
@@ -103,12 +101,10 @@ public class DataUEInitializer implements CommandLineRunner {
         ueTrois.setTp(30);
         ueTrois.setDescription("Modélisation et gestion des bases de données relationnelles.");
         ueTrois.setUeObligatoire(true);
-
         ueTrois.getTags().add(tags.get(9));
-
         ueTrois.getEnseignants().add(profs.get(4));
         ueTrois.getReferents().add(profs.get(5));
-        
+
         UE ueQuatre = new UE();
         ueQuatre.setNomUe("Réseaux informatiques");
         ueQuatre.setEcts(4);
@@ -119,7 +115,8 @@ public class DataUEInitializer implements CommandLineRunner {
         ueQuatre.setUeObligatoire(true);
         ueQuatre.getTags().add(tags.get(7));
         ueQuatre.getEnseignants().add(profs.get(6));
-        
+        ueQuatre.getReferents().add(profs.get(7));
+
         UE ueCinq = new UE();
         ueCinq.setNomUe("Programmation Web");
         ueCinq.setEcts(5);
@@ -131,7 +128,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueCinq.getTags().add(tags.get(1));
         ueCinq.getEnseignants().add(profs.get(7));
         ueCinq.getReferents().add(profs.get(8));
-        
+
         UE ueSix = new UE();
         ueSix.setNomUe("Mathématiques appliquées");
         ueSix.setEcts(3);
@@ -142,6 +139,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueSix.setUeObligatoire(true);
         ueSix.getTags().add(tags.get(3));
         ueSix.getEnseignants().add(profs.get(9));
+        ueSix.getReferents().add(profs.get(8));
 
         UE ueSept = new UE();
         ueSept.setNomUe("Architecture logicielle");
@@ -167,6 +165,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueHuit.getTags().add(tags.get(2));
         ueHuit.getTags().add(tags.get(6));
         ueHuit.getEnseignants().add(profs.get(2));
+        ueHuit.getReferents().add(profs.get(3));
 
         UE ueNeuf = new UE();
         ueNeuf.setNomUe("Intelligence artificielle");
@@ -191,6 +190,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueDix.setDescription("Stage professeionnelle");
         ueDix.setUeObligatoire(false);
         ueDix.getEnseignants().add(profs.get(5));
+        ueDix.getReferents().add(profs.get(5));
 
         UE ueOnze = new UE();
         ueOnze.setNomUe("Sécurité informatique");
@@ -215,6 +215,7 @@ public class DataUEInitializer implements CommandLineRunner {
         ueDouze.setUeObligatoire(true);
         ueDouze.getTags().add(tags.get(6));
         ueDouze.getEnseignants().add(profs.get(3));
+        ueDouze.getReferents().add(profs.get(3));
 
         UE ueTreize = new UE();
         ueTreize.setNomUe("Anglais");
@@ -253,7 +254,49 @@ public class DataUEInitializer implements CommandLineRunner {
         ueQuinze.setUeObligatoire(true);
         ueQuinze.getTags().add(tags.get(9));
         ueQuinze.getEnseignants().add(profs.get(13));
-        
+        ueQuinze.getReferents().add(profs.get(12));
+
+        UE ueSeize = new UE();
+        ueSeize.setNomUe("Anglais 2");
+        ueSeize.setEcts(2);
+        ueSeize.setCm(20);
+        ueSeize.setTd(20);
+        ueSeize.setTp(20);
+        ueSeize.setDescription("Approfondissement d'anglais en 2ème année");
+        ueSeize.setUeObligatoire(true);
+        ueSeize.getTags().add(tags.get(6));
+        ueSeize.getTags().add(tags.get(5));
+        ueSeize.getEnseignants().add(profs.get(9));
+        ueSeize.getReferents().add(profs.get(9));
+        ueSeize.getPrerequis().add(ueTreize);
+
+        UE ueDixsept = new UE();
+        ueDixsept.setNomUe("Anglais 3");
+        ueDixsept.setEcts(2);
+        ueDixsept.setCm(20);
+        ueDixsept.setTd(20);
+        ueDixsept.setTp(20);
+        ueDixsept.setDescription("Approfondissement d'anglais en 3ème année");
+        ueDixsept.setUeObligatoire(true);
+        ueDixsept.getTags().add(tags.get(6));
+        ueDixsept.getTags().add(tags.get(5));
+        ueDixsept.getEnseignants().add(profs.get(9));
+        ueDixsept.getReferents().add(profs.get(9));
+        ueDixsept.getPrerequis().add(ueSeize);
+
+        UE ueDixhuit = new UE();
+        ueDixhuit.setNomUe("Statistiques");
+        ueDixhuit.setEcts(4);
+        ueDixhuit.setCm(20);
+        ueDixhuit.setTd(30);
+        ueDixhuit.setTp(5);
+        ueDixhuit.setDescription("Statistiques pour l’informatique");
+        ueDixhuit.setUeObligatoire(true);
+        ueDixhuit.getTags().add(tags.get(3));
+        ueDixhuit.getReferents().add(profs.get(8));
+        ueDixhuit.getPrerequis().add(ueSix);
+
+
         ueRepository.save(ueUn);
         ueRepository.save(ueDeux);
         ueRepository.save(ueTrois);
@@ -269,6 +312,9 @@ public class DataUEInitializer implements CommandLineRunner {
         ueRepository.save(ueTreize);
         ueRepository.save(ueQuatorze);
         ueRepository.save(ueQuinze);
+        ueRepository.save(ueSeize);
+        ueRepository.save(ueDixsept);
+        ueRepository.save(ueDixhuit);
 
         log.info("15 UE de test créées");
     }

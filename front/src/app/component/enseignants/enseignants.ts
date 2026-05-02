@@ -133,6 +133,7 @@ export class Enseignants implements OnInit {
     });
   }
 
+  // action déclenché par le front, modifie ou créer un professeur en fonction de s'il existe un ensegnantEnCours
   manageEnseignant(): void {
     if (this.enseignantEnCours) {
       this.updateEnseignant();

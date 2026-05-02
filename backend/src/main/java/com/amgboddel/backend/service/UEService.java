@@ -278,10 +278,12 @@ public class UEService {
         return ueRepository.count();
     }
 
+    // retourne le nombre d'UE qui possèdent des enseignants
     public Long countUEattachToTeachers(){
         return ueRepository.countDistinctByEnseignantsIsNotEmpty();
     }
 
+    // retourne le volume horaire total de toutes les UE
     public int hourlyVolume(){
         return ueRepository.findAll()
                 .stream()
