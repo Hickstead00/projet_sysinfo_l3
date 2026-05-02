@@ -17,11 +17,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+
+// Cette classe étant une classe de Configuration, avec des Bean elle est executé par Spring automatiquement au démarrage
+// de l'application. Il gère ensuite les injections de dépendance là ou c'est nécessaire.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
+    // Configure la chaine de filtres de sécurité de l'application
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -64,11 +69,13 @@ public class SecurityConfig {
         return source;
     }
 
+    // Fournis l'encodeur BCrypt pour le hashage/décodage des mots de passes
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Déclare le gestionaire d'authentification pour injection dans le AuthController
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

@@ -12,6 +12,10 @@ export class PdfExportService {
   private readonly GRIS_TEXTE = '#475569';
   private readonly NOIR = '#1e2a3a';
 
+  // Point d'entrée : génère le PDF complet de la maquette.
+  // La variable `y` suit la position verticale (en mm) sur la page courante.
+  // Chaque section retourne la nouvelle position `y` après dessin ;
+  // un saut de page est déclenché si `y` dépasse le seuil bas de la page A4.
   exporterMaquette(maquette: Maquette, parametres?: Parametres): void {
     const doc = new jsPDF('p', 'mm', 'a4');
     let y = 15;
@@ -38,6 +42,7 @@ export class PdfExportService {
 
     y = this.dessinerRecapitulatif(doc, maquette, parametres, y);
 
+    // Légende en bas de page si certaines UE apparaissent dans plusieurs maquettes
     const aDesUePartagees = maquette.semestres
       .flatMap((s) => s.ues)
       .some((ue) => ue.nbMaquettes > 1);
@@ -59,6 +64,7 @@ export class PdfExportService {
     doc.save(`${nomFichier}.pdf`);
   }
 
+  // Bandeau bleu foncé en haut de page avec nom, type, nb ECTS et date de génération
   private dessinerEnTete(doc: jsPDF, maquette: Maquette, y: number): number {
     doc.setFillColor(this.BLEU_FONCE);
     doc.rect(0, 0, 210, 35, 'F');
@@ -85,6 +91,9 @@ export class PdfExportService {
     return 45;
   }
 
+  // Tableau d'un semestre : en-tête bleu avec numéro + ECTS/volume,
+  // puis une ligne par UE (nom, référent, CM, TD, TP, ECTS) et une ligne de totaux.
+  // Les UE partagées avec d'autres maquettes sont mises en gras via didParseCell.
   private dessinerSemestre(
     doc: jsPDF,
     semestre: { numeroSemestre: number; ues: any[]; ectsTotal: number; volumeHoraireCm: number; volumeHoraireTd: number; volumeHoraireTp: number; volumeHoraireTotal: number },
@@ -116,6 +125,8 @@ export class PdfExportService {
       return [ue.nomUe, referent, `${ue.cm}h`, `${ue.td}h`, `${ue.tp}h`, `${ue.ects}`];
     });
 
+    // Set des index de lignes dont l'UE est partagée (nbMaquettes > 1),
+    // utilisé dans didParseCell pour appliquer le gras sur ces lignes
     const uesPartagees = new Set(
       semestre.ues.filter((ue) => ue.nbMaquettes > 1).map((_ue, i) => i),
     );
@@ -156,12 +167,17 @@ export class PdfExportService {
         4: { cellWidth: 18, halign: 'center' },
         5: { cellWidth: 18, halign: 'center' },
       },
+      // Callback appelé par jspdf-autotable pour chaque cellule avant le rendu.
+      // Permet de styliser dynamiquement : ligne de totaux en gras grisé,
+      // et UE partagées en gras + taille supérieure.
       didParseCell: (data) => {
+        // Dernière ligne = totaux : fond gris, texte en gras
         if (data.row.index === donnees.length - 1 && data.section === 'body') {
           data.cell.styles.fontStyle = 'bold';
           data.cell.styles.fillColor = '#e2e8f0';
           data.cell.styles.textColor = this.NOIR;
         }
+        // UE présente dans plusieurs maquettes : mise en gras
         if (data.section === 'body' && uesPartagees.has(data.row.index)) {
           data.cell.styles.fontStyle = 'bold';
           data.cell.styles.fontSize = 10;
@@ -169,9 +185,13 @@ export class PdfExportService {
       },
     });
 
+    // finalY = position verticale après le tableau, accessible via lastAutoTable
     return (doc as any).lastAutoTable.finalY + 10;
   }
 
+  // Tableau récapitulatif : volumes horaires, ECTS total,
+  // et si les paramètres sont fournis : détail des coûts par type + coût total.
+  // Le coût total passe en rouge si le budget est dépassé.
   private dessinerRecapitulatif(
     doc: jsPDF,
     maquette: Maquette,
@@ -221,6 +241,8 @@ export class PdfExportService {
         0: { cellWidth: 120 },
         1: { cellWidth: 57, halign: 'right', fontStyle: 'bold', textColor: this.NOIR },
       },
+      // Met en gras les lignes de synthèse (totaux, ECTS, coût).
+      // Si le budget est dépassé, le coût total est affiché en rouge.
       didParseCell: (data) => {
         if (data.section === 'body') {
           const raw = data.row.raw as string[];
@@ -239,6 +261,7 @@ export class PdfExportService {
     return (doc as any).lastAutoTable.finalY + 5;
   }
 
+  // Ajoute "GestMaquette — Page X/N" centré en bas de chaque page
   private dessinerPiedDePage(doc: jsPDF): void {
     const nbPages = doc.getNumberOfPages();
     for (let i = 1; i <= nbPages; i++) {

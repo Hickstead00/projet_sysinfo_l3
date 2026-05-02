@@ -16,6 +16,7 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Petite méthode auxiliaire permettant de remplir les champs avec les données fixes de la page pour la démo
   remplirDemo(email: string, motDePasse: string) {
     this.email = email;
     this.motDePasse = motDePasse;

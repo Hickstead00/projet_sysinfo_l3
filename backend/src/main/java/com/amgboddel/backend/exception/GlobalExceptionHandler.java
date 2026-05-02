@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+// Gestionnaire d'exception grace au RestControllerAdvice il intercepte les exceptions levées et les transforme en réponses
+// HTTP propres pour le front end avant qu'elles n'arrivent au controllers
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

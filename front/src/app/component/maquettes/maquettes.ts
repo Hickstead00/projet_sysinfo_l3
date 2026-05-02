@@ -189,6 +189,8 @@ export class MaquettesComponent implements OnInit {
     return ['M1', 'M2'];
   }
 
+  // Retourne les 2 semestres de l'année sélectionnée.
+  // anneeActive=0 → S1/S2, anneeActive=1 → S3/S4, etc.
   getSemestresAnnee(): Semestre[] {
     if (!this.maquetteActive) return [];
     const debut = this.anneeActive * 2;
@@ -244,6 +246,9 @@ export class MaquettesComponent implements OnInit {
     this.semestreSurvoleId = semestreId;
   }
 
+  // Appelé quand une UE est déposée (drop) dans un semestre via drag & drop.
+  // ngZone.run() force Angular à détecter les changements car le CDK drag & drop
+  // peut déclencher des événements en dehors de la zone Angular.
   onDrop(event: CdkDragDrop<Ue[]>, semestre: Semestre): void {
     if (!this.maquetteActive) return;
 
@@ -282,6 +287,7 @@ export class MaquettesComponent implements OnInit {
     });
   }
 
+  // Affiche un message d'erreur temporaire (3s) sous le semestre concerné
   private afficherErreurSemestre(semestreId: number, message: string): void {
     if (this.erreurTimeout) clearTimeout(this.erreurTimeout);
     this.erreurSemestreId = semestreId;

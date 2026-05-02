@@ -131,6 +131,8 @@ public class MaquetteService {
         int ectsManquants = Math.max(0, ectsAttendu - ectsTotal);
         int ectsSurplus = Math.max(0, ectsTotal - ectsAttendu);
 
+        // Calcul du coût estimé : somme de (heures * tarif) pour chaque type (CM, TD, TP)
+        // sur toutes les UE de la maquette, puis comparaison au budget max si défini
         Parametres params = parametresService.getOrCreate();
         double coutEstime = semestresResponse.stream()
                 .flatMap(s -> s.getUes().stream())

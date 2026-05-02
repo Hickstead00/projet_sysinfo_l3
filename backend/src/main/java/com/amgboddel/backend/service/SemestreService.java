@@ -117,6 +117,7 @@ public class SemestreService {
         UE ue = ueRepository.findById(ueId)
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
 
+        // Vérifier que l'UE n'est pas déjà dans un des semestres de cette maquette
         List<Semestre> semestresMaquette = semestreRepository.findByMaquetteId(maquetteId);
 
         boolean dejaPresente = semestresMaquette.stream()
@@ -128,7 +129,9 @@ public class SemestreService {
                     "L'UE " + ueId + " est déjà présente dans un semestre de cette maquette");
         }
 
-
+        // Vérification des prérequis (si activée dans les paramètres) :
+        // On construit une map [ueId -> numéroSemestre] pour savoir où chaque UE est placée,
+        // puis on vérifie que tous les prérequis de l'UE à ajouter sont dans un semestre antérieur.
         if (parametresService.getOrCreate().getAlertesPrerequisActives()) {
             Map<Long, Integer> ueIdVersNumeroSemestre = new HashMap<>();
             for (Semestre s : semestresMaquette) {
@@ -167,6 +170,9 @@ public class SemestreService {
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
 
 
+        // Vérification inverse des prérequis (si activée) :
+        // Avant de retirer l'UE, on vérifie qu'aucune UE dans les semestres suivants
+        // ne dépend d'elle comme prérequis, sinon le retrait est bloqué.
         if (parametresService.getOrCreate().getAlertesPrerequisActives()) {
             List<String> ueDependantes = new ArrayList<>();
             for (Semestre s : semestreRepository.findByMaquetteId(maquetteId)) {
@@ -207,12 +213,15 @@ public class SemestreService {
     }
 
     public SemestreResponse toResponse(Semestre semestre) {
+        // Conversion des UE en version light (sans enseignants/référents/prérequis)
+        // pour éviter les boucles infinies de sérialisation
         List<UEResponse> uesResponse = semestre.getUes() == null
                 ? Collections.emptyList()
                 : semestre.getUes().stream()
-                .map(ueService::toResponseLight) // Utiliser une version light pour éviter les boucles infinies
+                .map(ueService::toResponseLight)
                 .toList();
 
+        // Agrégation des volumes horaires par type (CM, TD, TP)
         int ectsTotal = uesResponse.stream()
                 .mapToInt(UEResponse::getEcts)
                 .sum();
@@ -231,11 +240,14 @@ public class SemestreService {
 
         int volumeTotal = volumeCm + volumeTd + volumeTp;
 
+        // Validation ECTS : chaque semestre doit totaliser exactement 30 ECTS
         boolean respecteEcts = (ectsTotal == 30);
         int ectsManquants = Math.max(0, 30 - ectsTotal);
         int ectsSurplus = Math.max(0, ectsTotal - 30);
 
-        // Vérifier les prérequis non respectés
+        // Détection des prérequis non respectés dans ce semestre :
+        // Pour chaque UE, on vérifie que ses prérequis sont placés dans un semestre
+        // strictement antérieur. Sert à alimenter les alertes visuelles côté front.
         List<String> prerequisNonRespectes = new ArrayList<>();
         if (semestre.getUes() != null && semestre.getMaquette() != null) {
             Map<Long, Integer> ueIdVersNumero = new HashMap<>();

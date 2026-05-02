@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Permet le pont entre la BDD et Spring security, on load via l'utilisateurRepository l'utilisateur puis Spring compare
+// en machinerie interne le mot de passe hashé via BCryptPasswordEncoder que le @Bean de démarrage lui à fourni.
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {

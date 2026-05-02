@@ -10,6 +10,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+// Classe permettant d'initialiser des users en BDD via CommandLineRunner qui s'execute au démarrage de l'app
+// Slf4j permet de faire un log.info pour afficher des logs dans la console sans coder tout une méthode auxiliaire
+// Order permet de chosir l'ordre dans lequel les classes implémentant CommandLineRunner sont executés
 @Component
 @RequiredArgsConstructor
 @Slf4j
