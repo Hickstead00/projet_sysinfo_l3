@@ -13,4 +13,5 @@ export interface Semestre {
   respecteEcts: boolean;
   ectsManquants: number;
   ectsSurplus: number;
+  prerequisNonRespectes: string[];
 }

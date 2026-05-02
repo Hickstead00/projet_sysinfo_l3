@@ -26,6 +26,7 @@ public class SemestreService {
     private final MaquetteRepository maquetteRepository;
     private final UERepository ueRepository;
     private final UEService ueService;
+    private final ParametresService parametresService;
 
     @Transactional
     public List<SemestreResponse> getAll() {
@@ -128,25 +129,27 @@ public class SemestreService {
         }
 
 
-        Map<Long, Integer> ueIdVersNumeroSemestre = new HashMap<>();
-        for (Semestre s : semestresMaquette) {
-            for (UE u : s.getUes()) {
-                ueIdVersNumeroSemestre.put(u.getId(), s.getNumeroSemestre());
+        if (parametresService.getOrCreate().getAlertesPrerequisActives()) {
+            Map<Long, Integer> ueIdVersNumeroSemestre = new HashMap<>();
+            for (Semestre s : semestresMaquette) {
+                for (UE u : s.getUes()) {
+                    ueIdVersNumeroSemestre.put(u.getId(), s.getNumeroSemestre());
+                }
             }
-        }
 
-        List<String> prerequisManquants = new ArrayList<>();
-        for (UE prereq : ue.getPrerequis()) {
-            Integer numeroSemestrePrereq = ueIdVersNumeroSemestre.get(prereq.getId());
-            if (numeroSemestrePrereq == null || numeroSemestrePrereq >= semestre.getNumeroSemestre()) {
-                prerequisManquants.add(prereq.getNomUe());
+            List<String> prerequisManquants = new ArrayList<>();
+            for (UE prereq : ue.getPrerequis()) {
+                Integer numeroSemestrePrereq = ueIdVersNumeroSemestre.get(prereq.getId());
+                if (numeroSemestrePrereq == null || numeroSemestrePrereq >= semestre.getNumeroSemestre()) {
+                    prerequisManquants.add(prereq.getNomUe());
+                }
             }
-        }
 
-        if (!prerequisManquants.isEmpty()) {
-            throw new PrerequisiteViolationException(
-                    "Prérequis non respectés : " + String.join(", ", prerequisManquants) +
-                    " doit être placé dans un semestre antérieur.");
+            if (!prerequisManquants.isEmpty()) {
+                throw new PrerequisiteViolationException(
+                        "Prérequis non respectés : " + String.join(", ", prerequisManquants) +
+                        " doit être placé dans un semestre antérieur.");
+            }
         }
 
         semestre.getUes().add(ue);
@@ -164,23 +167,25 @@ public class SemestreService {
                 .orElseThrow(() -> new ResourceNotFoundException("UE non trouvée avec l'ID : " + ueId));
 
 
-        List<String> ueDependantes = new ArrayList<>();
-        for (Semestre s : semestreRepository.findByMaquetteId(maquetteId)) {
-            if (s.getNumeroSemestre() > semestre.getNumeroSemestre()) {
-                for (UE u : s.getUes()) {
-                    boolean dependDeCetteUe = u.getPrerequis().stream()
-                            .anyMatch(p -> p.getId().equals(ueId));
-                    if (dependDeCetteUe) {
-                        ueDependantes.add(u.getNomUe() + " (S" + s.getNumeroSemestre() + ")");
+        if (parametresService.getOrCreate().getAlertesPrerequisActives()) {
+            List<String> ueDependantes = new ArrayList<>();
+            for (Semestre s : semestreRepository.findByMaquetteId(maquetteId)) {
+                if (s.getNumeroSemestre() > semestre.getNumeroSemestre()) {
+                    for (UE u : s.getUes()) {
+                        boolean dependDeCetteUe = u.getPrerequis().stream()
+                                .anyMatch(p -> p.getId().equals(ueId));
+                        if (dependDeCetteUe) {
+                            ueDependantes.add(u.getNomUe() + " (S" + s.getNumeroSemestre() + ")");
+                        }
                     }
                 }
             }
-        }
 
-        if (!ueDependantes.isEmpty()) {
-            throw new PrerequisiteViolationException(
-                    "Impossible de retirer \"" + ue.getNomUe() + "\" : " +
-                    String.join(", ", ueDependantes) + " en dépend.");
+            if (!ueDependantes.isEmpty()) {
+                throw new PrerequisiteViolationException(
+                        "Impossible de retirer \"" + ue.getNomUe() + "\" : " +
+                        String.join(", ", ueDependantes) + " en dépend.");
+            }
         }
 
         semestre.getUes().remove(ue);
@@ -230,6 +235,26 @@ public class SemestreService {
         int ectsManquants = Math.max(0, 30 - ectsTotal);
         int ectsSurplus = Math.max(0, ectsTotal - 30);
 
+        // Vérifier les prérequis non respectés
+        List<String> prerequisNonRespectes = new ArrayList<>();
+        if (semestre.getUes() != null && semestre.getMaquette() != null) {
+            Map<Long, Integer> ueIdVersNumero = new HashMap<>();
+            for (Semestre s : semestreRepository.findByMaquetteId(semestre.getMaquette().getId())) {
+                for (UE u : s.getUes()) {
+                    ueIdVersNumero.put(u.getId(), s.getNumeroSemestre());
+                }
+            }
+
+            for (UE ue : semestre.getUes()) {
+                for (UE prereq : ue.getPrerequis()) {
+                    Integer numPrereq = ueIdVersNumero.get(prereq.getId());
+                    if (numPrereq == null || numPrereq >= semestre.getNumeroSemestre()) {
+                        prerequisNonRespectes.add(ue.getNomUe() + " requiert " + prereq.getNomUe());
+                    }
+                }
+            }
+        }
+
         return SemestreResponse.builder()
                 .id(semestre.getId())
                 .numeroSemestre(semestre.getNumeroSemestre())
@@ -243,6 +268,7 @@ public class SemestreService {
                 .respecteEcts(respecteEcts)
                 .ectsManquants(ectsManquants)
                 .ectsSurplus(ectsSurplus)
+                .prerequisNonRespectes(prerequisNonRespectes)
                 .build();
     }
 }

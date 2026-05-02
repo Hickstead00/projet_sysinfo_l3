@@ -291,6 +291,17 @@
               ECTS respectés
             </div>
           }
+
+          @if (parametres.alertesPrerequisActives) {
+            @for (semestre of maquetteActive.semestres; track semestre.id) {
+              @for (msg of semestre.prerequisNonRespectes; track msg) {
+                <div class="alerte alerte-danger">
+                  <mat-icon>link_off</mat-icon>
+                  S{{ semestre.numeroSemestre }} : {{ msg }}
+                </div>
+              }
+            }
+          }
         </div>
       }
       <div class="recap-section recap-section-export">

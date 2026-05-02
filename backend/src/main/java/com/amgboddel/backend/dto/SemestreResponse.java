@@ -28,4 +28,6 @@ public class SemestreResponse {
     private Boolean respecteEcts; // 30 ECTS par semestre
     private Integer ectsManquants;
     private Integer ectsSurplus;
+
+    private List<String> prerequisNonRespectes;
 }
