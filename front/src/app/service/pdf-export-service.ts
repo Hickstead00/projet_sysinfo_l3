@@ -37,6 +37,22 @@ export class PdfExportService {
     }
 
     y = this.dessinerRecapitulatif(doc, maquette, parametres, y);
+
+    const aDesUePartagees = maquette.semestres
+      .flatMap((s) => s.ues)
+      .some((ue) => ue.nbMaquettes > 1);
+
+    if (aDesUePartagees) {
+      if (y > 275) {
+        doc.addPage();
+        y = 15;
+      }
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bolditalic');
+      doc.setTextColor(this.GRIS_TEXTE);
+      doc.text('Les UE en gras sont partagées avec d\'autres maquettes.', 15, y + 3);
+    }
+
     this.dessinerPiedDePage(doc);
 
     const nomFichier = maquette.nomMaquette.replace(/[^a-zA-Z0-9À-ÿ\s-]/g, '').replace(/\s+/g, '_');
@@ -100,6 +116,10 @@ export class PdfExportService {
       return [ue.nomUe, referent, `${ue.cm}h`, `${ue.td}h`, `${ue.tp}h`, `${ue.ects}`];
     });
 
+    const uesPartagees = new Set(
+      semestre.ues.filter((ue) => ue.nbMaquettes > 1).map((_ue, i) => i),
+    );
+
     const totalCm = semestre.ues.reduce((s, ue) => s + ue.cm, 0);
     const totalTd = semestre.ues.reduce((s, ue) => s + ue.td, 0);
     const totalTp = semestre.ues.reduce((s, ue) => s + ue.tp, 0);
@@ -141,6 +161,10 @@ export class PdfExportService {
           data.cell.styles.fontStyle = 'bold';
           data.cell.styles.fillColor = '#e2e8f0';
           data.cell.styles.textColor = this.NOIR;
+        }
+        if (data.section === 'body' && uesPartagees.has(data.row.index)) {
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.fontSize = 10;
         }
       },
     });

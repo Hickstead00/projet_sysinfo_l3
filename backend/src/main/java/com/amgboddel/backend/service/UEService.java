@@ -203,6 +203,12 @@ public class UEService {
 
         int volumeTotal = ue.getCm() + ue.getTd() + ue.getTp();
 
+        long nbMaquettes = ue.getSemestres() == null ? 0 :
+                ue.getSemestres().stream()
+                        .map(s -> s.getMaquette().getId())
+                        .distinct()
+                        .count();
+
         return UEResponse.builder()
                 .id(ue.getId())
                 .nomUe(ue.getNomUe())
@@ -220,6 +226,7 @@ public class UEService {
                 .nbReferents(referents.size())
                 .nbPrerequis(prerequis.size())
                 .nbSemestres(ue.getSemestres().size())
+                .nbMaquettes((int) nbMaquettes)
                 .volumeHoraireTotal(volumeTotal)
                 .build();
     }
@@ -239,6 +246,12 @@ public class UEService {
 
         int volumeTotal = ue.getCm() + ue.getTd() + ue.getTp();
 
+        long nbMaquettes = ue.getSemestres() == null ? 0 :
+                ue.getSemestres().stream()
+                        .map(s -> s.getMaquette().getId())
+                        .distinct()
+                        .count();
+
         return UEResponse.builder()
                 .id(ue.getId())
                 .nomUe(ue.getNomUe())
@@ -249,13 +262,14 @@ public class UEService {
                 .description(ue.getDescription())
                 .ueObligatoire(ue.getUeObligatoire())
                 .tags(tagResponses)
-                .enseignants(Collections.emptyList()) // Non chargé dans version light
+                .enseignants(Collections.emptyList())   // Non chargé dans version light
                 .referents(Collections.emptyList())   // Non chargé dans version light
                 .prerequis(Collections.emptyList())   // Non chargé dans version light
                 .nbEnseignants(0)
                 .nbReferents(0)
                 .nbPrerequis(0)
                 .nbSemestres(0)
+                .nbMaquettes((int) nbMaquettes)
                 .volumeHoraireTotal(volumeTotal)
                 .build();
     }

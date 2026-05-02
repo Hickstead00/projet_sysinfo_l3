@@ -18,5 +18,6 @@ export interface Ue {
   nbReferents: number;
   nbPrerequis: number;
   nbSemestres: number;
+  nbMaquettes: number;
   volumeHoraireTotal: number;
 }

@@ -113,10 +113,14 @@ export class MaquettesComponent implements OnInit {
 
     this.maquetteService.createMaquette(request).subscribe({
       next: (maquette) => {
-        this.maquetteActive = maquette;
-        this.showModale = false;
-        this.chargerPageMaquette();
-        this.cdr.detectChanges();
+        this.maquetteService.getMaquetteById(maquette.id).subscribe({
+          next: (maquetteComplete) => {
+            this.maquetteActive = maquetteComplete;
+            this.showModale = false;
+            this.chargerPageMaquette();
+            this.cdr.detectChanges();
+          },
+        });
       },
       error: (e) => {
         if (e.status === 409) {

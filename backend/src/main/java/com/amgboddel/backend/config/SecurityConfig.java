@@ -31,7 +31,7 @@ public class SecurityConfig {
                         // Auth ouvert à tous
                         .requestMatchers("/api/auth/**").permitAll()
                         // Swagger accessible sans login
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         // Maquettes : RESPONSABLE et ADMIN uniquement
                         .requestMatchers("/api/maquettes/**").hasAnyRole("RESPONSABLE", "ADMIN")
                         // Tout le reste de /api/** : il faut être connecté (peu importe le rôle)

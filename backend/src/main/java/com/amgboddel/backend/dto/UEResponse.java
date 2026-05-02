@@ -33,5 +33,6 @@ public class UEResponse {
     private int nbReferents;
     private int nbPrerequis;
     private int nbSemestres;
+    private int nbMaquettes;
     private int volumeHoraireTotal;
 }
