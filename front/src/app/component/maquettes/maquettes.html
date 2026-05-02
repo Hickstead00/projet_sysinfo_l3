@@ -278,8 +278,8 @@
                 S{{ semestre.numeroSemestre }} : {{ semestre.ectsManquants }} ECTS manquants
               </div>
             }
-            @if (semestre.ectsSurplus > 0) {
-              <div class="alerte alerte-warning">
+            @if (semestre.ectsSurplus > 0 && parametres.alertesEctsActives) {
+              <div class="alerte alerte-surplus">
                 <mat-icon>info</mat-icon>
                 S{{ semestre.numeroSemestre }} : {{ semestre.ectsSurplus }} ECTS en surplus
               </div>
