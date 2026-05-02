@@ -16,10 +16,15 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  remplirDemo(email: string, motDePasse: string) {
+    this.email = email;
+    this.motDePasse = motDePasse;
+  }
+
   onSubmit() {
     this.erreur = '';
     this.authService.login(this.email, this.motDePasse).subscribe({
-      next: () => this.router.navigate(['/maquettes']),
+      next: () => this.router.navigate(['/accueil']),
       error: () => this.erreur = 'Email ou mot de passe incorrect.',
     });
   }

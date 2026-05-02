@@ -22,5 +22,26 @@
 
       <button type="submit">Se connecter</button>
     </form>
+
+    <div class="demo-section">
+      <p class="demo-title">Comptes de démonstration</p>
+      <div class="demo-comptes">
+        <div class="demo-compte" (click)="remplirDemo('admin@gestmaquette.fr', 'admin123')">
+          <span class="demo-role">Admin</span>
+          <span class="demo-email">admin&#64;gestmaquette.fr</span>
+          <span class="demo-mdp">admin123</span>
+        </div>
+        <div class="demo-compte" (click)="remplirDemo('secretaire@gestmaquette.fr', 'secretaire123')">
+          <span class="demo-role">Secrétaire</span>
+          <span class="demo-email">secretaire&#64;gestmaquette.fr</span>
+          <span class="demo-mdp">secretaire123</span>
+        </div>
+        <div class="demo-compte" (click)="remplirDemo('responsable@gestmaquette.fr', 'responsable123')">
+          <span class="demo-role">Responsable</span>
+          <span class="demo-email">responsable&#64;gestmaquette.fr</span>
+          <span class="demo-mdp">responsable123</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -93,3 +93,58 @@ button {
     background-color: #001d3d;
   }
 }
+
+.demo-section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.demo-title {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+.demo-comptes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-compte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #002d5b;
+    background-color: #f8fafc;
+  }
+}
+
+.demo-role {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #002d5b;
+  min-width: 85px;
+}
+
+.demo-email {
+  font-size: 0.78rem;
+  color: #64748b;
+  flex: 1;
+}
+
+.demo-mdp {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-family: monospace;
+}

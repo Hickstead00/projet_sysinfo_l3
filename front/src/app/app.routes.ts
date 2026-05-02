@@ -5,14 +5,16 @@ import { UEComponent } from './component/ue/ue';
 import { ParametresComponent } from './component/parametres/parametres';
 import { MaquettesComponent } from './component/maquettes/maquettes';
 import { LoginComponent } from './component/login/login';
+import { AccueilComponent } from './component/accueil/accueil';
 import { authGuard } from './guard/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'accueil', component: AccueilComponent, canActivate: [authGuard] },
   { path: 'gestionTags', component: GestionTags, canActivate: [authGuard] },
   { path: 'enseignants', component: Enseignants, canActivate: [authGuard] },
   { path: 'ue', component: UEComponent, canActivate: [authGuard] },
   { path: 'parametres', component: ParametresComponent, canActivate: [authGuard] },
-  { path: 'maquettes', component: MaquettesComponent, canActivate: [authGuard] },
-  { path: '', redirectTo: 'maquettes', pathMatch: 'full' },
+  { path: 'maquettes', component: MaquettesComponent, canActivate: [authGuard], data: { roles: ['RESPONSABLE', 'ADMIN'] } },
+  { path: '', redirectTo: 'accueil', pathMatch: 'full' },
 ];

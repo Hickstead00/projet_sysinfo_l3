@@ -1,0 +1,68 @@
+<div class="accueil-container">
+
+  <div class="hero">
+    <img src="/logo.png" alt="GestMaquette" class="hero-logo">
+    <h1>Bienvenue sur <span class="brand">GestMaquette</span></h1>
+    @if (utilisateur) {
+      <p class="hero-subtitle">Connecté en tant que <strong>{{ utilisateur.nomUtilisateur }}</strong></p>
+    }
+  </div>
+
+  <p class="description">
+    GestMaquette est une plateforme de gestion des maquettes pédagogiques développée pour
+    l'Université d'Orléans. Elle permet de concevoir, organiser et valider les cursus
+    universitaires de la Licence au Master.
+  </p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">🎓</div>
+      <h3>Maquettes</h3>
+      <p>Créez et organisez vos maquettes pédagogiques par glisser-déposer.
+        Validez les ECTS, les prérequis et le budget en temps réel.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <h3>Unités d'Enseignement</h3>
+      <p>Gérez le catalogue d'UE avec leurs volumes horaires (CM, TD, TP),
+        crédits ECTS, prérequis et équipes pédagogiques.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">👥</div>
+      <h3>Enseignants</h3>
+      <p>Administrez les enseignants, leurs compétences et leurs affectations
+        aux différentes unités d'enseignement.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🏷️</div>
+      <h3>Tags</h3>
+      <p>Organisez les UE et enseignants par domaines de compétences grâce
+        à un système de tags colorés.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <h3>Paramètres</h3>
+      <p>Configurez les tarifs horaires, le budget maximal et les alertes
+        de validation pour vos maquettes.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Export PDF</h3>
+      <p>Exportez vos maquettes finalisées au format PDF pour archivage
+        et diffusion auprès des équipes.</p>
+    </div>
+
+  </div>
+
+  <div class="credits">
+    <p>Projet Système d'Information — L3 MIAGE, Université d'Orléans</p>
+    <p class="team">AMGHAR Gassien · BODIN Virgile · DELAHAYE Antoine</p>
+  </div>
+
+</div>

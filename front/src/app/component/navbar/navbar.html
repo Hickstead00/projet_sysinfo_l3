@@ -1,9 +1,9 @@
 <nav class="navbar">
 
-    <div class="nav-logo">
+    <a class="nav-logo" routerLink="/accueil">
         <img src="/logo.png" alt="logo" class="logo-icon">
         <span class="logo-text">GestMaquette</span>
-    </div>
+    </a>
 
     <div class="nav-separator"></div>
 
@@ -11,14 +11,14 @@
         <li><a routerLink="/gestionTags" routerLinkActive="active">Tags</a></li>
         <li><a routerLink="/enseignants" routerLinkActive="active">Enseignants</a></li>
         <li><a routerLink="/ue" routerLinkActive="active">UEs</a></li>
-        @if (utilisateur?.role != "SECRETAIRE"){
+        @if ((utilisateur$ | async)?.role != "SECRETAIRE"){
           <li><a routerLink="/maquettes" routerLinkActive="active">Maquettes</a></li>
         }
     </ul>
 
     <ul class="nav-links-right">
         <li><a routerLink="/parametres" routerLinkActive="active">Paramètres</a></li>
-        @if (utilisateur) {
+        @if (utilisateur$ | async; as utilisateur) {
           <li><div class="user-avatar" [style.background]="getAvatarColor(utilisateur.nomUtilisateur)">
             {{ utilisateur.nomUtilisateur[0] }}
           </div></li>

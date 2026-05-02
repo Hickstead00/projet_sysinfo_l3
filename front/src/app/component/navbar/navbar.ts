@@ -1,30 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 import { AuthService } from '../../service/auth-service';
-import { AuthResponse } from '../../model/auth-response';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
 export class Navbar implements OnInit {
-  utilisateur: AuthResponse | null = null;
+  utilisateur$!: typeof this.authService.utilisateur$;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.authService.me().subscribe({
-      next: (user) => this.utilisateur = user,
-      error: () => this.utilisateur = null,
-    });
+    this.utilisateur$ = this.authService.utilisateur$;
+    this.authService.me().subscribe();
   }
 
   deconnexion() {
-    this.authService.logout().subscribe(() => {
-      this.utilisateur = null;
-      this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login']),
     });
   }
 
