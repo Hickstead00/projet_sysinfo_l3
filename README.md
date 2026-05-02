@@ -10,6 +10,9 @@
 Ce projet, réalisé dans le cadre de la **L3 MIAGE à l'Université d'Orléans (2025-2026)**, permet de piloter les maquettes de formation, de gérer les charges d'enseignement et de suivre les unités d'enseignement (UE) via un système de tags dynamiques.
 
 ---
+## 📖 Documentation
+
+**[📋 Manuel d'installation et d'utilisation](./docs/Manuel_Installation_Utilisation_GestMaquette.pdf)**
 
 ## 🚀 Lancement Rapide
 
