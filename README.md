@@ -86,17 +86,17 @@ L'utilisation de `docker-compose.yml` permet de virtualiser l'environnement Linu
 
 ## 📈 Suivi des Versions (Tags)
 
-| Tag | État | Fonctionnalités clés |
-| :--- | :--- | :--- |
-| **v0.1** | ✅ | Initialisation de la structure du projet |
-| **v0.2** | ✅ | Page Tag + Nav barre fonctionnelles |
-| **v0.3** | ✅ | Page Enseignant fonctionnelle |
-| **v0.4** | ✅ | Page UE fonctionnelle |
-| **v0.5** | ✅ | Ajout de la page paramètre, non fonctionnelle |
-| **v0.6** | ✅ | Page Maquette fonctionnelle |
-| **v0.7** | ✅ | Export vers PDF opérationnel |
-| **v0.8** | ✅ | Authentification fonctionnelle, credentials non affichés |
-| **v1.0** | 🚀 | Version actuelle de l'application |
+| Version | Description |
+| :--- | :--- |
+| [**v1.0**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v1.0) | Version actuelle de l'application |
+| [**v0.8**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.8) | Authentification fonctionnelle, credentials non affichés |
+| [**v0.7**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.7) | Export vers PDF opérationnel |
+| [**v0.6**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.6) | Page Maquette fonctionnelle |
+| [**v0.5**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.5) | Ajout de la page paramètre, non fonctionnelle |
+| [**v0.4**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.4) | Page UE fonctionnelle |
+| [**v0.3**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.3) | Page Enseignant fonctionnelle |
+| [**v0.2**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.2) | Page Tag + Nav barre fonctionnelles |
+| [**v0.1**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.1) | Initialisation de la structure du projet |
 
 ---
 
