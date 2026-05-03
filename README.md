@@ -88,7 +88,8 @@ L'utilisation de `docker-compose.yml` permet de virtualiser l'environnement Linu
 
 | Version | Description |
 | :--- | :--- |
-| [**v1.0**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v1.0) | Version actuelle de l'application |
+| [**v1.1**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v1.1) | Version actuelle de l'application (bug fixes mineurs + fixtures étendues) |
+| [**v1.0**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v1.0) | Version de l'application pleinement fonctionelle |
 | [**v0.8**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.8) | Authentification fonctionnelle, credentials non affichés |
 | [**v0.7**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.7) | Export vers PDF opérationnel |
 | [**v0.6**](https://github.com/Hickstead00/projet_sysinfo_l3/tree/v0.6) | Page Maquette fonctionnelle |
