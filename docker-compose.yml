@@ -50,6 +50,7 @@ services:
       - "4200:4200"
     volumes:
       - ./front/src:/app/src
+      - ./front/public:/app/public
       - ./front/angular.json:/app/angular.json
       - /app/node_modules
     depends_on:
