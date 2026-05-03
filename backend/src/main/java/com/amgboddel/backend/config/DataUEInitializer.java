@@ -296,6 +296,71 @@ public class DataUEInitializer implements CommandLineRunner {
         ueDixhuit.getReferents().add(profs.get(8));
         ueDixhuit.getPrerequis().add(ueSix);
 
+        UE ueDixNeuf = new UE();
+        ueDixNeuf.setNomUe("Test 1");
+        ueDixNeuf.setEcts(30);
+        ueDixNeuf.setCm(10);
+        ueDixNeuf.setTd(10);
+        ueDixNeuf.setTp(10);
+        ueDixNeuf.setDescription("UE de test");
+        ueDixNeuf.setUeObligatoire(true);
+        ueDixNeuf.getEnseignants().add(profs.get(1));
+        ueDixNeuf.getReferents().add(profs.get(0));
+
+        UE ueVingt = new UE();
+        ueVingt.setNomUe("Test 2");
+        ueVingt.setEcts(30);
+        ueVingt.setCm(10);
+        ueVingt.setTd(10);
+        ueVingt.setTp(10);
+        ueVingt.setDescription("UE de test");
+        ueVingt.setUeObligatoire(true);
+        ueVingt.getEnseignants().add(profs.get(1));
+        ueVingt.getReferents().add(profs.get(0));
+
+        UE ueVingtEtUn = new UE();
+        ueVingtEtUn.setNomUe("Test 3");
+        ueVingtEtUn.setEcts(30);
+        ueVingtEtUn.setCm(10);
+        ueVingtEtUn.setTd(10);
+        ueVingtEtUn.setTp(10);
+        ueVingtEtUn.setDescription("UE de test");
+        ueVingtEtUn.setUeObligatoire(true);
+        ueVingtEtUn.getEnseignants().add(profs.get(1));
+        ueVingtEtUn.getReferents().add(profs.get(0));
+
+        UE ueVingtDeux = new UE();
+        ueVingtDeux.setNomUe("Test 4");
+        ueVingtDeux.setEcts(30);
+        ueVingtDeux.setCm(10);
+        ueVingtDeux.setTd(10);
+        ueVingtDeux.setTp(10);
+        ueVingtDeux.setDescription("UE de test");
+        ueVingtDeux.setUeObligatoire(true);
+        ueVingtDeux.getEnseignants().add(profs.get(1));
+        ueVingtDeux.getReferents().add(profs.get(0));
+
+        UE ueVingtTrois = new UE();
+        ueVingtTrois.setNomUe("Test 5");
+        ueVingtTrois.setEcts(30);
+        ueVingtTrois.setCm(10);
+        ueVingtTrois.setTd(10);
+        ueVingtTrois.setTp(10);
+        ueVingtTrois.setDescription("UE de test");
+        ueVingtTrois.setUeObligatoire(true);
+        ueVingtTrois.getEnseignants().add(profs.get(1));
+        ueVingtTrois.getReferents().add(profs.get(0));
+
+        UE ueVingtQuatre = new UE();
+        ueVingtQuatre.setNomUe("Test 6");
+        ueVingtQuatre.setEcts(30);
+        ueVingtQuatre.setCm(10);
+        ueVingtQuatre.setTd(10);
+        ueVingtQuatre.setTp(10);
+        ueVingtQuatre.setDescription("UE de test");
+        ueVingtQuatre.setUeObligatoire(true);
+        ueVingtQuatre.getEnseignants().add(profs.get(1));
+        ueVingtQuatre.getReferents().add(profs.get(0));
 
         ueRepository.save(ueUn);
         ueRepository.save(ueDeux);
@@ -315,6 +380,13 @@ public class DataUEInitializer implements CommandLineRunner {
         ueRepository.save(ueSeize);
         ueRepository.save(ueDixsept);
         ueRepository.save(ueDixhuit);
+        ueRepository.save(ueDixNeuf);
+        ueRepository.save(ueVingt);
+        ueRepository.save(ueVingtEtUn);
+        ueRepository.save(ueVingtDeux);
+        ueRepository.save(ueVingtTrois);
+        ueRepository.save(ueVingtQuatre);
+
 
         log.info("15 UE de test créées");
     }
