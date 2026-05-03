@@ -17,29 +17,18 @@
 
         <label class="couleur-label">Couleur</label>
         <div class="couleur-choix">
-          <div
-            *ngFor="let c of couleurs"
-            class="couleur"
-            [class.active]="couleurSelectionnee === c"
-            [style.background]="c"
-            (click)="choisirCouleur(c)"
-          ></div>
+          <div *ngFor="let c of couleurs" class="couleur" [class.active]="couleurSelectionnee === c"
+            [style.background]="c" (click)="choisirCouleur(c)"></div>
         </div>
 
         @if (messageErreurCreation) {
-          <p class="message-erreur">{{ messageErreurCreation }}</p>
+        <p class="message-erreur">{{ messageErreurCreation }}</p>
         }
       </form>
     </mat-card-content>
 
     <div class="btn-creer-tag">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="tagForm.invalid"
-        (click)="createTag()"
-      >
+      <button mat-raised-button color="primary" type="submit" [disabled]="tagForm.invalid" (click)="createTag()">
         + Créer le tag
       </button>
       <button mat-stroked-button class="btn-annuler" type="button" (click)="tagForm.reset()">
@@ -56,18 +45,11 @@
     <mat-card-content>
       <mat-form-field appearance="outline" class="taille">
         <mat-icon matPrefix>search</mat-icon>
-        <input
-          matInput
-          placeholder="Rechercher un tag..."
-          (input)="tagByNom($event.target.value)"
-        />
+        <input matInput placeholder="Rechercher un tag..." (input)="tagByNom($event.target.value)" />
       </mat-form-field>
 
       <div class="tag-grille">
-        <mat-card
-          class="tag-card"
-          *ngFor="let tag of rechercheEffectue ? tagSelectionne : listTags"
-        >
+        <mat-card class="tag-card" *ngFor="let tag of rechercheEffectue ? tagSelectionne : listTags">
           <mat-card-content>
             <div class="tag-card-top">
               <div class="tag-header">
@@ -79,14 +61,11 @@
               </button>
             </div>
             <div class="tag-meta">
-              <span
-                ><mat-icon class="meta-icon">person_outline</mat-icon>
-                {{ nbParTag[tag.id]?.ens ?? 0 }} enseignants</span
-              >
-              <span
-                ><mat-icon class="meta-icon">menu_book</mat-icon>
-                {{ nbParTag[tag.id]?.ue ?? 0 }} UE</span
-              >
+              <span><mat-icon class="meta-icon">person_outline</mat-icon>
+                {{ nbParTag[tag.id]?.ens ?? 0 }} enseignants</span>
+              <!-- si le tag courant existe accède à la valeur ens sinon affiche 0 -->
+              <span><mat-icon class="meta-icon">menu_book</mat-icon>
+                {{ nbParTag[tag.id]?.ue ?? 0 }} UE</span>
             </div>
           </mat-card-content>
         </mat-card>

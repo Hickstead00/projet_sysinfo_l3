@@ -27,7 +27,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatChipGrid, MatChipRow, MatChipsModule } from '@angular/material/chips';
 import { ViewChild, ElementRef } from '@angular/core';
-import {UeService} from '../../service/ue-service';
+import { UeService } from '../../service/ue-service';
 
 @Component({
   selector: 'app-enseignants',
@@ -71,13 +71,13 @@ export class Enseignants implements OnInit {
 
   tagsFiltres: Tag[] = [];
 
-  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>; // permet de referencer l'element html pour pouvoir le manipuler dans le ts
 
   searchControl = new FormControl('', { nonNullable: true });
 
   countUEattachToTeachers: number = 0;
 
-  hourlyVolumeUETeachers : number = 0;
+  hourlyVolumeUETeachers: number = 0;
 
   currentPage = 0;
 
@@ -145,7 +145,7 @@ export class Enseignants implements OnInit {
 
   createEnseignant(): void {
     if (this.enseignantForm.invalid) {
-      this.messageErreurCreation = "Un nom, prénom et email valide sont obligatoires";
+      this.messageErreurCreation = 'Un nom, prénom et email valide sont obligatoires';
       this.cdr.detectChanges();
       return;
     }
@@ -180,7 +180,7 @@ export class Enseignants implements OnInit {
   updateEnseignant(): void {
     if (!this.enseignantEnCours) return;
     if (this.enseignantForm.invalid) {
-      this.messageErreurCreation = "Un nom, prénom et email valide sont obligatoires";
+      this.messageErreurCreation = 'Un nom, prénom et email valide sont obligatoires';
       this.cdr.detectChanges();
       return;
     }
@@ -328,16 +328,16 @@ export class Enseignants implements OnInit {
     this.enseignantForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
   }
 
-  getHourlyVolumeTeachers() : void {
+  getHourlyVolumeTeachers(): void {
     this.enseignantService.hourlyVolumeTeachers().subscribe({
-      next: (total) =>{
+      next: (total) => {
         this.hourlyVolumeUETeachers = total;
         this.cdr.detectChanges();
       },
 
-      error : (e) =>{
+      error: (e) => {
         console.error('Erreur dans le calcul du volume horaire UE', e);
-      }
+      },
     });
   }
 
@@ -350,14 +350,16 @@ export class Enseignants implements OnInit {
 
       error: (e) => {
         console.error('Erreur dans le calcul total UE :', e);
-      }
+      },
     });
   }
 
   updateTeachersByPage(): void {
     const start = this.currentPage * this.teacherByPage;
     const end = start + this.teacherByPage;
-    this.teacherPage = (this.rechercheEffectuee ? this.enseignantSelectionne : this.listEnseignant).slice(start, end);
+    this.teacherPage = (
+      this.rechercheEffectuee ? this.enseignantSelectionne : this.listEnseignant
+    ).slice(start, end);
   }
 
   pageChange(event: PageEvent): void {
@@ -371,7 +373,7 @@ export class Enseignants implements OnInit {
       prenom: ens.prenom,
       nom: ens.nom,
       email: ens.email,
-      tagIds: ens.tags.map(t => t.id)
+      tagIds: ens.tags.map((t) => t.id),
     });
     this.tagsSelectionnes = [...ens.tags];
   }
@@ -382,5 +384,4 @@ export class Enseignants implements OnInit {
     this.enseignantEnCours = undefined;
     this.messageErreurCreation = undefined;
   }
-
 }

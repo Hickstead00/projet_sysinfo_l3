@@ -43,6 +43,26 @@
             </mat-form-field>
           </div>
         </div>
+        <div class="section-tag"></div>
+        <p class="section-label-tag">Tags</p>
+
+        <mat-label class="label-tag">Tags associés</mat-label>
+        <mat-form-field appearance="outline" class="taille">
+          <mat-chip-grid #chipGridTag>
+            <mat-chip-row *ngFor="let tag of tagsSelectionnes" (removed)="retirerTag(tag)">
+              {{ tag.nomTag }}
+              <button matChipRemove>✕</button>
+            </mat-chip-row>
+            <input #tagInput placeholder="Ajouter un tag..." [matChipInputFor]="chipGridTag" [matAutocomplete]="autoTag"
+              (input)="tagByNom($event.target.value)" />
+          </mat-chip-grid>
+          <mat-autocomplete #autoTag="matAutocomplete" (optionSelected)="ajouterTag($event)">
+            <mat-option *ngFor="let t of tagsFiltres" [value]="t">
+              {{ t.nomTag }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <small class="tags-msg">Les tags permettent de filtrer les enseignants disponibles</small>
 
         <div class="section-equipe-pedagogique"></div>
         <p class="section-label-equipe-pedagogique">Equipe Pédagogique</p>
@@ -73,28 +93,6 @@
           </mat-autocomplete>
         </mat-form-field>
         <small class="enseignant-msg">Tapez pour rechercher et ajouter des enseignants</small>
-
-        <div class="section-tag"></div>
-        <p class="section-label-tag">Tags</p>
-
-        <mat-label class="label-tag">Tags associés</mat-label>
-        <mat-form-field appearance="outline" class="taille">
-          <mat-chip-grid #chipGridTag>
-            <mat-chip-row *ngFor="let tag of tagsSelectionnes" (removed)="retirerTag(tag)">
-              {{ tag.nomTag }}
-              <button matChipRemove>✕</button>
-            </mat-chip-row>
-            <input #tagInput placeholder="Ajouter un tag..." [matChipInputFor]="chipGridTag" [matAutocomplete]="autoTag"
-              (input)="tagByNom($event.target.value)" />
-          </mat-chip-grid>
-          <mat-autocomplete #autoTag="matAutocomplete" (optionSelected)="ajouterTag($event)">
-            <mat-option *ngFor="let t of tagsFiltres" [value]="t">
-              {{ t.nomTag }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <small class="tags-msg">Les tags permettent de filtrer les enseignants disponibles</small>
-
         <mat-label>Prérequis</mat-label>
         <mat-form-field appearance="outline" class="taille">
           <mat-chip-grid #chipGridUe>

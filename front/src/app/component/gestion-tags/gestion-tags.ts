@@ -45,7 +45,7 @@ export class GestionTags implements OnInit {
 
   rechercheEffectue: boolean = false;
 
-  nbParTag: { [id: number]: { ens: number; ue: number } } = {};
+  nbParTag: { [id: number]: { ens: number; ue: number } } = {}; // dictionnaire ( clé = id de des tags , valeur = un objet avec le nombre d'enseignant et d'ue associé au tag )
 
   couleurs = [
     '#7c5c3e',
@@ -93,7 +93,7 @@ export class GestionTags implements OnInit {
         // réponse du back avec succes (data) corps de ce que le back renvoie
 
         this.listTags = tags;
-        tags.forEach((tag) => this.chargerNb(tag.id));
+        tags.forEach((tag) => this.chargerNb(tag.id)); // pour chaque tag recupere le nombre d'enseignant et d'ue associé
         this.cdr.detectChanges();
       },
     });
@@ -121,7 +121,7 @@ export class GestionTags implements OnInit {
   createTag(): void {
     if (this.tagForm.invalid) return;
 
-    const tag: CreateTag = this.tagForm.value;
+    const tag: CreateTag = this.tagForm.value; // permet de recuperer les valeurs actuelles du form
 
     this.messageErreurCreation = undefined;
 
@@ -130,6 +130,7 @@ export class GestionTags implements OnInit {
         this.messageSucces = 'Tag créé avec succès !';
         this.rechercheEffectue = false;
         this.tagSelectionne = [];
+        this.couleurSelectionnee = '';
         this.tagForm.reset();
         this.allTags();
         this.cdr.detectChanges();
@@ -149,7 +150,7 @@ export class GestionTags implements OnInit {
 
   choisirCouleur(couleur: string) {
     this.couleurSelectionnee = couleur;
-    this.tagForm.get('couleur')?.setValue(couleur);
+    this.tagForm.get('couleur')?.setValue(couleur); // permet de recuperer la couleur cliquer et set ca valeur dans le formulaire
   }
 
   tagByNom(nom: string): void {

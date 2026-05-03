@@ -73,7 +73,7 @@ export class UEComponent implements OnInit {
 
   rechercheEffectue: boolean = false;
 
-  @ViewChild('ensInput') ensInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('ensInput') ensInput!: ElementRef<HTMLInputElement>; // permet de referencer l'element html pour pouvoir le manipuler dans le ts
 
   @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
 
@@ -93,6 +93,8 @@ export class UEComponent implements OnInit {
 
   referentSelectionne: number | null = null;
 
+  tousLesEnseignants: Enseignant[] = [];
+
   constructor(
     private ueService: UeService,
     private cdr: ChangeDetectorRef,
@@ -105,7 +107,10 @@ export class UEComponent implements OnInit {
     this.allUe();
     this.initForm();
     this.enseignantService.getAllEnseignant().subscribe({
-      next: (ens) => (this.enseignantDispo = ens),
+      next: (ens) => {
+        this.enseignantDispo = ens;
+        this.tousLesEnseignants = ens;
+      },
     });
   }
 
@@ -197,14 +202,14 @@ export class UEComponent implements OnInit {
 
   deleteUeById(id: number): void {
     this.ueService.deleteUe(id).subscribe({
-      next: (ue) => {
+      next: () => {
         this.rechercheEffectue = false;
         this.ueFiltres = [];
         this.allUe();
         this.cdr.detectChanges();
       },
 
-      error: (e) => {
+      error: () => {
         {
           console.log('Erreur detecté par le backend');
         }
@@ -213,7 +218,7 @@ export class UEComponent implements OnInit {
   }
 
   retirerUe(ue: Ue): void {
-    this.ueSelectionnes = this.ueSelectionnes.filter((u) => u.id !== ue.id);
+    this.ueSelectionnes = this.ueSelectionnes.filter((u) => u.id !== ue.id); // garde uniquement les ue dont l'id est différente l'ue a retirer
 
     this.ueForm.patchValue({ prerequisIds: this.ueSelectionnes.map((u) => u.id) });
   }
@@ -233,10 +238,11 @@ export class UEComponent implements OnInit {
   }
 
   ajouterEnseignant(event: MatAutocompleteSelectedEvent): void {
-    const ens: Enseignant = event.option.value;
-    if (this.enseignantSelectionnes.find((e) => e.id === ens.id)) return;
+    //  méthode appelée quand cliques sur une option dans l'autocomplete des enseignants
+    const ens: Enseignant = event.option.value; // récupère l'objet enseignant complet depuis l'option cliquée
+    if (this.enseignantSelectionnes.find((e) => e.id === ens.id)) return; // si enseignant dans la liste on arrête
     this.enseignantSelectionnes.push(ens);
-    this.ueForm.patchValue({ enseignantIds: this.enseignantSelectionnes.map((e) => e.id) });
+    this.ueForm.patchValue({ enseignantIds: this.enseignantSelectionnes.map((e) => e.id) }); // met a jour le formulaire avec uniquement les ens selectionné
     this.ensInput.nativeElement.value = '';
     this.enseignantFiltres = [];
   }
@@ -248,6 +254,7 @@ export class UEComponent implements OnInit {
     this.ueForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
     this.tagInput.nativeElement.value = '';
     this.tagsFiltres = [];
+    this.filtrerEnseignantsParTags();
   }
 
   ajouterUe(event: MatAutocompleteSelectedEvent): void {
@@ -283,12 +290,27 @@ export class UEComponent implements OnInit {
     this.tagsSelectionnes = this.tagsSelectionnes.filter((t) => t.id !== tag.id); // garde seulement les tags qui n'ont pas l'id du tag à retirer
 
     this.ueForm.patchValue({ tagIds: this.tagsSelectionnes.map((t) => t.id) });
+    this.filtrerEnseignantsParTags();
+  }
+
+  filtrerEnseignantsParTags(): void {
+    if (this.tagsSelectionnes.length === 0) {
+      this.enseignantDispo = [...this.tousLesEnseignants]; // si aucun tag selectionné remet tous les enseignants dispo. ... cree une copie du tableau
+      return;
+    }
+
+    this.enseignantDispo = this.tousLesEnseignants.filter((ens) =>
+      ens.tags.some((tag) => this.tagsSelectionnes.find((t) => t.id === tag.id)),
+    );
+
+    // recreer enseignantDispo et regarde si au moins un tag est selectionné (some = true dès qu'une cond et verif)
   }
 
   updateUeByPage(): void {
-    const start = this.currentPage * this.ueByPage;
-    const end = start + this.ueByPage;
-    this.uePage = (this.rechercheEffectue ? this.ueFiltres : this.listUe).slice(start, end);
+    const start = this.currentPage * this.ueByPage; // calcule l'index de début de la page courante
+    const end = start + this.ueByPage; // calcule l'index de fin de la page courante
+    this.uePage = (this.rechercheEffectue ? this.ueFiltres : this.listUe).slice(start, end); // choisit le bon tableau selon si une recherche est effectuée ou non
+    // puis extrait uniquement les UE entre start et end pour la page courante
   }
 
   pageChange(event: PageEvent): void {
